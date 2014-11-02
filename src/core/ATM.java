@@ -43,6 +43,20 @@ public class ATM {
 		ui = new UI(screen, bankDatabase, keypad);
 	} // end no-argument ATM constructor
 
+	/** getters **/
+	public UI getUI() {
+		return ui;
+	}
+
+	public BankDatabase getBankDatabase() {
+		return bankDatabase;
+	}
+
+	public CashDispenser getCashDispenser() {
+		return cashDispenser;
+	}
+
+	/** instance methods **/
 	// start ATM
 	public void run() {
 		// welcome and authenticate user; perform transactions
@@ -62,14 +76,14 @@ public class ATM {
 					try {
 						performTransactions(bankDatabase.getAccounts());
 					} catch (AccountNotFoundException e) {
-					screen.displayMessageLine(MyStrings.ACCOUNT_NOT_FOUND);
+						screen.displayMessageLine(MyStrings.ACCOUNT_NOT_FOUND);
 					}
 				} catch (WrongInputException e) {
-					screen.displayMessageLine(MyStrings
-							.WRONG_INPUT);
+					screen.displayMessageLine(MyStrings.WRONG_INPUT);
 				}
 			} // user is now
 			catch (CardOutException e) {
+				popCard();
 				showBye();
 			}
 			// authenticated
@@ -98,7 +112,8 @@ public class ATM {
 	} // end method authenticateUser
 
 	// display the main menu and perform transactions
-	private void performTransactions(Vector<Account> accounts) throws CardOutException, WrongInputException, AccountNotFoundException {
+	private void performTransactions(Vector<Account> accounts) throws CardOutException,
+			WrongInputException, AccountNotFoundException {
 		// local variable to store transaction currently being processed
 		Vector<Transaction> currentTransactions = null;
 
@@ -134,7 +149,6 @@ public class ATM {
 				// execute transaction
 				break;
 			case EXIT: // user chose to terminate session
-				showBye();
 				userExited = true; // this ATM session should end
 				break;
 			default: // user did not enter an integer from 1-4
@@ -157,7 +171,8 @@ public class ATM {
 
 	// return object of specified Transaction subclass
 	private Vector<Transaction> createTransactions(int type, Vector<Account> accounts)
-			throws OverdrawnException, CardOutException, WrongInputException, AccountNotFoundException {
+			throws OverdrawnException, CardOutException, WrongInputException,
+			AccountNotFoundException {
 		// temporary Transaction variable
 		Vector<Transaction> result = new Vector<Transaction>();
 
@@ -167,8 +182,7 @@ public class ATM {
 			result.add(new BalanceInquiry(currentAccountNumber, screen, bankDatabase));
 			break;
 		case WITHDRAWAL: // create new Withdrawal transaction
-			result.add(new Withdrawal(currentAccountNumber, screen, bankDatabase, keypad,
-					cashDispenser));
+			result.add(new Withdrawal(currentAccountNumber, this));
 			break;
 		case TRANSFER: // create new Deposit transaction
 			result = Transfer.transfer(ui, accounts, currentAccountNumber);
@@ -178,12 +192,23 @@ public class ATM {
 		return result; // return the newly created object
 	} // end method createTransaction
 
+	/** Skipped featured (will be added in GUI) **/
+	// instruct user to take card
+	public void popCard() {
+		screen.displayMessageLine(MyStrings.TAKE_CARD);
+	}
+
+	// instruct user to take cash
+	public void popCash() {
+		screen.displayMessageLine(MyStrings.TAKE_CASH);
+	}
+
 	public void showBye() {
-		screen.displayMessageLine("\n"+MyStrings.BYE);
+		screen.displayMessageLine("\n" + MyStrings.BYE);
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			//e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 } // end class ATM

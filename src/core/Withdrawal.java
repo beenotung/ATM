@@ -9,6 +9,7 @@ import ui.Keypad;
 import ui.Screen;
 import ui.UI;
 import myutil.MyInputHandler;
+import myutil.exception.CashNotEnoughException;
 import myutil.exception.OverdrawnException;
 import myutil.exception.WrongInputException;
 
@@ -22,25 +23,24 @@ public class Withdrawal extends Transaction {
 	private Keypad keypad; // reference to keypad
 	private CashDispenser cashDispenser; // reference to cash dispenser
 
+	private ATM atm;
+
 	// constant corresponding to menu option to cancel
 	private final static int CANCELED = 6;
 
 	// Withdrawal constructor
-	public Withdrawal(int userAccountNumber, Screen atmScreen,
-			BankDatabase atmBankDatabase, Keypad atmKeypad, CashDispenser atmCashDispenser) {
+	// get references to keypad and cash dispenser from atm
+	public Withdrawal(int userAccountNumber, ATM atm) {
 		// initialize superclass variables
-		super(userAccountNumber, atmScreen, atmBankDatabase);
-
-		// initialize references to keypad and cash dispenser
-		keypad = atmKeypad;
-		cashDispenser = atmCashDispenser;
+		super(userAccountNumber, atm.getUI().screen, atm.getBankDatabase());
+		this.atm = atm;
 	} // end Withdrawal constructor
 
 	@Override
 	// perform transaction
-	public void execute(Vector<Account> accounts, UI ui) throws WrongInputException, AccountNotFoundException, OverdrawnException {
+	public void execute(Vector<Account> accounts, UI ui) throws WrongInputException,
+			AccountNotFoundException, OverdrawnException {
 		boolean cashDispensed = false; // cash was not dispensed yet
-		double availableBalance; // amount available for withdrawal
 
 		// get references to bank database and screen
 		BankDatabase bankDatabase = getBankDatabase();
@@ -53,36 +53,24 @@ public class Withdrawal extends Transaction {
 
 			// check whether user chose a withdrawal amount or canceled
 			if (amount != CANCELED) {
-				// get available balance of account involved
-				availableBalance = bankDatabase.getAvailableBalance(getAccountNumber());
-
 				// auto check whether the user has enough money in the account
-				// if (amount <= availableBalance) {
 				// check whether the cash dispenser has enough money
-				if (cashDispenser.isSufficientCashAvailable(amount)) {
-					// update the account involved to reflect withdrawal
+				try {
+					cashDispenser.dispenseCash(amount);
 					bankDatabase.debit(getAccountNumber(), amount);
-					cashDispenser.dispenseCash(amount); // dispense cash
 					cashDispensed = true; // cash was dispensed
-
-					// instruct user to take cash
-					screen.displayMessageLine("\nPlease take your cash now.");
-				} // end if
-				else
+					atm.popCash();
+				} catch (CashNotEnoughException e) {
 					// cash dispenser does not have enough cash
 					screen.displayMessageLine("\nInsufficient cash available in the ATM."
+							+ "\n Avaliabe cash:" + cashDispenser.getAmount()
 							+ "\n\nPlease choose a smaller amount.");
-				/*
-				 * } // end if else // not enough money available in user's
-				 * account {
-				 * screen.displayMessageLine("\nInsufficient funds in your account."
-				 * + "\nPlease choose a smaller amount."); } // end else
-				 */} // end if
-			else // user chose cancel menu option
+				} // dispense cash
+			} else // user chose cancel menu option
 			{
 				screen.displayMessageLine();
 				screen.displayMessageLine(amount);
-				screen.displayMessageLine("\nCanceling transaction...");
+				screen.displayMessageLine("\nCanceling withdrawal...");
 				return; // return to main menu because user canceled
 			} // end else
 		} while (!cashDispensed);
