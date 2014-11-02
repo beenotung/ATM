@@ -1,4 +1,6 @@
-package core;
+package launcher;
+
+import core.ATM;
 
 // ATMCaseStudy.java
 // Driver program for the ATM case study

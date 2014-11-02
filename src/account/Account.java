@@ -1,4 +1,4 @@
-package core;
+package account;
 
 import java.util.Vector;
 
@@ -10,16 +10,18 @@ import myutil.exception.OverdrawnException;
 public class Account {
 	private int accountNumber; // account number
 	private int pin; // PIN for authentication
-	private double accountBalance; // funds available for withdrawal
-	private double inwardsPending = 0; // pending money
-	private double outwardsPending = 0; // pending money
-	protected int overdrawnLimit = 0;
+	private double availableBalance; // funds available for withdrawal
+	private double totalBalance; // funds available + pending deposits
+	protected double overdrawnLimit;
 
 	// Account constructor initializes attributes
-	public Account(int theAccountNumber, int thePIN, double accountBalance) {
+	public Account(int theAccountNumber, int thePIN, double theAvailableBalance,
+			double theTotalBalance) {
 		accountNumber = theAccountNumber;
 		pin = thePIN;
-		this.accountBalance = accountBalance;
+		availableBalance = theAvailableBalance;
+		totalBalance = theTotalBalance;
+		overdrawnLimit = 0.0;
 	} // end Account constructor
 
 	// determines whether a user-specified PIN matches PIN in Account
@@ -32,26 +34,24 @@ public class Account {
 
 	// returns available balance
 	public double getAvailableBalance() {
-		return accountBalance - outwardsPending;
+		return availableBalance;
 	} // end getAvailableBalance
 
-	/*
-	 * // returns the total balance public double getTotalBalance() { return
-	 * totalBalance; } // end method getTotalBalance
-	 */
+	// returns the total balance
+	public double getTotalBalance() {
+		return totalBalance;
+	} // end method getTotalBalance
 
 	// credits an amount to the account
 	public void credit(double amount) {
-		inwardsPending += amount; // add to total balance
+		availableBalance += amount; // add to available balance
+		totalBalance += amount; // add to total balance
 	} // end method credit
 
 	// debits an amount from the account
 	public void debit(double amount) throws OverdrawnException {
-		if ((getAvailableBalance() + overdrawnLimit) >= amount) {
-			outwardsPending += amount; // subtract from balance
-		} else {
-			throw new OverdrawnException();
-		}
+		availableBalance -= amount; // subtract from available balance
+		totalBalance -= amount; // subtract from total balance
 	} // end method debit
 
 	// returns account number
@@ -67,16 +67,9 @@ public class Account {
 		return result;
 	}
 
-	public int getOverdrawnLimit() {
+	public double getOverdrawnLimit() {
 		return overdrawnLimit;
 	}
-
-	public void cleanTransfer() {
-		accountBalance += inwardsPending;
-		accountBalance -= outwardsPending;
-		inwardsPending = outwardsPending = 0;
-	}
-
 } // end class Account
 
 /**************************************************************************

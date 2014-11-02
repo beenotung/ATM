@@ -2,6 +2,7 @@ package core;
 
 import java.util.Vector;
 
+import account.Account;
 import ui.UI;
 import myutil.exception.CardOutException;
 import myutil.exception.OverdrawnException;

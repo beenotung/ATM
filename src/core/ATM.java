@@ -2,6 +2,7 @@ package core;
 
 import java.util.Vector;
 
+import account.Account;
 import ui.Keypad;
 import ui.Screen;
 import ui.UI;
@@ -17,7 +18,6 @@ public class ATM {
 	private Screen screen; // ATM's screen
 	private Keypad keypad; // ATM's keypad
 	private CashDispenser cashDispenser; // ATM's cash dispenser
-	private DepositSlot depositSlot; // ATM's deposit slot
 	private BankDatabase bankDatabase; // account information database
 	private UI ui;
 
@@ -34,7 +34,6 @@ public class ATM {
 		screen = new Screen(); // create screen
 		keypad = new Keypad(); // create keypad
 		cashDispenser = new CashDispenser(); // create cash dispenser
-		depositSlot = new DepositSlot(); // create deposit slot
 		bankDatabase = new BankDatabase(); // create acct info database
 		ui = new UI(screen, bankDatabase, keypad);
 	} // end no-argument ATM constructor
@@ -51,6 +50,7 @@ public class ATM {
 				} catch (CardOutException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					System.out.println();
 				} // authenticate user
 			} // end while
 
@@ -112,7 +112,7 @@ public class ATM {
 					currentTransactions = createTransactions(mainMenuSelection, accounts);
 					for (Transaction currentTransaction : currentTransactions)
 						try {
-							currentTransaction.execute(accounts,ui);
+							currentTransaction.execute(accounts, ui);
 						} catch (CardOutException e) {
 							exit();
 						}

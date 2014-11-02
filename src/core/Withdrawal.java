@@ -2,6 +2,7 @@ package core;
 
 import java.util.Vector;
 
+import account.Account;
 import ui.Keypad;
 import ui.Screen;
 import ui.UI;

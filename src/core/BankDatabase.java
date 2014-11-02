@@ -2,27 +2,21 @@ package core;
 
 import java.util.Vector;
 
+import account.Account;
+import account.SavingAccount;
 import myutil.exception.OverdrawnException;
-import server.SavingAccountInterestPaying;
 // BankDatabase.java
 // Represents the bank account information database 
 
 public class BankDatabase {
-	private SavingAccountInterestPaying savingAccountInterestPaying;
 	private Vector<Account> accounts; // Vector of Accounts
 
 	// no-argument BankDatabase constructor initializes accounts
 	public BankDatabase() {
-		/*
-		 * accounts = new Account[ 2 ]; // just 2 accounts for testing accounts[
-		 * 0 ] = new Account( 12345, 54321, 1000.0, 1200.0 ); accounts[ 1 ] =
-		 * new Account( 98765, 56789, 200.0, 200.0 );
-		 */
 		accounts = new Vector<Account>();
-		accounts.add(new Account(12345, 54321, 1000.0));
-		accounts.add(new Account(98765, 56789, 200.0));
-		savingAccountInterestPaying = new SavingAccountInterestPaying(accounts);
-		savingAccountInterestPaying.start();
+		accounts.add(new Account(12345, 54321, 1000.0,1000.0));
+		accounts.add(new Account(98765, 56789, 200.0,200.0));
+		accounts.add(new SavingAccount(54321, 24680, 100.0,100.0));
 	} // end no-argument BankDatabase constructor
 
 	// retrieve Account object containing specified account number
