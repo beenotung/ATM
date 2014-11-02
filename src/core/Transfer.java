@@ -6,10 +6,11 @@ import account.Account;
 import ui.UI;
 import myutil.exception.CardOutException;
 import myutil.exception.OverdrawnException;
+import myutil.exception.WrongInputException;
 
 public class Transfer {
 	public static Vector<Transaction> transfer(UI ui, Vector<Account> accounts,
-			int accountNumberFrom) throws OverdrawnException, CardOutException {
+			int accountNumberFrom) throws OverdrawnException, WrongInputException {
 		Vector<Transaction> result = new Vector<Transaction>();
 		int accountNumberTo;
 		Account accountFrom = Account.getAccount(accounts, accountNumberFrom);

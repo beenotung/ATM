@@ -16,6 +16,14 @@ public class Screen {
 	// display a message with a carriage return
 	public void displayMessageLine(String message) {
 		System.out.println(message);
+	}
+
+	public void displayMessageLine(int i) {
+		displayMessageLine(i + "");
+	}
+
+	public void displayMessageLine() {
+		displayMessageLine("");
 	} // end method displayMessageLine
 
 	// display a dollar amount
@@ -26,6 +34,7 @@ public class Screen {
 	public String getDollarAmount(double amount) {
 		return String.format("$%,.2f", amount);
 	} // end method displayDollarAmount
+
 } // end class Screen
 
 /**************************************************************************

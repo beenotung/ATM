@@ -2,12 +2,17 @@ package core;
 
 import java.util.Vector;
 
+import javax.security.auth.login.AccountNotFoundException;
+
 import account.Account;
 import ui.Keypad;
 import ui.Screen;
 import ui.UI;
+import myutil.MyInputHandler;
+import myutil.MyStrings;
 import myutil.exception.CardOutException;
 import myutil.exception.OverdrawnException;
+import myutil.exception.WrongInputException;
 
 // ATM.java
 // Represents an automated teller machine
@@ -47,28 +52,35 @@ public class ATM {
 				screen.displayMessageLine("\nWelcome!");
 				try {
 					authenticateUser();
-				} catch (CardOutException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.out.println();
+				} catch (WrongInputException e) {
+					screen.displayMessageLine(MyStrings.WRONG_INPUT);
 				} // authenticate user
 			} // end while
 
 			try {
-				performTransactions(bankDatabase.getAccounts());
+				try {
+					try {
+						performTransactions(bankDatabase.getAccounts());
+					} catch (AccountNotFoundException e) {
+					screen.displayMessageLine(MyStrings.ACCOUNT_NOT_FOUND);
+					}
+				} catch (WrongInputException e) {
+					screen.displayMessageLine(MyStrings
+							.WRONG_INPUT);
+				}
 			} // user is now
 			catch (CardOutException e) {
-				exit();
+				showBye();
 			}
 			// authenticated
 			userAuthenticated = false; // reset before next ATM session
 			currentAccountNumber = 0; // reset before next ATM session
-			screen.displayMessageLine("\nThank you! Goodbye!");
+			showBye();
 		} // end while
 	} // end method run
 
 	// attempts to authenticate user against database
-	private void authenticateUser() throws CardOutException {
+	private void authenticateUser() throws WrongInputException {
 		screen.displayMessage("\nPlease enter your account number: ");
 		int accountNumber = keypad.getInputInt(); // input account number
 		screen.displayMessage("\nEnter your PIN: "); // prompt for PIN
@@ -86,7 +98,7 @@ public class ATM {
 	} // end method authenticateUser
 
 	// display the main menu and perform transactions
-	private void performTransactions(Vector<Account> accounts) throws CardOutException {
+	private void performTransactions(Vector<Account> accounts) throws CardOutException, WrongInputException, AccountNotFoundException {
 		// local variable to store transaction currently being processed
 		Vector<Transaction> currentTransactions = null;
 
@@ -95,11 +107,13 @@ public class ATM {
 		// loop while user has not chosen option to exit system
 		while (!userExited) {
 			// show main menu and get user selection
-			int mainMenuSelection;
+			int mainMenuSelection = -1;
+			int wrongCount = 0;
 			try {
 				mainMenuSelection = displayMainMenu();
-			} catch (CardOutException e) {
-				mainMenuSelection = EXIT;
+			} catch (WrongInputException e) {
+				if (++wrongCount > MyInputHandler.MAXWRONGINPUT)
+					mainMenuSelection = EXIT;
 			}
 			// decide how to proceed based on user's menu selection
 			switch (mainMenuSelection) {
@@ -111,11 +125,7 @@ public class ATM {
 				try {
 					currentTransactions = createTransactions(mainMenuSelection, accounts);
 					for (Transaction currentTransaction : currentTransactions)
-						try {
-							currentTransaction.execute(accounts, ui);
-						} catch (CardOutException e) {
-							exit();
-						}
+						currentTransaction.execute(accounts, ui);
 				} catch (OverdrawnException e1) {
 					screen.displayMessageLine("\nOverdrawn(Insufficient funds in your account), your overdrawn limit is: "
 							+ screen.getDollarAmount(Account.getAccount(accounts,
@@ -124,7 +134,7 @@ public class ATM {
 				// execute transaction
 				break;
 			case EXIT: // user chose to terminate session
-				exit();
+				showBye();
 				userExited = true; // this ATM session should end
 				break;
 			default: // user did not enter an integer from 1-4
@@ -135,7 +145,7 @@ public class ATM {
 	} // end method performTransactions
 
 	// display the main menu and return an input selection
-	private int displayMainMenu() throws CardOutException {
+	private int displayMainMenu() throws WrongInputException {
 		screen.displayMessageLine("\nMain menu:");
 		screen.displayMessageLine("1 - View my balance");
 		screen.displayMessageLine("2 - Withdraw cash");
@@ -147,10 +157,9 @@ public class ATM {
 
 	// return object of specified Transaction subclass
 	private Vector<Transaction> createTransactions(int type, Vector<Account> accounts)
-			throws OverdrawnException, CardOutException {
-		Vector<Transaction> result = new Vector<Transaction>(); // temporary
-																// Transaction
-																// variable
+			throws OverdrawnException, CardOutException, WrongInputException {
+		// temporary Transaction variable
+		Vector<Transaction> result = new Vector<Transaction>();
 
 		// determine which type of Transaction to create
 		switch (type) {
@@ -169,12 +178,12 @@ public class ATM {
 		return result; // return the newly created object
 	} // end method createTransaction
 
-	public void exit() {
-		screen.displayMessageLine("\nPlease take your card before you leave.");
+	public void showBye() {
+		screen.displayMessageLine("\n"+MyStrings.BYE);
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 } // end class ATM

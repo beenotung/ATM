@@ -6,6 +6,7 @@ import java.util.Scanner; // program uses Scanner to obtain user input
 
 import myutil.MyInputHandler;
 import myutil.exception.CardOutException;
+import myutil.exception.WrongInputException;
 
 public class Keypad {
 	private Scanner input; // reads data from the command line
@@ -16,7 +17,7 @@ public class Keypad {
 	} // end no-argument Keypad constructor
 
 	// return an integer value entered by user
-	public int getInputInt() throws CardOutException {
+	public int getInputInt() throws WrongInputException {
 		int result = 0;
 		int wrongcount = 0;
 		boolean ok;
@@ -31,12 +32,12 @@ public class Keypad {
 			}
 		} while ((wrongcount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
 		if (!ok)
-			throw new CardOutException();
+			throw new WrongInputException();
 		else
 			return result; // we don't assume that user enters an integer
 	} // end method getInput
 
-	public double getInputReal() throws CardOutException {
+	public double getInputReal() throws WrongInputException {
 		double result = 0;
 		int wrongcount = 0;
 		boolean ok;
@@ -51,7 +52,7 @@ public class Keypad {
 			}
 		} while ((wrongcount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
 		if (!ok)
-			throw new CardOutException();
+			throw new WrongInputException();
 		else
 			return result; 
 	}

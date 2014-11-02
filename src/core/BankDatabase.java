@@ -2,6 +2,8 @@ package core;
 
 import java.util.Vector;
 
+import javax.security.auth.login.AccountNotFoundException;
+
 import account.Account;
 import account.SavingAccount;
 import myutil.exception.OverdrawnException;
@@ -14,53 +16,54 @@ public class BankDatabase {
 	// no-argument BankDatabase constructor initializes accounts
 	public BankDatabase() {
 		accounts = new Vector<Account>();
-		accounts.add(new Account(12345, 54321, 1000.0,1000.0));
-		accounts.add(new Account(98765, 56789, 200.0,200.0));
-		accounts.add(new SavingAccount(54321, 24680, 100.0,100.0));
+		accounts.add(new Account(12345, 54321, 1000.0, 1000.0));
+		accounts.add(new Account(98765, 56789, 200.0, 200.0));
+		accounts.add(new SavingAccount(54321, 24680, 100.0, 100.0));
 	} // end no-argument BankDatabase constructor
 
 	// retrieve Account object containing specified account number
-	private Account getAccount(int accountNumber) {
+	private Account getAccount(int accountNumber) throws AccountNotFoundException {
 		// loop through accounts searching for matching account number
 		for (Account currentAccount : accounts) {
 			// return current account if match found
 			if (currentAccount.getAccountNumber() == accountNumber)
 				return currentAccount;
 		} // end for
-
-		return null; // if no matching account was found, return null
+		throw new AccountNotFoundException(); // if no matching account was
+												// found, throw exception
 	} // end method getAccount
 
 	// determine whether user-specified account number and PIN match
 	// those of an account in the database
 	public boolean authenticateUser(int userAccountNumber, int userPIN) {
 		// attempt to retrieve the account with the account number
-		Account userAccount = getAccount(userAccountNumber);
-
-		// if account exists, return result of Account method validatePIN
-		if (userAccount != null)
+		Account userAccount;
+		try {
+			userAccount = getAccount(userAccountNumber);
+			// if account exists, return result of Account method validateIN
 			return userAccount.validatePIN(userPIN);
-		else
+		} catch (AccountNotFoundException e) {
 			return false; // account number not found, so return false
+		}
 	} // end method authenticateUser
 
 	// return available balance of Account with specified account number
-	public double getAvailableBalance(int userAccountNumber) {
+	public double getAvailableBalance(int userAccountNumber) throws AccountNotFoundException {
 		return getAccount(userAccountNumber).getAvailableBalance();
 	} // end method getAvailableBalance
 
 	// return total balance of Account with specified account number
-	public double getTotalBalance(int userAccountNumber) {
+	public double getTotalBalance(int userAccountNumber) throws AccountNotFoundException {
 		return getAccount(userAccountNumber).getAvailableBalance();
 	} // end method getTotalBalance
 
 	// credit an amount to Account with specified account number
-	public void credit(int userAccountNumber, double amount) {
+	public void credit(int userAccountNumber, double amount) throws AccountNotFoundException {
 		getAccount(userAccountNumber).credit(amount);
 	} // end method credit
 
 	// debit an amount from of Account with specified account number
-	public void debit(int userAccountNumber, double amount) throws OverdrawnException {
+	public void debit(int userAccountNumber, double amount) throws OverdrawnException, AccountNotFoundException {
 		getAccount(userAccountNumber).debit(amount);
 	} // end method debit
 

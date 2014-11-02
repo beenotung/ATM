@@ -2,11 +2,14 @@ package core;
 
 import java.util.Vector;
 
+import javax.security.auth.login.AccountNotFoundException;
+
 import account.Account;
 import ui.Screen;
 import ui.UI;
 import myutil.exception.CardOutException;
 import myutil.exception.OverdrawnException;
+import myutil.exception.WrongInputException;
 
 // Transaction.java
 // Abstract superclass Transaction represents an ATM transaction
@@ -40,7 +43,8 @@ public abstract class Transaction {
 	} // end method getBankDatabase
 
 	// perform the transaction (overridden by each subclass)
-	abstract public void execute(Vector<Account> accounts, UI ui) throws CardOutException,OverdrawnException;
+	public abstract void execute(Vector<Account> accounts, UI ui)
+			throws WrongInputException, AccountNotFoundException, OverdrawnException;
 } // end class Transaction
 
 /**************************************************************************
