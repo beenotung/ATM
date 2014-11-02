@@ -9,7 +9,6 @@ import ui.Keypad;
 import ui.Screen;
 import ui.UI;
 import myutil.MyInputHandler;
-import myutil.exception.CardOutException;
 import myutil.exception.OverdrawnException;
 import myutil.exception.WrongInputException;
 
@@ -37,6 +36,7 @@ public class Withdrawal extends Transaction {
 		cashDispenser = atmCashDispenser;
 	} // end Withdrawal constructor
 
+	@Override
 	// perform transaction
 	public void execute(Vector<Account> accounts, UI ui) throws WrongInputException, AccountNotFoundException, OverdrawnException {
 		boolean cashDispensed = false; // cash was not dispensed yet

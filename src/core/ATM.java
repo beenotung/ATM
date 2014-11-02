@@ -157,7 +157,7 @@ public class ATM {
 
 	// return object of specified Transaction subclass
 	private Vector<Transaction> createTransactions(int type, Vector<Account> accounts)
-			throws OverdrawnException, CardOutException, WrongInputException {
+			throws OverdrawnException, CardOutException, WrongInputException, AccountNotFoundException {
 		// temporary Transaction variable
 		Vector<Transaction> result = new Vector<Transaction>();
 

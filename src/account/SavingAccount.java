@@ -1,8 +1,9 @@
 package account;
 
 public class SavingAccount extends Account {
-	private double interest = 0.1;
+	private double interestRate = 0.1;
 
+	/** constructors **/
 	public SavingAccount(int theAccountNumber, int thePIN, double theAvailableBalance,
 			double theTotalBalance) {
 		super(theAccountNumber, thePIN, theAvailableBalance, theTotalBalance);
@@ -11,6 +12,11 @@ public class SavingAccount extends Account {
 	public SavingAccount(int theAccountNumber, int thePIN, double theAvailableBalance,
 			double theTotalBalance, double theInterest) {
 		super(theAccountNumber, thePIN, theAvailableBalance, theTotalBalance);
-		interest = theInterest;
+		interestRate = theInterest;
+	}
+
+	/** getters **/
+	public double getInterestRate() {
+		return interestRate;
 	}
 }

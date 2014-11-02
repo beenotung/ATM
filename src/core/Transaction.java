@@ -7,7 +7,6 @@ import javax.security.auth.login.AccountNotFoundException;
 import account.Account;
 import ui.Screen;
 import ui.UI;
-import myutil.exception.CardOutException;
 import myutil.exception.OverdrawnException;
 import myutil.exception.WrongInputException;
 
@@ -17,7 +16,7 @@ import myutil.exception.WrongInputException;
 public abstract class Transaction {
 	private int accountNumber; // indicates account involved
 	private Screen screen; // ATM's screen
-	private BankDatabase bankDatabase; // account info database
+	protected BankDatabase bankDatabase; // account info database
 
 	// Transaction constructor invoked by subclasses using super()
 	public Transaction(int userAccountNumber, Screen atmScreen,

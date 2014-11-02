@@ -5,7 +5,6 @@ package ui;
 import java.util.Scanner; // program uses Scanner to obtain user input
 
 import myutil.MyInputHandler;
-import myutil.exception.CardOutException;
 import myutil.exception.WrongInputException;
 
 public class Keypad {
@@ -19,7 +18,7 @@ public class Keypad {
 	// return an integer value entered by user
 	public int getInputInt() throws WrongInputException {
 		int result = 0;
-		int wrongcount = 0;
+		int wrongCount = 0;
 		boolean ok;
 		do {
 			ok = true;
@@ -27,34 +26,56 @@ public class Keypad {
 				result = Integer.valueOf(input.next());
 			} catch (NumberFormatException e) {
 				System.out.println("Please input an integer only.");
-				wrongcount++;
+				wrongCount++;
 				ok = false;
 			}
-		} while ((wrongcount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
 		if (!ok)
 			throw new WrongInputException();
 		else
 			return result; // we don't assume that user enters an integer
 	} // end method getInput
 
-	public double getInputReal() throws WrongInputException {
+	public double getInputDouble_find() throws WrongInputException {
 		double result = 0;
-		int wrongcount = 0;
+		int wrongCount = 0;
 		boolean ok;
 		do {
 			ok = true;
 			try {
 				result = Double.valueOf(input.next());
 			} catch (NumberFormatException e) {
-				System.out.println("Please input an integer only.");
-				wrongcount++;
+				System.out.println("Please input an real number only.");
+				wrongCount++;
 				ok = false;
 			}
-		} while ((wrongcount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
 		if (!ok)
 			throw new WrongInputException();
 		else
-			return result; 
+			return result;
+	}
+
+	public double getInputDoublePositive() throws WrongInputException {
+		double result = 0;
+		int wrongCount = 0;
+		boolean ok;
+		do {
+			ok = true;
+			try {
+				result = Double.valueOf(input.next());
+				if (result <= 0)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				System.out.println("Please input a positive real number only.");
+				wrongCount++;
+				ok = false;
+			}
+		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		if (!ok)
+			throw new WrongInputException();
+		else
+			return result;
 	}
 } // end class Keypad
 

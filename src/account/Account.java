@@ -2,6 +2,8 @@ package account;
 
 import java.util.Vector;
 
+import javax.security.auth.login.AccountNotFoundException;
+
 import myutil.exception.OverdrawnException;
 
 // Account.java
@@ -59,12 +61,11 @@ public class Account {
 		return accountNumber;
 	} // end method getAccountNumber
 
-	public static Account getAccount(Vector<Account> accounts, int accountNumber) {
-		Account result = null;
-		for (int i = 0; i < accounts.size(); i++)
-			if (accounts.get(i).getAccountNumber() == accountNumber)
-				result = accounts.get(i);
-		return result;
+	public static Account getAccount(Vector<Account> accounts, int accountNumber) throws AccountNotFoundException {
+		for(Account account:accounts)
+			if(account.getAccountNumber()==accountNumber)
+				return account;
+		throw new AccountNotFoundException();
 	}
 
 	public double getOverdrawnLimit() {

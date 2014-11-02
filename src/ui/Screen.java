@@ -1,9 +1,5 @@
 package ui;
 
-import java.util.Formatter;
-
-import com.sun.xml.internal.ws.util.StringUtils;
-
 // Screen.java
 // Represents the screen of the ATM
 
@@ -21,6 +17,9 @@ public class Screen {
 	public void displayMessageLine(int i) {
 		displayMessageLine(i + "");
 	}
+	public void displayMessage(double d) {
+		displayMessageLine(d + "");
+	}
 
 	public void displayMessageLine() {
 		displayMessageLine("");
@@ -28,12 +27,15 @@ public class Screen {
 
 	// display a dollar amount
 	public void displayDollarAmount(double amount) {
-		System.out.printf("$%,.2f", amount);
+		displayMessage(getDollarAmount(amount));
 	} // end method displayDollarAmount
 
+	// return a dollar amount as String
 	public String getDollarAmount(double amount) {
 		return String.format("$%,.2f", amount);
 	} // end method displayDollarAmount
+
+	
 
 } // end class Screen
 
