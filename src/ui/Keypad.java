@@ -8,10 +8,12 @@ import myutil.MyInputHandler;
 import myutil.exception.WrongInputException;
 
 public class Keypad {
+	private Screen screen;
 	private Scanner input; // reads data from the command line
 
 	// no-argument constructor initializes the Scanner
-	public Keypad() {
+	public Keypad(Screen screen) {
+		this.screen = screen;
 		input = new Scanner(System.in);
 	} // end no-argument Keypad constructor
 
@@ -25,7 +27,7 @@ public class Keypad {
 			try {
 				result = Integer.valueOf(input.next());
 			} catch (NumberFormatException e) {
-				System.out.println("Please input an integer only.");
+				screen.displayMessageLine("Please input an integer only.");
 				wrongCount++;
 				ok = false;
 			}
@@ -36,7 +38,7 @@ public class Keypad {
 			return result; // we don't assume that user enters an integer
 	} // end method getInput
 
-	public double getInputDouble_find() throws WrongInputException {
+	public double getInputDouble() throws WrongInputException {
 		double result = 0;
 		int wrongCount = 0;
 		boolean ok;

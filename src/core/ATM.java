@@ -37,7 +37,7 @@ public class ATM {
 		userAuthenticated = false; // user is not authenticated to start
 		currentAccountNumber = 0; // no current account number to start
 		screen = new Screen(); // create screen
-		keypad = new Keypad(); // create keypad
+		keypad = new Keypad(screen); // create keypad
 		cashDispenser = new CashDispenser(); // create cash dispenser
 		bankDatabase = new BankDatabase(); // create acct info database
 		ui = new UI(screen, bankDatabase, keypad);
