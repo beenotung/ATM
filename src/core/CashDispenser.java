@@ -3,22 +3,13 @@ package core;
 import java.util.Vector;
 
 import myutil.exception.CashNotEnoughException;
+import myutils.CashCount;
 
 // CashDispenser.java
 // Represents the cash dispenser of the ATM
 
 public class CashDispenser {
 	private Vector<CashCount> cashCounts; // number of cash bills remaining
-
-	private static class CashCount {
-		protected double value;
-		protected int count;
-
-		public CashCount(double value, int count) {
-			this.value = value;
-			this.count = count;
-		}
-	}
 
 	// no-argument CashDispenser constructor initializes count to default
 	public CashDispenser() {
@@ -32,15 +23,21 @@ public class CashDispenser {
 	/** instance methods **/
 
 	// simulates dispensing of specified amount of cash
-	public void dispenseCash(int amountRequired) throws CashNotEnoughException {
+	public Vector<CashCount> dispenseCash(int amountRequired)
+			throws CashNotEnoughException {
+		Vector<CashCount> result = new Vector<CashCount>();
 		if (!isSufficientCashAvailable(amountRequired))
 			throw new CashNotEnoughException();
-		for (int i = cashCounts.size()-1; i >= 0; i--)
-			while ((amountRequired >= cashCounts.get(i).value)
-					&& (cashCounts.get(i).count > 0)) {
-				amountRequired -= cashCounts.get(i).value;
+		for (int i = cashCounts.size() - 1; i >= 0; i--) {
+			result.add(new CashCount(cashCounts.get(i).getValue(), 0));
+			while ((amountRequired >= cashCounts.get(i).getValue())
+					&& (cashCounts.get(i).getCount() > 0)) {
+				amountRequired -= cashCounts.get(i).getValue();
 				cashCounts.get(i).count--;
+				result.get(result.size() - 1).count++;
 			}
+		}
+		return result;
 	} // end method dispenseCash
 
 	// indicates whether cash dispenser can dispense desired amount
@@ -51,7 +48,7 @@ public class CashDispenser {
 	public double getAmount() {
 		double amount = 0;
 		for (CashCount cashCount : cashCounts)
-			amount += cashCount.value * cashCount.count;
+			amount += cashCount.getValue() * cashCount.count;
 		return amount;
 	}
 

@@ -7,11 +7,11 @@ import javax.security.auth.login.AccountNotFoundException;
 import account.Account;
 import sun.swing.BakedArrayList;
 import ui.UI;
-import myutil.MyInputHandler;
-import myutil.MyStaticStaff;
-import myutil.MyStrings;
 import myutil.exception.OverdrawnException;
 import myutil.exception.WrongInputException;
+import myutils.MyInputHandler;
+import myutils.MyStaticStaff;
+import myutils.MyStrings;
 
 public class Transfer {
 

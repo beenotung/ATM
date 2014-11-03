@@ -8,12 +8,13 @@ import account.Account;
 import ui.Keypad;
 import ui.Screen;
 import ui.UI;
-import myutil.MyInputHandler;
-import myutil.MyStaticStaff;
-import myutil.MyStrings;
 import myutil.exception.CardOutException;
 import myutil.exception.OverdrawnException;
 import myutil.exception.WrongInputException;
+import myutils.CashCount;
+import myutils.MyInputHandler;
+import myutils.MyStaticStaff;
+import myutils.MyStrings;
 
 // ATM.java
 // Represents an automated teller machine
@@ -240,8 +241,9 @@ public class ATM {
 	}
 
 	// instruct user to take cash
-	public void popCash() {
-		screen.displayMessageLine(MyStrings.TAKE_CASH);
+	public void popCash(Vector<CashCount> cashPop) {
+		screen.displayMessageLine(MyStrings.TAKE_CASH + " "
+				+ MyStaticStaff.getCashValuesStrings(cashPop));
 	}
 
 	public void showBye() {

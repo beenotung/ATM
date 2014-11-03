@@ -1,5 +1,7 @@
 package core;
 
+import java.util.Vector;
+
 import javax.security.auth.login.AccountNotFoundException;
 
 import com.sun.org.apache.bcel.internal.generic.ACONST_NULL;
@@ -7,13 +9,14 @@ import com.sun.org.apache.bcel.internal.generic.ACONST_NULL;
 import account.Account;
 import ui.Screen;
 import ui.UI;
-import myutil.MyInputHandler;
-import myutil.MyStaticStaff;
-import myutil.MyStrings;
 import myutil.exception.CardOutException;
 import myutil.exception.CashNotEnoughException;
 import myutil.exception.OverdrawnException;
 import myutil.exception.WrongInputException;
+import myutils.CashCount;
+import myutils.MyInputHandler;
+import myutils.MyStaticStaff;
+import myutils.MyStrings;
 
 // Withdrawal.java
 // Represents a withdrawal ATM transaction
@@ -66,9 +69,9 @@ public class Withdrawal extends Transaction {
 							getBankDatabase().debit(getAccountNumber(),
 									MyStaticStaff.EXTRA_CHARGE);
 					getBankDatabase().debit(getAccountNumber(), amount);
-					cashDispenser.dispenseCash(amount);
+					Vector<CashCount> cashPop = cashDispenser.dispenseCash(amount);
 					cashDispensed = true; // cash was dispensed
-					atm.popCash();
+					atm.popCash(cashPop);
 				} catch (OverdrawnException e) {
 					getScreen().displayMessageLine(
 							MyStrings.getOverDrawnMessage(getBankDatabase().getAccount(

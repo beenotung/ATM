@@ -1,6 +1,6 @@
 package ui;
 
-import myutil.MyStrings;
+import myutils.MyStrings;
 
 // Screen.java
 // Represents the screen of the ATM

@@ -4,9 +4,9 @@ package ui;
 // Represents the keypad of the ATM
 import java.util.Scanner; // program uses Scanner to obtain user input
 
-import myutil.MyInputHandler;
-import myutil.MyStaticStaff;
 import myutil.exception.WrongInputException;
+import myutils.MyInputHandler;
+import myutils.MyStaticStaff;
 
 public class Keypad {
 	private Screen screen;
