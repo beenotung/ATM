@@ -44,8 +44,7 @@ public abstract class Transaction {
 	} // end method getBankDatabase
 
 	// perform the transaction (overridden by each subclass)
-	public abstract void execute() throws WrongInputException, AccountNotFoundException,
-			OverdrawnException;
+	public abstract void execute() throws WrongInputException, AccountNotFoundException;
 } // end class Transaction
 
 /**************************************************************************

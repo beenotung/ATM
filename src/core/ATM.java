@@ -69,11 +69,7 @@ public class ATM {
 			// loop while user is not yet authenticated
 			while (!userAuthenticated) {
 				screen.displayMessageLine("\nWelcome!");
-				try {
-					authenticateUser();
-				} catch (WrongInputException e) {
-					screen.displayMessageLine(MyStrings.WRONG_INPUT);
-				} // authenticate user
+				authenticateUser();
 			} // end while
 
 			try {
@@ -99,7 +95,7 @@ public class ATM {
 	} // end method run
 
 	// attempts to authenticate user against database
-	private void authenticateUser() throws WrongInputException {
+	private void authenticateUser() {
 		// get account number from user
 		int accountNumber = 0;
 		int pin = 0;
@@ -116,8 +112,10 @@ public class ATM {
 				screen.displayMessageLine();
 			}
 		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
-		if (!ok)
-			throw new WrongInputException();
+		if (!ok) {
+			userAuthenticated = false;
+			return;
+		}
 		// end of input account number
 		// prompt for PIN
 		wrongCount = 0;
@@ -130,8 +128,10 @@ public class ATM {
 				screen.displayMessageLine();
 			}
 		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
-		if (!ok)
-			throw new WrongInputException();
+		if (!ok) {
+			userAuthenticated = false;
+			return;
+		}
 		// set userAuthenticated to boolean value returned by database
 		userAuthenticated = bankDatabase.authenticateUser(accountNumber, pin);
 
@@ -139,8 +139,10 @@ public class ATM {
 		if (userAuthenticated) {
 			currentAccountNumber = accountNumber; // save user's account #
 		} // end if
-		else
+		else {
 			screen.displayMessageLine("Invalid account number or PIN. Please try again.");
+			MyStaticStaff.sleep();
+		}
 	} // end method authenticateUser
 
 	// display the main menu and perform transactions
@@ -168,16 +170,9 @@ public class ATM {
 			case BALANCE_INQUIRY:
 			case WITHDRAWAL:
 			case TRANSFER:
-				// initialize as new object of chosen type
-				try {
-					currentTransactions = createTransactions(mainMenuSelection, accounts);
-					for (Transaction currentTransaction : currentTransactions)
-						currentTransaction.execute();
-				} catch (OverdrawnException e1) {
-					screen.displayMessageLine("\nOverdrawn(Insufficient funds in your account), your overdrawn limit is: "
-							+ screen.getDollarAmount(Account.getAccount(accounts,
-									currentAccountNumber).getOverdrawnLimit()));
-				}
+				currentTransactions = createTransactions(mainMenuSelection, accounts);
+				for (Transaction currentTransaction : currentTransactions)
+					currentTransaction.execute();
 				// execute transaction
 				break;
 			case EXIT: // user chose to terminate session
@@ -203,7 +198,7 @@ public class ATM {
 
 	// return object of specified Transaction subclass
 	private Vector<Transaction> createTransactions(int type, Vector<Account> accounts)
-			throws OverdrawnException, CardOutException, WrongInputException,
+			throws  CardOutException, WrongInputException,
 			AccountNotFoundException {
 		// temporary Transaction variable
 		Vector<Transaction> result = new Vector<Transaction>();

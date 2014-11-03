@@ -5,6 +5,7 @@ import java.util.Vector;
 import javax.security.auth.login.AccountNotFoundException;
 
 import account.Account;
+import sun.swing.BakedArrayList;
 import ui.UI;
 import myutil.MyInputHandler;
 import myutil.MyStrings;
@@ -13,8 +14,8 @@ import myutil.exception.WrongInputException;
 
 public class Transfer {
 
-	public static Vector<Transaction> transfer(ATM atm) throws OverdrawnException,
-			WrongInputException, AccountNotFoundException {
+	public static Vector<Transaction> transfer(ATM atm) throws WrongInputException,
+			AccountNotFoundException {
 		Vector<Transaction> result = new Vector<Transaction>();
 		UI ui = atm.getUI();
 		BankDatabase bankDatabase = atm.getBankDatabase();
@@ -48,13 +49,26 @@ public class Transfer {
 			throw new WrongInputException();
 
 		// get amount to be transfered from user
-		amount = ui.keypad.getInputDoublePositive("\nPlease the amount to transfer: ");
-
 		// auto throw OverdrawnException if the accountFrom has not enough
 		// available balance
-		accountFrom.debit(amount);
-		accountTo.credit(amount);
-
+		wrongCount = 0;
+		do{
+			try {
+				amount = ui.keypad
+						.getInputDoublePositive("\nPlease the amount to transfer (input 0 to cancel): ");
+				if(amount<=0)
+					return null;
+				accountFrom.debit(amount);
+				accountTo.credit(amount);
+			} catch (OverdrawnException e) {
+							wrongCount++;
+				ok = false;
+				ui.screen.displayMessageLine(MyStrings.getOverDrawnMessage(bankDatabase.getAccount(atm.getCurrentAccountNumber()).getOverdrawnLimit()));
+			}
+		}while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		if (!ok)
+			throw new WrongInputException();
+		
 		return result;
 	}
 

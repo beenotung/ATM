@@ -35,7 +35,7 @@ public class CashDispenser {
 	public void dispenseCash(int amountRequired) throws CashNotEnoughException {
 		if (!isSufficientCashAvailable(amountRequired))
 			throw new CashNotEnoughException();
-		for (int i = cashCounts.size(); i >= 0; i--)
+		for (int i = cashCounts.size()-1; i >= 0; i--)
 			while ((amountRequired >= cashCounts.get(i).value)
 					&& (cashCounts.get(i).count > 0)) {
 				amountRequired -= cashCounts.get(i).value;

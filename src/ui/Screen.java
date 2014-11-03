@@ -1,5 +1,7 @@
 package ui;
 
+import myutil.MyStrings;
+
 // Screen.java
 // Represents the screen of the ATM
 
@@ -17,6 +19,7 @@ public class Screen {
 	public void displayMessageLine(int i) {
 		displayMessageLine(i + "");
 	}
+
 	public void displayMessage(double d) {
 		displayMessageLine(d + "");
 	}
@@ -27,15 +30,23 @@ public class Screen {
 
 	// display a dollar amount
 	public void displayDollarAmount(double amount) {
-		displayMessage(getDollarAmount(amount));
+		displayMessage(Screen.getDollarAmount(amount));
+	} // end method displayDollarAmount
+
+	// display a dollar amount
+	public void displayDollarAmount(int amount) {
+		displayMessage(Screen.getDollarAmount(amount));
 	} // end method displayDollarAmount
 
 	// return a dollar amount as String
-	public String getDollarAmount(double amount) {
-		return String.format("$%,.2f", amount);
+	public static String getDollarAmount(double amount) {
+		return String.format(MyStrings.DOLLAR_SIGN + "%,.2f", amount);
 	} // end method displayDollarAmount
 
-	
+	// return a dollar amount as String
+	public static String getDollarAmount(int amount) {
+		return MyStrings.DOLLAR_SIGN + amount;
+	} // end method displayDollarAmount
 
 } // end class Screen
 

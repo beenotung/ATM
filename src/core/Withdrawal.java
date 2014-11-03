@@ -2,8 +2,11 @@ package core;
 
 import javax.security.auth.login.AccountNotFoundException;
 
+import account.Account;
 import ui.UI;
 import myutil.MyInputHandler;
+import myutil.MyStaticStaff;
+import myutil.MyStrings;
 import myutil.exception.CashNotEnoughException;
 import myutil.exception.OverdrawnException;
 import myutil.exception.WrongInputException;
@@ -30,8 +33,7 @@ public class Withdrawal extends Transaction {
 
 	@Override
 	// perform transaction
-	public void execute() throws WrongInputException, AccountNotFoundException,
-			OverdrawnException {
+	public void execute() throws WrongInputException, AccountNotFoundException {
 		boolean cashDispensed = false; // cash was not dispensed yet
 
 		// get references to bank database and screen
@@ -46,10 +48,16 @@ public class Withdrawal extends Transaction {
 				// auto check whether the user has enough money in the account
 				// check whether the cash dispenser has enough money
 				try {
-					cashDispenser.dispenseCash(amount);
-					bankDatabase.debit(getAccountNumber(), amount);
-					cashDispensed = true; // cash was dispensed
-					atm.popCash();
+					try {
+						bankDatabase.debit(getAccountNumber(), amount);
+						cashDispenser.dispenseCash(amount);
+						cashDispensed = true; // cash was dispensed
+						atm.popCash();
+					} catch (OverdrawnException e) {
+						ui.screen.displayMessageLine(MyStrings
+								.getOverDrawnMessage(bankDatabase.getAccount(
+										accountNumber).getOverdrawnLimit()));
+					}
 				} catch (CashNotEnoughException e) {
 					// cash dispenser does not have enough cash
 					ui.screen
@@ -118,8 +126,14 @@ public class Withdrawal extends Transaction {
 		int result = CANCELED;
 		int wrongInputCount = 0;
 		do {
-			result = ui.keypad.getInputInt("Input the amount to withdraw: ");
-			if ((result % 100) == 0)
+			ui.screen.displayMessageLine("We provide "
+					+ MyStaticStaff.getCashValuesStrings() + " note"
+					+ (MyStaticStaff.CashValues.length > 1 ? "s" : "") + " only");
+			result = ui.keypad
+					.getInputInt("Input the amount to withdraw (input 0 to cancel): ");
+			if (amount <= 0)
+				return CANCELED;
+			if ((result % 100) != 0)
 				break;
 		} while (wrongInputCount <= MyInputHandler.MAXWRONGINPUT);
 		return result;

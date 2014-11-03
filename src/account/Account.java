@@ -52,6 +52,8 @@ public class Account {
 
 	// debits an amount from the account
 	public void debit(double amount) throws OverdrawnException {
+		if (availableBalance < amount)
+			throw new OverdrawnException();
 		availableBalance -= amount; // subtract from available balance
 		totalBalance -= amount; // subtract from total balance
 	} // end method debit
@@ -61,9 +63,10 @@ public class Account {
 		return accountNumber;
 	} // end method getAccountNumber
 
-	public static Account getAccount(Vector<Account> accounts, int accountNumber) throws AccountNotFoundException {
-		for(Account account:accounts)
-			if(account.getAccountNumber()==accountNumber)
+	public static Account getAccount(Vector<Account> accounts, int accountNumber)
+			throws AccountNotFoundException {
+		for (Account account : accounts)
+			if (account.getAccountNumber() == accountNumber)
 				return account;
 		throw new AccountNotFoundException();
 	}
