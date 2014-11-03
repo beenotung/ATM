@@ -29,9 +29,8 @@ public class Transfer {
 		// get target account to be transfered from user
 		do {
 			ok = true;
-			atm.getUI().screen
-					.displayMessage("\nPlease input the account number of the receiver: ");
-			accountNumberTo = ui.keypad.getInputInt();
+			accountNumberTo = ui.keypad
+					.getInputInt("\nPlease input the account number of the receiver: ");
 			try {
 				accountTo = bankDatabase.getAccount(accountNumberTo);
 			} catch (AccountNotFoundException e) {
@@ -49,8 +48,7 @@ public class Transfer {
 			throw new WrongInputException();
 
 		// get amount to be transfered from user
-		ui.screen.displayMessage("\nPlease the amount to transfer: ");
-		amount = ui.keypad.getInputDoublePositive();
+		amount = ui.keypad.getInputDoublePositive("\nPlease the amount to transfer: ");
 
 		// auto throw OverdrawnException if the accountFrom has not enough
 		// available balance

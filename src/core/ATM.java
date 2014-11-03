@@ -56,7 +56,7 @@ public class ATM {
 		return cashDispenser;
 	}
 
-	public int getCurrentAccountNumber(){
+	public int getCurrentAccountNumber() {
 		return currentAccountNumber;
 	}
 
@@ -99,11 +99,38 @@ public class ATM {
 
 	// attempts to authenticate user against database
 	private void authenticateUser() throws WrongInputException {
-		screen.displayMessage("\nPlease enter your account number: ");
-		int accountNumber = keypad.getInputInt(); // input account number
-		screen.displayMessage("\nEnter your PIN: "); // prompt for PIN
-		int pin = keypad.getInputInt(); // input PIN
-
+		// get account number from user
+		int accountNumber = 0;
+		int pin = 0;
+		int wrongCount = 0;
+		boolean ok;
+		do {
+			ok = true;
+			try {
+				accountNumber = keypad
+						.getInputInt("\nPlease enter your account number: ");
+			} catch (WrongInputException e) {
+				ok = false;
+				wrongCount++;
+				screen.displayMessageLine();
+			}
+		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		if (!ok)
+			throw new WrongInputException();
+		// end of input account number
+		// prompt for PIN
+		wrongCount = 0;
+		do {
+			try {
+				pin = keypad.getInputInt("\nEnter your PIN: ");// input PIN
+			} catch (WrongInputException e) {
+				ok = false;
+				wrongCount++;
+				screen.displayMessageLine();
+			}
+		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		if (!ok)
+			throw new WrongInputException();
 		// set userAuthenticated to boolean value returned by database
 		userAuthenticated = bankDatabase.authenticateUser(accountNumber, pin);
 
@@ -164,13 +191,13 @@ public class ATM {
 
 	// display the main menu and return an input selection
 	private int displayMainMenu() throws WrongInputException {
-		screen.displayMessageLine("\nMain menu:");
-		screen.displayMessageLine("1 - View my balance");
-		screen.displayMessageLine("2 - Withdraw cash");
-		screen.displayMessageLine("3 - Transfer funds");
-		screen.displayMessageLine("4 - Exit\n");
-		screen.displayMessage("Enter a choice: ");
-		return keypad.getInputInt(); // return user's selection
+		String msg = "\nMain menu:";
+		msg += "\n1 - View my balance";
+		msg += "\n2 - Withdraw cash";
+		msg += "\n3 - Transfer funds";
+		msg += "\n4 - Exit";
+		msg += "\n\nEnter a choice: ";
+		return keypad.getInputInt(msg); // return user's selection
 	} // end method displayMainMenu
 
 	// return object of specified Transaction subclass
@@ -186,7 +213,7 @@ public class ATM {
 			result.add(new BalanceInquiry(this));
 			break;
 		case WITHDRAWAL: // create new Withdrawal transaction
-			result.add(new Withdrawal( this));
+			result.add(new Withdrawal(this));
 			break;
 		case TRANSFER: // create new Deposit transaction
 			result = Transfer.transfer(this);

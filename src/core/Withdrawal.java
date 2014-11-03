@@ -21,7 +21,7 @@ public class Withdrawal extends Transaction {
 
 	// Withdrawal constructor
 	// get references to keypad and cash dispenser from atm
-	public Withdrawal( ATM atm) {
+	public Withdrawal(ATM atm) {
 		// initialize superclass variables
 		super(atm);
 		this.atm = atm;
@@ -81,16 +81,16 @@ public class Withdrawal extends Transaction {
 		// loop while no valid choice has been made
 		while (userChoice == 0) {
 			// display the menu
-			ui.	screen.displayMessageLine("\nWithdrawal Menu:");
-			ui.	screen.displayMessageLine("1 - $200");
-			ui.	screen.displayMessageLine("2 - $400");
-			ui.	screen.displayMessageLine("3 - $800");
-			ui.screen.displayMessageLine("4 - $1000");
-			ui.screen.displayMessageLine("5 - Other");
-			ui.screen.displayMessageLine(CANCELED + " - Cancel transaction");
-			ui.screen.displayMessage("\nChoose a withdrawal amount: ");
-
-			int input = ui.keypad.getInputInt(); // get user input through keypad
+			String msg = "\nWithdrawal Menu:";
+			msg += "\n1 - $200";
+			msg += "\n2 - $400";
+			msg += "\n3 - $800";
+			msg += "\n4 - $1000";
+			msg += "\n5 - Other";
+			msg += "\n" + CANCELED + " - Cancel transaction";
+			msg += "\n\nChoose a withdrawal amount: ";
+			// get user input through keypad
+			int input = ui.keypad.getInputInt(msg);
 
 			// determine how to proceed based on the input value
 			switch (input) {
@@ -118,8 +118,7 @@ public class Withdrawal extends Transaction {
 		int result = CANCELED;
 		int wrongInputCount = 0;
 		do {
-			ui.screen.displayMessage("Input the amount to withdraw: ");
-			result = ui.keypad.getInputInt();
+			result = ui.keypad.getInputInt("Input the amount to withdraw: ");
 			if ((result % 100) == 0)
 				break;
 		} while (wrongInputCount <= MyInputHandler.MAXWRONGINPUT);

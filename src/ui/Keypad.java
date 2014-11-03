@@ -18,13 +18,14 @@ public class Keypad {
 	} // end no-argument Keypad constructor
 
 	// return an integer value entered by user
-	public int getInputInt() throws WrongInputException {
+	public int getInputInt(String msg) throws WrongInputException {
 		int result = 0;
 		int wrongCount = 0;
 		boolean ok;
 		do {
 			ok = true;
 			try {
+				screen.displayMessage(msg);
 				result = Integer.valueOf(input.next());
 			} catch (NumberFormatException e) {
 				screen.displayMessageLine("Please input an integer only.");
@@ -38,13 +39,14 @@ public class Keypad {
 			return result; // we don't assume that user enters an integer
 	} // end method getInput
 
-	public double getInputDouble() throws WrongInputException {
+	public double getInputDouble(String msg) throws WrongInputException {
 		double result = 0;
 		int wrongCount = 0;
 		boolean ok;
 		do {
 			ok = true;
 			try {
+				screen.displayMessage(msg);
 				result = Double.valueOf(input.next());
 			} catch (NumberFormatException e) {
 				System.out.println("Please input an real number only.");
@@ -58,13 +60,14 @@ public class Keypad {
 			return result;
 	}
 
-	public double getInputDoublePositive() throws WrongInputException {
+	public double getInputDoublePositive(String msg) throws WrongInputException {
 		double result = 0;
 		int wrongCount = 0;
 		boolean ok;
 		do {
 			ok = true;
 			try {
+				screen.displayMessage(msg);
 				result = Double.valueOf(input.next());
 				if (result <= 0)
 					throw new NumberFormatException();
