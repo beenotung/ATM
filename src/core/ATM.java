@@ -9,6 +9,7 @@ import ui.Keypad;
 import ui.Screen;
 import ui.UI;
 import myutil.MyInputHandler;
+import myutil.MyStaticStaff;
 import myutil.MyStrings;
 import myutil.exception.CardOutException;
 import myutil.exception.OverdrawnException;
@@ -236,11 +237,7 @@ public class ATM {
 
 	public void showBye() {
 		screen.displayMessageLine("\n" + MyStrings.BYE);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// e.printStackTrace();
-		}
+		MyStaticStaff.sleep();
 	}
 } // end class ATM
 
