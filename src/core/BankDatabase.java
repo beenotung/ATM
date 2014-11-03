@@ -24,7 +24,7 @@ public class BankDatabase {
 
 	/** getters **/
 	// retrieve Account object containing specified account number
-	private Account getAccount(int accountNumber) throws AccountNotFoundException {
+	public Account getAccount(int accountNumber) throws AccountNotFoundException {
 		// loop through accounts searching for matching account number
 		for (Account currentAccount : accounts) {
 			// return current account if match found
@@ -54,12 +54,11 @@ public class BankDatabase {
 	public double getInterestRate(int userAccountNumber) throws AccountNotFoundException {
 		return ((SavingAccount) getAccount(userAccountNumber)).getInterestRate();
 	} // end method getInterestRate
-	
+
 	// return overdraw limit of Account with specified account number
 	public double getOverdrawLimit(int userAccountNumber) throws AccountNotFoundException {
 		return getAccount(userAccountNumber).getOverdrawnLimit();
 	} // end method getOverdrawLimit
-
 
 	/** instance methods **/
 	// determine whether the account is saving account

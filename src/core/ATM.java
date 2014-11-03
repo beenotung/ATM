@@ -56,6 +56,10 @@ public class ATM {
 		return cashDispenser;
 	}
 
+	public int getCurrentAccountNumber(){
+		return currentAccountNumber;
+	}
+
 	/** instance methods **/
 	// start ATM
 	public void run() {
@@ -140,7 +144,7 @@ public class ATM {
 				try {
 					currentTransactions = createTransactions(mainMenuSelection, accounts);
 					for (Transaction currentTransaction : currentTransactions)
-						currentTransaction.execute(accounts, ui);
+						currentTransaction.execute();
 				} catch (OverdrawnException e1) {
 					screen.displayMessageLine("\nOverdrawn(Insufficient funds in your account), your overdrawn limit is: "
 							+ screen.getDollarAmount(Account.getAccount(accounts,
@@ -179,13 +183,13 @@ public class ATM {
 		// determine which type of Transaction to create
 		switch (type) {
 		case BALANCE_INQUIRY: // create new BalanceInquiry transaction
-			result.add(new BalanceInquiry(currentAccountNumber, screen, bankDatabase));
+			result.add(new BalanceInquiry(this));
 			break;
 		case WITHDRAWAL: // create new Withdrawal transaction
-			result.add(new Withdrawal(currentAccountNumber, this));
+			result.add(new Withdrawal( this));
 			break;
 		case TRANSFER: // create new Deposit transaction
-			result = Transfer.transfer(ui, accounts, currentAccountNumber);
+			result = Transfer.transfer(this);
 			break;
 		} // end switch
 

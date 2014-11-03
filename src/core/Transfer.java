@@ -5,7 +5,6 @@ import java.util.Vector;
 import javax.security.auth.login.AccountNotFoundException;
 
 import account.Account;
-import ui.Screen;
 import ui.UI;
 import myutil.MyInputHandler;
 import myutil.MyStrings;
@@ -13,12 +12,15 @@ import myutil.exception.OverdrawnException;
 import myutil.exception.WrongInputException;
 
 public class Transfer {
-	public static Vector<Transaction> transfer(UI ui, Vector<Account> accounts,
-			int accountNumberFrom) throws OverdrawnException, WrongInputException,
-			AccountNotFoundException {
+
+	public static Vector<Transaction> transfer(ATM atm) throws OverdrawnException,
+			WrongInputException, AccountNotFoundException {
 		Vector<Transaction> result = new Vector<Transaction>();
+		UI ui = atm.getUI();
+		BankDatabase bankDatabase = atm.getBankDatabase();
+
 		int accountNumberTo;
-		Account accountFrom = Account.getAccount(accounts, accountNumberFrom);
+		Account accountFrom = bankDatabase.getAccount(atm.getCurrentAccountNumber());
 		Account accountTo = null;
 		double amount;
 
@@ -27,11 +29,11 @@ public class Transfer {
 		// get target account to be transfered from user
 		do {
 			ok = true;
-			ui.screen
+			atm.getUI().screen
 					.displayMessage("\nPlease input the account number of the receiver: ");
 			accountNumberTo = ui.keypad.getInputInt();
 			try {
-				accountTo = Account.getAccount(accounts, accountNumberTo);
+				accountTo = bankDatabase.getAccount(accountNumberTo);
 			} catch (AccountNotFoundException e) {
 				wrongCount++;
 				ok = false;
@@ -57,4 +59,5 @@ public class Transfer {
 
 		return result;
 	}
+
 }

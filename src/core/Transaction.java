@@ -1,10 +1,8 @@
 package core;
 
-import java.util.Vector;
-
 import javax.security.auth.login.AccountNotFoundException;
 
-import account.Account;
+import ui.Keypad;
 import ui.Screen;
 import ui.UI;
 import myutil.exception.OverdrawnException;
@@ -14,16 +12,15 @@ import myutil.exception.WrongInputException;
 // Abstract superclass Transaction represents an ATM transaction
 
 public abstract class Transaction {
-	private int accountNumber; // indicates account involved
-	private Screen screen; // ATM's screen
+	protected int accountNumber; // indicates account involved
+	protected UI ui; // ATM's screen and keypad
 	protected BankDatabase bankDatabase; // account info database
 
 	// Transaction constructor invoked by subclasses using super()
-	public Transaction(int userAccountNumber, Screen atmScreen,
-			BankDatabase atmBankDatabase) {
-		accountNumber = userAccountNumber;
-		screen = atmScreen;
-		bankDatabase = atmBankDatabase;
+	public Transaction(ATM atm) {
+		accountNumber = atm.getCurrentAccountNumber();
+		ui = atm.getUI();
+		bankDatabase = atm.getBankDatabase();
 	} // end Transaction constructor
 
 	// return account number
@@ -33,8 +30,13 @@ public abstract class Transaction {
 
 	// return reference to screen
 	public Screen getScreen() {
-		return screen;
+		return ui.screen;
 	} // end method getScreen
+
+	// return reference to keypad
+	public Keypad getKeypad() {
+		return ui.keypad;
+	} // end method getKeypad
 
 	// return reference to bank database
 	public BankDatabase getBankDatabase() {
@@ -42,8 +44,8 @@ public abstract class Transaction {
 	} // end method getBankDatabase
 
 	// perform the transaction (overridden by each subclass)
-	public abstract void execute(Vector<Account> accounts, UI ui)
-			throws WrongInputException, AccountNotFoundException, OverdrawnException;
+	public abstract void execute() throws WrongInputException, AccountNotFoundException,
+			OverdrawnException;
 } // end class Transaction
 
 /**************************************************************************

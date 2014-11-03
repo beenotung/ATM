@@ -3,7 +3,6 @@ package core;
 import java.util.Vector;
 
 import myutil.exception.CashNotEnoughException;
-import sun.org.mozilla.javascript.ast.ThrowStatement;
 
 // CashDispenser.java
 // Represents the cash dispenser of the ATM

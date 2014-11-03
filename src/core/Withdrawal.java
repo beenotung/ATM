@@ -1,12 +1,7 @@
 package core;
 
-import java.util.Vector;
-
 import javax.security.auth.login.AccountNotFoundException;
 
-import account.Account;
-import ui.Keypad;
-import ui.Screen;
 import ui.UI;
 import myutil.MyInputHandler;
 import myutil.exception.CashNotEnoughException;
@@ -17,34 +12,29 @@ import myutil.exception.WrongInputException;
 // Represents a withdrawal ATM transaction
 
 public class Withdrawal extends Transaction {
-	private static final int[] validCashValues = { 100, 500, 1000 };
-
 	private int amount; // amount to withdraw
-	private Keypad keypad; // reference to keypad
-	private CashDispenser cashDispenser; // reference to cash dispenser
-
 	private ATM atm;
+	private CashDispenser cashDispenser; // reference to cash dispenser
 
 	// constant corresponding to menu option to cancel
 	private final static int CANCELED = 6;
 
 	// Withdrawal constructor
 	// get references to keypad and cash dispenser from atm
-	public Withdrawal(int userAccountNumber, ATM atm) {
+	public Withdrawal( ATM atm) {
 		// initialize superclass variables
-		super(userAccountNumber, atm.getUI().screen, atm.getBankDatabase());
+		super(atm);
 		this.atm = atm;
+		cashDispenser = atm.getCashDispenser();
 	} // end Withdrawal constructor
 
 	@Override
 	// perform transaction
-	public void execute(Vector<Account> accounts, UI ui) throws WrongInputException,
-			AccountNotFoundException, OverdrawnException {
+	public void execute() throws WrongInputException, AccountNotFoundException,
+			OverdrawnException {
 		boolean cashDispensed = false; // cash was not dispensed yet
 
 		// get references to bank database and screen
-		BankDatabase bankDatabase = getBankDatabase();
-		Screen screen = getScreen();
 
 		// loop until cash is dispensed or the user cancels
 		do {
@@ -62,15 +52,17 @@ public class Withdrawal extends Transaction {
 					atm.popCash();
 				} catch (CashNotEnoughException e) {
 					// cash dispenser does not have enough cash
-					screen.displayMessageLine("\nInsufficient cash available in the ATM."
-							+ "\n Avaliabe cash:" + cashDispenser.getAmount()
-							+ "\n\nPlease choose a smaller amount.");
+					ui.screen
+							.displayMessageLine("\nInsufficient cash available in the ATM."
+									+ "\n Avaliabe cash:"
+									+ cashDispenser.getAmount()
+									+ "\n\nPlease choose a smaller amount.");
 				} // dispense cash
 			} else // user chose cancel menu option
 			{
-				screen.displayMessageLine();
-				screen.displayMessageLine(amount);
-				screen.displayMessageLine("\nCanceling withdrawal...");
+				ui.screen.displayMessageLine();
+				ui.screen.displayMessageLine(amount);
+				ui.screen.displayMessageLine("\nCanceling withdrawal...");
 				return; // return to main menu because user canceled
 			} // end else
 		} while (!cashDispensed);
@@ -82,8 +74,6 @@ public class Withdrawal extends Transaction {
 	private int displayMenuOfAmounts(UI ui) throws WrongInputException {
 		int userChoice = 0; // local variable to store return value
 
-		Screen screen = getScreen(); // get screen reference
-
 		// array of amounts to correspond to menu numbers
 		// int amounts[] = { 0, 20, 40, 60, 100, 200 };
 		int amounts[] = { 0, 200, 400, 800, 1000 };
@@ -91,16 +81,16 @@ public class Withdrawal extends Transaction {
 		// loop while no valid choice has been made
 		while (userChoice == 0) {
 			// display the menu
-			screen.displayMessageLine("\nWithdrawal Menu:");
-			screen.displayMessageLine("1 - $200");
-			screen.displayMessageLine("2 - $400");
-			screen.displayMessageLine("3 - $800");
-			screen.displayMessageLine("4 - $1000");
-			screen.displayMessageLine("5 - Other");
-			screen.displayMessageLine(CANCELED + " - Cancel transaction");
-			screen.displayMessage("\nChoose a withdrawal amount: ");
+			ui.	screen.displayMessageLine("\nWithdrawal Menu:");
+			ui.	screen.displayMessageLine("1 - $200");
+			ui.	screen.displayMessageLine("2 - $400");
+			ui.	screen.displayMessageLine("3 - $800");
+			ui.screen.displayMessageLine("4 - $1000");
+			ui.screen.displayMessageLine("5 - Other");
+			ui.screen.displayMessageLine(CANCELED + " - Cancel transaction");
+			ui.screen.displayMessage("\nChoose a withdrawal amount: ");
 
-			int input = keypad.getInputInt(); // get user input through keypad
+			int input = ui.keypad.getInputInt(); // get user input through keypad
 
 			// determine how to proceed based on the input value
 			switch (input) {
@@ -117,7 +107,7 @@ public class Withdrawal extends Transaction {
 				userChoice = CANCELED; // save user's choice
 				break;
 			default: // the user did not enter a value from 1-6
-				screen.displayMessageLine("\nIvalid selection. Try again.");
+				ui.screen.displayMessageLine("\nIvalid selection. Try again.");
 			} // end switch
 		} // end while
 
@@ -129,7 +119,7 @@ public class Withdrawal extends Transaction {
 		int wrongInputCount = 0;
 		do {
 			ui.screen.displayMessage("Input the amount to withdraw: ");
-			result = keypad.getInputInt();
+			result = ui.keypad.getInputInt();
 			if ((result % 100) == 0)
 				break;
 		} while (wrongInputCount <= MyInputHandler.MAXWRONGINPUT);

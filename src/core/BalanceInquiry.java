@@ -1,28 +1,20 @@
 package core;
 
-import java.util.Vector;
-
 import javax.security.auth.login.AccountNotFoundException;
-
-import account.Account;
-import sun.swing.BakedArrayList;
-import ui.Screen;
-import ui.UI;
 
 // BalanceInquiry.java
 // Represents a balance inquiry ATM transaction
 
 public class BalanceInquiry extends Transaction {
 	// BalanceInquiry constructor
-	public BalanceInquiry(int userAccountNumber, Screen atmScreen,
-			BankDatabase atmBankDatabase) {
-		super(userAccountNumber, atmScreen, atmBankDatabase);
+	public BalanceInquiry(ATM atm) {
+		super(atm);
 	} // end BalanceInquiry constructor
 
 	@Override
 	// performs the transaction
 	// get references to bank database and screen from parameters
-	public void execute(Vector<Account> accounts, UI ui) throws AccountNotFoundException {
+	public void execute() throws AccountNotFoundException {
 		ui.screen.displayMessageLine("\nBalance Information:");
 
 		// get & display the balance for the account on the screen
