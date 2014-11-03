@@ -6,6 +6,12 @@ import myutils.MyStrings;
 // Represents the screen of the ATM
 
 public class Screen {
+
+	public void clear() {
+		for (int i = 0; i < 5; i++)
+			displayMessageLine();
+	}
+
 	// displays a message without a carriage return
 	public void displayMessage(String message) {
 		System.out.print(message);

@@ -11,6 +11,7 @@ public class MyStrings {
 	public static String BYE = "Thank you for using our service. Have a good day!";
 	public static String ACCOUNT_NOT_FOUND = "The account is not found";
 	public static String TRANSFER_SAME_ACCOUNT = "Please do not transfer to the same account";
+	public static final String TRANSFER_SUCCEED = "The transfer has been done";
 
 	public static String getOverDrawnMessage(Double limit) {
 		String msg = "Overdrawn (Insufficient funds in your account)";

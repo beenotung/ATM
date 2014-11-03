@@ -5,7 +5,6 @@ import java.util.Vector;
 import javax.security.auth.login.AccountNotFoundException;
 
 import account.Account;
-import sun.swing.BakedArrayList;
 import ui.UI;
 import myutil.exception.OverdrawnException;
 import myutil.exception.WrongInputException;
@@ -24,7 +23,7 @@ public class Transfer {
 		int accountNumberTo;
 		Account accountFrom = bankDatabase.getAccount(atm.getCurrentAccountNumber());
 		Account accountTo = null;
-		double amount;
+		double amount = 0;
 
 		boolean ok;
 		int wrongCount = 0;
@@ -35,15 +34,16 @@ public class Transfer {
 					.getInputInt("\nPlease input the account number of the receiver: ");
 			try {
 				accountTo = bankDatabase.getAccount(accountNumberTo);
+				if (accountFrom.getAccountNumber() == accountTo.getAccountNumber()) {
+					wrongCount++;
+					ok = false;
+					ui.screen.displayMessageLine(MyStrings.TRANSFER_SAME_ACCOUNT);
+				}
 			} catch (AccountNotFoundException e) {
 				wrongCount++;
 				ok = false;
 				ui.screen.displayMessageLine(MyStrings.ACCOUNT_NOT_FOUND);
-			}
-			if (accountFrom.getAccountNumber() == accountTo.getAccountNumber()) {
-				wrongCount++;
-				ok = false;
-				ui.screen.displayMessageLine(MyStrings.TRANSFER_SAME_ACCOUNT);
+				MyStaticStaff.sleep();
 			}
 		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
 		if (!ok)
@@ -54,22 +54,21 @@ public class Transfer {
 		// available balance
 		wrongCount = 0;
 		do {
+			ok = true;
 			try {
 				amount = ui.keypad
-						.getInputDoublePositive("\nPlease the amount to transfer (input 0 to cancel): ");
+						.getInputDouble("\nPlease the amount to transfer (input 0 to cancel): ");
 				if (amount == 0)
 					return null;
 				else if (amount < 0) {
 					wrongCount++;
 					ok = false;
-					ui.screen.displayMessageLine("Please input an positive integer");
+					ui.screen
+							.displayMessageLine("The amount should be positive. Please try again.");
 				} else if (accountFrom.isEnough(amount)) {
 					accountFrom.debit(amount);
 					accountTo.credit(amount);
 				} else {
-					wrongCount++;
-					ok = false;
-					ui.screen.displayMessage(MyStaticStaff.getExtraChargeString());
 					throw new OverdrawnException();
 				}
 			} catch (OverdrawnException e) {
@@ -77,11 +76,16 @@ public class Transfer {
 				ok = false;
 				ui.screen.displayMessageLine(MyStrings.getOverDrawnMessage(bankDatabase
 						.getAccount(atm.getCurrentAccountNumber()).getOverdrawnLimit()));
+				MyStaticStaff.sleep();
 			}
 		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
 		if (!ok)
 			throw new WrongInputException();
-
+		else {
+			if (!accountFrom.isMyBankAccount())
+				ui.screen.displayMessageLine(MyStaticStaff.getExtraChargeString());
+			ui.screen.displayMessageLine(MyStrings.TRANSFER_SUCCEED);
+		}
 		return result;
 	}
 

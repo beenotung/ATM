@@ -36,14 +36,6 @@ public class BalanceInquiry extends Transaction {
 			getScreen().displayMessageLine();
 		}
 
-		// check if the account has interest rate
-		if (getBankDatabase().IsCurrentAccount(getAccountNumber())) {
-			getScreen().displayMessage(" - Interest rate:     ");
-			getScreen().displayMessage(
-					getBankDatabase().getInterestRate(getAccountNumber()));
-			getScreen().displayMessageLine();
-		}
-
 		// check if the account has overdraw limit
 		if (getBankDatabase().IsCurrentAccount(getAccountNumber())) {
 			getScreen().displayMessage(" - Overdraw limit:     ");

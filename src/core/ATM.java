@@ -70,6 +70,7 @@ public class ATM {
 	/** instance methods **/
 	// start ATM
 	public void run() {
+		screen.clear();
 		// welcome and authenticate user; perform transactions
 		while (true) {
 			// loop while user is not yet authenticated
@@ -193,14 +194,16 @@ public class ATM {
 				userExited = true; // this ATM session should end
 				break;
 			default: // user did not enter an integer from 1-4
-				screen.displayMessageLine("\nYou did not enter a valid selection. Try again.");
+				screen.displayMessageLine("\nYou did not enter a valid selection. Please try again.");
 				break;
 			} // end switch
+			MyStaticStaff.sleep();
 		} // end while
 	} // end method performTransactions
 
 	// display the main menu and return an input selection
 	private int displayMainMenu() throws WrongInputException {
+		screen.clear();
 		if (!Account.isMyBankAccount(currentAccountNumber))
 			screen.displayMessageLine(MyStaticStaff.getExtraChargeString());
 		String msg = "\nMain menu:";
@@ -238,12 +241,14 @@ public class ATM {
 	// instruct user to take card
 	public void popCard() {
 		screen.displayMessageLine(MyStrings.TAKE_CARD);
+		MyStaticStaff.sleep();
 	}
 
 	// instruct user to take cash
 	public void popCash(Vector<CashCount> cashPop) {
 		screen.displayMessageLine(MyStrings.TAKE_CASH + " "
 				+ MyStaticStaff.getCashValuesStrings(cashPop));
+		MyStaticStaff.sleep();
 	}
 
 	public void showBye() {

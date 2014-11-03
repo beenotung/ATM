@@ -17,6 +17,16 @@ public class Account {
 	private double totalBalance; // funds available + pending deposits
 	protected double overdrawnLimit;
 
+	/** Account constructor initializes attributes **/
+	public Account(int theAccountNumber, int thePIN, double theAvailableBalance,
+			double theTotalBalance) {
+		accountNumber = theAccountNumber;
+		pin = thePIN;
+		availableBalance = theAvailableBalance;
+		totalBalance = theTotalBalance;
+		overdrawnLimit = 0.0;
+	} // end Account constructor
+
 	/** Static methods **/
 	public static Account getAccount(Vector<Account> accounts, int accountNumber)
 			throws AccountNotFoundException {
@@ -31,16 +41,6 @@ public class Account {
 		return accountStr.charAt(0) == '1';
 	}
 
-	// Account constructor initializes attributes
-	public Account(int theAccountNumber, int thePIN, double theAvailableBalance,
-			double theTotalBalance) {
-		accountNumber = theAccountNumber;
-		pin = thePIN;
-		availableBalance = theAvailableBalance;
-		totalBalance = theTotalBalance;
-		overdrawnLimit = 0.0;
-	} // end Account constructor
-
 	/** instance methods **/
 	// determines whether a user-specified PIN matches PIN in Account
 	public boolean validatePIN(int userPIN) {
@@ -50,11 +50,16 @@ public class Account {
 			return false;
 	} // end method validatePIN
 
+	public boolean isMyBankAccount() {
+		String accountStr = String.valueOf(accountNumber);
+		return accountStr.charAt(0) == '1';
+	}
+
 	public boolean isEnough(double amount) {
 		double requiredAmount = amount;
-		if (isMyBankAccount(getAccountNumber()))
+		if (!isMyBankAccount())
 			requiredAmount += MyStaticStaff.EXTRA_CHARGE;
-		return (getAvailableBalance() >= requiredAmount);
+		return ((availableBalance + overdrawnLimit) >= requiredAmount);
 	}
 
 	// credits an amount to the account
@@ -65,7 +70,7 @@ public class Account {
 
 	// debits an amount from the account
 	public void debit(double amount) throws OverdrawnException {
-		if (availableBalance < amount)
+		if ((availableBalance + overdrawnLimit) < amount)
 			throw new OverdrawnException();
 		availableBalance -= amount; // subtract from available balance
 		totalBalance -= amount; // subtract from total balance

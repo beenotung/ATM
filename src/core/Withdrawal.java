@@ -61,11 +61,9 @@ public class Withdrawal extends Transaction {
 				try {
 					if (!Account.isMyBankAccount(getAccountNumber()))
 						if (!getBankDatabase().getAccount(getAccountNumber()).isEnough(
-								amount)) {
-							getScreen().displayMessageLine(
-									MyStaticStaff.getExtraChargeString());
+								amount))
 							throw new OverdrawnException();
-						} else
+						else
 							getBankDatabase().debit(getAccountNumber(),
 									MyStaticStaff.EXTRA_CHARGE);
 					getBankDatabase().debit(getAccountNumber(), amount);
@@ -84,6 +82,7 @@ public class Withdrawal extends Transaction {
 						"\nInsufficient cash available in the ATM." + "\n Avaliabe cash:"
 								+ cashDispenser.getAmount()
 								+ "\n\nPlease choose a smaller amount.");
+				MyStaticStaff.sleep();
 			} // dispense cash
 		} while ((!cashDispensed) && (tryCount < MyInputHandler.MAXWRONGINPUT));
 		if (cashDispensed)
@@ -95,8 +94,6 @@ public class Withdrawal extends Transaction {
 	private int displayMenuOfAmounts(UI ui) throws WrongInputException {
 		int userChoice = 0; // local variable to store return value
 
-		// array of amounts to correspond to menu numbers
-
 		// loop while no valid choice has been made
 		while (userChoice == 0) {
 			// display the menu
@@ -105,7 +102,7 @@ public class Withdrawal extends Transaction {
 			for (Integer cashValue : MyStaticStaff.MenuCashValue)
 				msg += "\n" + (++i) + " - " + Screen.getDollarAmount(cashValue);
 			msg += "\n" + (++i) + " - Other";
-			msg += "\n" + CANCELED + " - Cancel transaction";
+			msg += "\n" + CANCELED + " - Cancel withdrawal";
 			msg += "\n\nChoose a withdrawal amount: ";
 			// get user input through keypad
 			int input = ui.keypad.getInputInt(msg);
