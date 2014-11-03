@@ -15,40 +15,44 @@ public class BalanceInquiry extends Transaction {
 	// performs the transaction
 	// get references to bank database and screen from parameters
 	public void execute() throws AccountNotFoundException {
-		ui.screen.displayMessageLine("\nBalance Information:");
+		getScreen().displayMessageLine("\nBalance Information:");
 
 		// get & display the balance for the account on the screen
-		double availableBalance = bankDatabase.getAvailableBalance(getAccountNumber());
-		double totalBalance = bankDatabase.getTotalBalance(getAccountNumber());
-		ui.screen.displayMessage(" - Available balance: ");
-		ui.screen.displayDollarAmount(availableBalance);
-		ui.screen.displayMessageLine();
-		ui.screen.displayMessage(" - Total balance:     ");
-		ui.screen.displayDollarAmount(totalBalance);
-		ui.screen.displayMessageLine();
+		double availableBalance = getBankDatabase().getAvailableBalance(
+				getAccountNumber());
+		double totalBalance = getBankDatabase().getTotalBalance(getAccountNumber());
+		getScreen().displayMessage(" - Available balance: ");
+		getScreen().displayDollarAmount(availableBalance);
+		getScreen().displayMessageLine();
+		getScreen().displayMessage(" - Total balance:     ");
+		getScreen().displayDollarAmount(totalBalance);
+		getScreen().displayMessageLine();
 
 		// check if the account has interest rate
-		if (bankDatabase.IsCurrentAccount(getAccountNumber())) {
-			ui.screen.displayMessage(" - Interest rate:     ");
-			ui.screen.displayMessage(bankDatabase.getInterestRate(getAccountNumber()));
-			ui.screen.displayMessageLine();
+		if (getBankDatabase().IsSavingAccount(getAccountNumber())) {
+			getScreen().displayMessage(" - Interest rate:     ");
+			getScreen().displayMessage(
+					getBankDatabase().getInterestRate(getAccountNumber()));
+			getScreen().displayMessageLine();
 		}
 
 		// check if the account has interest rate
-		if (bankDatabase.IsCurrentAccount(getAccountNumber())) {
-			ui.screen.displayMessage(" - Interest rate:     ");
-			ui.screen.displayMessage(bankDatabase.getInterestRate(getAccountNumber()));
-			ui.screen.displayMessageLine();
+		if (getBankDatabase().IsCurrentAccount(getAccountNumber())) {
+			getScreen().displayMessage(" - Interest rate:     ");
+			getScreen().displayMessage(
+					getBankDatabase().getInterestRate(getAccountNumber()));
+			getScreen().displayMessageLine();
 		}
 
 		// check if the account has overdraw limit
-		if (bankDatabase.IsCurrentAccount(getAccountNumber())) {
-			ui.screen.displayMessage(" - Overdraw limit:     ");
-			ui.screen.displayMessage(bankDatabase.getOverdrawLimit(getAccountNumber()));
-			ui.screen.displayMessageLine();
+		if (getBankDatabase().IsCurrentAccount(getAccountNumber())) {
+			getScreen().displayMessage(" - Overdraw limit:     ");
+			getScreen().displayMessage(
+					getBankDatabase().getOverdrawLimit(getAccountNumber()));
+			getScreen().displayMessageLine();
 		}
 
-		ui.screen.displayMessageLine();
+		getScreen().displayMessageLine();
 	} // end method execute
 } // end class BalanceInquiry
 

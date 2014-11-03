@@ -61,6 +61,11 @@ public class ATM {
 		return currentAccountNumber;
 	}
 
+	/** setters **/
+	public void removeAuthentication() {
+		userAuthenticated = false;
+	}
+
 	/** instance methods **/
 	// start ATM
 	public void run() {
@@ -84,12 +89,12 @@ public class ATM {
 				}
 			} // user is now
 			catch (CardOutException e) {
-				popCard();
-				showBye();
+				userAuthenticated = false;
 			}
 			// authenticated
 			userAuthenticated = false; // reset before next ATM session
 			currentAccountNumber = 0; // reset before next ATM session
+			popCard();
 			showBye();
 		} // end while
 	} // end method run
@@ -171,9 +176,17 @@ public class ATM {
 			case WITHDRAWAL:
 			case TRANSFER:
 				currentTransactions = createTransactions(mainMenuSelection, accounts);
+				if (currentTransactions == null) {
+					userExited = false;
+					break;
+				}
+				// execute transaction
 				for (Transaction currentTransaction : currentTransactions)
 					currentTransaction.execute();
-				// execute transaction
+				if (mainMenuSelection == TRANSFER)
+					throw new CardOutException();
+				// auto finish the transaction if with WITHDRAWAL success (card
+				// out expection)
 				break;
 			case EXIT: // user chose to terminate session
 				userExited = true; // this ATM session should end
@@ -187,6 +200,8 @@ public class ATM {
 
 	// display the main menu and return an input selection
 	private int displayMainMenu() throws WrongInputException {
+		if (!Account.isMyBankAccount(currentAccountNumber))
+			screen.displayMessageLine(MyStaticStaff.getExtraChargeString());
 		String msg = "\nMain menu:";
 		msg += "\n1 - View my balance";
 		msg += "\n2 - Withdraw cash";
@@ -198,8 +213,7 @@ public class ATM {
 
 	// return object of specified Transaction subclass
 	private Vector<Transaction> createTransactions(int type, Vector<Account> accounts)
-			throws  CardOutException, WrongInputException,
-			AccountNotFoundException {
+			throws CardOutException, WrongInputException, AccountNotFoundException {
 		// temporary Transaction variable
 		Vector<Transaction> result = new Vector<Transaction>();
 

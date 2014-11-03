@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import javax.security.auth.login.AccountNotFoundException;
 
+import myutil.MyStaticStaff;
 import myutil.exception.OverdrawnException;
 
 // Account.java
@@ -16,6 +17,20 @@ public class Account {
 	private double totalBalance; // funds available + pending deposits
 	protected double overdrawnLimit;
 
+	/** Static methods **/
+	public static Account getAccount(Vector<Account> accounts, int accountNumber)
+			throws AccountNotFoundException {
+		for (Account account : accounts)
+			if (account.getAccountNumber() == accountNumber)
+				return account;
+		throw new AccountNotFoundException();
+	}
+
+	public static boolean isMyBankAccount(int accountNumber) {
+		String accountStr = String.valueOf(accountNumber);
+		return accountStr.charAt(0) == '1';
+	}
+
 	// Account constructor initializes attributes
 	public Account(int theAccountNumber, int thePIN, double theAvailableBalance,
 			double theTotalBalance) {
@@ -26,6 +41,7 @@ public class Account {
 		overdrawnLimit = 0.0;
 	} // end Account constructor
 
+	/** instance methods **/
 	// determines whether a user-specified PIN matches PIN in Account
 	public boolean validatePIN(int userPIN) {
 		if (userPIN == pin)
@@ -34,15 +50,12 @@ public class Account {
 			return false;
 	} // end method validatePIN
 
-	// returns available balance
-	public double getAvailableBalance() {
-		return availableBalance;
-	} // end getAvailableBalance
-
-	// returns the total balance
-	public double getTotalBalance() {
-		return totalBalance;
-	} // end method getTotalBalance
+	public boolean isEnough(double amount) {
+		double requiredAmount = amount;
+		if (isMyBankAccount(getAccountNumber()))
+			requiredAmount += MyStaticStaff.EXTRA_CHARGE;
+		return (getAvailableBalance() >= requiredAmount);
+	}
 
 	// credits an amount to the account
 	public void credit(double amount) {
@@ -58,22 +71,26 @@ public class Account {
 		totalBalance -= amount; // subtract from total balance
 	} // end method debit
 
-	// returns account number
+	/** getters **/
+	// returns available balance
+	public double getAvailableBalance() {
+		return availableBalance;
+	} // end getAvailableBalance
+
+	// returns the total balance
+	public double getTotalBalance() {
+		return totalBalance;
+	} // end method getTotalBalance
+		// returns account number
+
 	public int getAccountNumber() {
 		return accountNumber;
 	} // end method getAccountNumber
 
-	public static Account getAccount(Vector<Account> accounts, int accountNumber)
-			throws AccountNotFoundException {
-		for (Account account : accounts)
-			if (account.getAccountNumber() == accountNumber)
-				return account;
-		throw new AccountNotFoundException();
-	}
-
 	public double getOverdrawnLimit() {
 		return overdrawnLimit;
 	}
+
 } // end class Account
 
 /**************************************************************************

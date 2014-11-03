@@ -1,10 +1,13 @@
 package myutil;
 
+import java.util.Vector;
+
 import ui.Screen;
 
 public class MyStaticStaff {
-	public static int[] CashValues = { 100, 500, 1000 };
-	public static int[] MenuCashValue = { 200, 400, 800, 1000 };
+	public static  int[] CashValues = { 100, 500, 1000 };
+	public static final int[] MenuCashValue = { 200, 400, 800, 1000 };
+	public static double EXTRA_CHARGE = 20;
 
 	public static void sleep() {
 		MyStaticStaff.sleep(1000);
@@ -16,10 +19,14 @@ public class MyStaticStaff {
 		} catch (InterruptedException e) {
 		}
 	}
-	public static String getCashValuesStrings(){
-		String [] cashValuesStrings=new String [CashValues.length];
-		for (int i=0;i<CashValues.length;i++)
-			cashValuesStrings[i]=Screen.getDollarAmount(CashValues[i]);
+
+	public static String getCashValuesStrings() {
+		Vector<String >cashValuesStrings =new Vector<String>();
+		for (int i = 0; i < CashValues.length; i++)
+			cashValuesStrings .add(Screen.getDollarAmount(CashValues[i]));
 		return cashValuesStrings.toString();
+	}
+	public static String getExtraChargeString(){
+		return "Extra charge: "+EXTRA_CHARGE;
 	}
 }

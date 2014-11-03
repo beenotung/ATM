@@ -41,6 +41,31 @@ public class Keypad {
 			return result; // we don't assume that user enters an integer
 	} // end method getInput
 
+	// return an positive integer value entered by user
+	public int getInputIntPositive(String msg) throws WrongInputException {
+		int result = 0;
+		int wrongCount = 0;
+		boolean ok;
+		do {
+			ok = true;
+			try {
+				screen.displayMessage(msg);
+				result = Integer.valueOf(input.next());
+				if (result <= 0)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				screen.displayMessageLine("Please input an positive integer only.");
+				wrongCount++;
+				ok = false;
+				MyStaticStaff.sleep();
+			}
+		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		if (!ok)
+			throw new WrongInputException();
+		else
+			return result; // we don't assume that user enters an integer
+	} // end method getInputIntPositive
+
 	public double getInputDouble(String msg) throws WrongInputException {
 		double result = 0;
 		int wrongCount = 0;

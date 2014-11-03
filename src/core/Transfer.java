@@ -8,6 +8,7 @@ import account.Account;
 import sun.swing.BakedArrayList;
 import ui.UI;
 import myutil.MyInputHandler;
+import myutil.MyStaticStaff;
 import myutil.MyStrings;
 import myutil.exception.OverdrawnException;
 import myutil.exception.WrongInputException;
@@ -52,23 +53,35 @@ public class Transfer {
 		// auto throw OverdrawnException if the accountFrom has not enough
 		// available balance
 		wrongCount = 0;
-		do{
+		do {
 			try {
 				amount = ui.keypad
 						.getInputDoublePositive("\nPlease the amount to transfer (input 0 to cancel): ");
-				if(amount<=0)
+				if (amount == 0)
 					return null;
-				accountFrom.debit(amount);
-				accountTo.credit(amount);
+				else if (amount < 0) {
+					wrongCount++;
+					ok = false;
+					ui.screen.displayMessageLine("Please input an positive integer");
+				} else if (accountFrom.isEnough(amount)) {
+					accountFrom.debit(amount);
+					accountTo.credit(amount);
+				} else {
+					wrongCount++;
+					ok = false;
+					ui.screen.displayMessage(MyStaticStaff.getExtraChargeString());
+					throw new OverdrawnException();
+				}
 			} catch (OverdrawnException e) {
-							wrongCount++;
+				wrongCount++;
 				ok = false;
-				ui.screen.displayMessageLine(MyStrings.getOverDrawnMessage(bankDatabase.getAccount(atm.getCurrentAccountNumber()).getOverdrawnLimit()));
+				ui.screen.displayMessageLine(MyStrings.getOverDrawnMessage(bankDatabase
+						.getAccount(atm.getCurrentAccountNumber()).getOverdrawnLimit()));
 			}
-		}while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
 		if (!ok)
 			throw new WrongInputException();
-		
+
 		return result;
 	}
 
