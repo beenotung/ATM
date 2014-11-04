@@ -28,7 +28,8 @@ public class MyStaticStaff {
 	}
 
 	public static String getExtraChargeString() {
-		return "Extra charge: " + Screen.getDollarAmount(EXTRA_CHARGE)+" will be charged for successful transaction";
+		return "Extra charge: " + Screen.getDollarAmount(EXTRA_CHARGE)
+				+ " will be charged for successful transaction";
 	}
 
 	public static String getCashValuesStrings(Vector<CashCount> cashCounts) {

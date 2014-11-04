@@ -4,8 +4,6 @@ import java.util.Vector;
 
 import javax.security.auth.login.AccountNotFoundException;
 
-import com.sun.org.apache.bcel.internal.generic.ACONST_NULL;
-
 import account.Account;
 import ui.Screen;
 import ui.UI;

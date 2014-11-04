@@ -6,7 +6,6 @@ import ui.Keypad;
 import ui.Screen;
 import ui.UI;
 import myutil.exception.CardOutException;
-import myutil.exception.OverdrawnException;
 import myutil.exception.WrongInputException;
 
 // Transaction.java
