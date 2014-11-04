@@ -74,7 +74,7 @@ public class ATM {
 		while (true) {
 			// loop while user is not yet authenticated
 			while (!userAuthenticated) {
-				screen.displayMessageLine("\nWelcome!");
+				screen.displayMessageLine("\nWelcome to ABC Bank ATM!");
 				authenticateUser();
 			} // end while
 
