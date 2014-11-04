@@ -55,6 +55,13 @@ public class BankDatabase {
 		return ((SavingAccount) getAccount(userAccountNumber)).getInterestRate();
 	} // end method getInterestRate
 
+	// return interest rate of Account with specified account number
+	// in unit of %
+	public String getInterestRateString(int userAccountNumber)
+			throws AccountNotFoundException {
+		return ((SavingAccount) getAccount(userAccountNumber)).getInterestRateString();
+	} // end method getInterestRateString
+
 	// return overdraw limit of Account with specified account number
 	public double getOverdrawLimit(int userAccountNumber) throws AccountNotFoundException {
 		return getAccount(userAccountNumber).getOverdrawnLimit();

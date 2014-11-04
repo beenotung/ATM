@@ -1,7 +1,7 @@
 package account;
 
 public class SavingAccount extends Account {
-	private double interestRate = 0.1;
+	private double interestRate = 0.1 / 100d;
 
 	/** constructors **/
 	public SavingAccount(int theAccountNumber, int thePIN, double theAvailableBalance,
@@ -18,5 +18,9 @@ public class SavingAccount extends Account {
 	/** getters **/
 	public double getInterestRate() {
 		return interestRate;
+	}
+
+	public String getInterestRateString() {
+		return interestRate * 100 + "%";
 	}
 }

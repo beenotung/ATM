@@ -83,9 +83,7 @@ public class Withdrawal extends Transaction {
 				MyStaticStaff.sleep();
 			} // dispense cash
 		} while ((!cashDispensed) && (tryCount < MyInputHandler.MAXWRONGINPUT));
-		if (cashDispensed)
-			throw new CardOutException();
-	} // end method execute
+			} // end method execute
 
 	// display a menu of withdrawal amounts and the option to cancel;
 	// return the chosen amount or 0 if the user chooses to cancel

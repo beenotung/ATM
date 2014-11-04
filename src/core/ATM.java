@@ -74,7 +74,7 @@ public class ATM {
 		while (true) {
 			// loop while user is not yet authenticated
 			while (!userAuthenticated) {
-				screen.displayMessageLine("\nWelcome to ABC Bank ATM!");
+				screen.displayMessageLine("\nWelcome to CC Bank ATM!");
 				authenticateUser();
 			} // end while
 
@@ -244,10 +244,11 @@ public class ATM {
 	}
 
 	// instruct user to take cash
-	public void popCash(Vector<CashCount> cashPop) {
+	public void popCash(Vector<CashCount> cashPop) throws CardOutException {
 		screen.displayMessageLine(MyStrings.TAKE_CASH + " "
 				+ MyStaticStaff.getCashValuesStrings(cashPop));
 		MyStaticStaff.sleep();
+		throw new CardOutException();
 	}
 
 	public void showBye() {

@@ -32,7 +32,7 @@ public class BalanceInquiry extends Transaction {
 		if (getBankDatabase().IsSavingAccount(getAccountNumber())) {
 			getScreen().displayMessage(" - Interest rate:     ");
 			getScreen().displayMessage(
-					getBankDatabase().getInterestRate(getAccountNumber()));
+					getBankDatabase().getInterestRateString(getAccountNumber()));
 			getScreen().displayMessageLine();
 		}
 
