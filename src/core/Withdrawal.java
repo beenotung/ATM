@@ -61,11 +61,11 @@ public class Withdrawal extends Transaction {
 						if (!getBankDatabase().getAccount(getAccountNumber()).isEnough(
 								amount))
 							throw new OverdrawnException();
-						else
-							getBankDatabase().debit(getAccountNumber(),
-									MyStaticStuff.EXTRA_CHARGE);
-					getBankDatabase().debit(getAccountNumber(), amount);
 					Vector<CashCount> cashPop = cashDispenser.dispenseCash(amount);
+					if (!Account.isMyBankAccount(getAccountNumber()))
+						getBankDatabase().debit(getAccountNumber(),
+								MyStaticStuff.EXTRA_CHARGE);
+					getBankDatabase().debit(getAccountNumber(), amount);
 					cashDispensed = true; // cash was dispensed
 					atm.popCash(cashPop);
 				} catch (OverdrawnException e) {
@@ -83,7 +83,7 @@ public class Withdrawal extends Transaction {
 				MyStaticStuff.sleep();
 			} // dispense cash
 		} while ((!cashDispensed) && (tryCount < MyInputHandler.MAXWRONGINPUT));
-			} // end method execute
+	} // end method execute
 
 	// display a menu of withdrawal amounts and the option to cancel;
 	// return the chosen amount or 0 if the user chooses to cancel
