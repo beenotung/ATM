@@ -12,7 +12,7 @@ import myutil.exception.CardOutException;
 import myutil.exception.WrongInputException;
 import myutils.CashCount;
 import myutils.MyInputHandler;
-import myutils.MyStaticStaff;
+import myutils.MyStaticStuff;
 import myutils.MyStrings;
 
 // ATM.java
@@ -147,7 +147,7 @@ public class ATM {
 		} // end if
 		else {
 			screen.displayMessageLine("Invalid account number or PIN. Please try again.");
-			MyStaticStaff.sleep();
+			MyStaticStuff.sleep();
 		}
 	} // end method authenticateUser
 
@@ -196,7 +196,7 @@ public class ATM {
 				screen.displayMessageLine("\nYou did not enter a valid selection. Please try again.");
 				break;
 			} // end switch
-			MyStaticStaff.sleep();
+			MyStaticStuff.sleep();
 		} // end while
 	} // end method performTransactions
 
@@ -204,7 +204,7 @@ public class ATM {
 	private int displayMainMenu() throws WrongInputException {
 		screen.clear();
 		if (!Account.isMyBankAccount(currentAccountNumber))
-			screen.displayMessageLine(MyStaticStaff.getExtraChargeString());
+			screen.displayMessageLine(MyStaticStuff.getExtraChargeString());
 		String msg = "\nMain menu:";
 		msg += "\n1 - View my balance";
 		msg += "\n2 - Withdraw cash";
@@ -240,20 +240,20 @@ public class ATM {
 	// instruct user to take card
 	public void popCard() {
 		screen.displayMessageLine(MyStrings.TAKE_CARD);
-		MyStaticStaff.sleep();
+		MyStaticStuff.sleep();
 	}
 
 	// instruct user to take cash
 	public void popCash(Vector<CashCount> cashPop) throws CardOutException {
 		screen.displayMessageLine(MyStrings.TAKE_CASH + " "
-				+ MyStaticStaff.getCashValuesStrings(cashPop));
-		MyStaticStaff.sleep();
+				+ MyStaticStuff.getCashValuesStrings(cashPop));
+		MyStaticStuff.sleep();
 		throw new CardOutException();
 	}
 
 	public void showBye() {
 		screen.displayMessageLine("\n" + MyStrings.BYE);
-		MyStaticStaff.sleep();
+		MyStaticStuff.sleep();
 	}
 } // end class ATM
 

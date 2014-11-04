@@ -4,13 +4,13 @@ import java.util.Vector;
 
 import ui.Screen;
 
-public class MyStaticStaff {
+public class MyStaticStuff {
 	public static int[] CashValues = { 100, 500, 1000 };
 	public static final int[] MenuCashValue = { 200, 400, 800, 1000 };
 	public static double EXTRA_CHARGE = 20;
 
 	public static void sleep() {
-		MyStaticStaff.sleep(1000);
+		MyStaticStuff.sleep(1000);
 	}
 
 	public static void sleep(long millis) {

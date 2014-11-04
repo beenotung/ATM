@@ -5,7 +5,7 @@ import java.util.Vector;
 import javax.security.auth.login.AccountNotFoundException;
 
 import myutil.exception.OverdrawnException;
-import myutils.MyStaticStaff;
+import myutils.MyStaticStuff;
 
 // Account.java
 // Represents a bank account
@@ -58,7 +58,7 @@ public class Account {
 	public boolean isEnough(double amount) {
 		double requiredAmount = amount;
 		if (!isMyBankAccount())
-			requiredAmount += MyStaticStaff.EXTRA_CHARGE;
+			requiredAmount += MyStaticStuff.EXTRA_CHARGE;
 		return ((availableBalance + overdrawnLimit) >= requiredAmount);
 	}
 

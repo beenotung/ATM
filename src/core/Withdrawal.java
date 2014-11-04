@@ -13,7 +13,7 @@ import myutil.exception.OverdrawnException;
 import myutil.exception.WrongInputException;
 import myutils.CashCount;
 import myutils.MyInputHandler;
-import myutils.MyStaticStaff;
+import myutils.MyStaticStuff;
 import myutils.MyStrings;
 
 // Withdrawal.java
@@ -34,7 +34,7 @@ public class Withdrawal extends Transaction {
 		super(atm);
 		this.atm = atm;
 		cashDispenser = atm.getCashDispenser();
-		CANCELED = MyStaticStaff.MenuCashValue.length + 2;
+		CANCELED = MyStaticStuff.MenuCashValue.length + 2;
 	} // end Withdrawal constructor
 
 	@Override
@@ -63,7 +63,7 @@ public class Withdrawal extends Transaction {
 							throw new OverdrawnException();
 						else
 							getBankDatabase().debit(getAccountNumber(),
-									MyStaticStaff.EXTRA_CHARGE);
+									MyStaticStuff.EXTRA_CHARGE);
 					getBankDatabase().debit(getAccountNumber(), amount);
 					Vector<CashCount> cashPop = cashDispenser.dispenseCash(amount);
 					cashDispensed = true; // cash was dispensed
@@ -72,7 +72,7 @@ public class Withdrawal extends Transaction {
 					getScreen().displayMessageLine(
 							MyStrings.getOverDrawnMessage(getBankDatabase().getAccount(
 									getAccountNumber()).getOverdrawnLimit()));
-					MyStaticStaff.sleep();
+					MyStaticStuff.sleep();
 				}
 			} catch (CashNotEnoughException e) {
 				// cash dispenser does not have enough cash
@@ -80,7 +80,7 @@ public class Withdrawal extends Transaction {
 						"\nInsufficient cash available in the ATM." + "\n Avaliabe cash:"
 								+ cashDispenser.getAmount()
 								+ "\n\nPlease choose a smaller amount.");
-				MyStaticStaff.sleep();
+				MyStaticStuff.sleep();
 			} // dispense cash
 		} while ((!cashDispensed) && (tryCount < MyInputHandler.MAXWRONGINPUT));
 			} // end method execute
@@ -95,7 +95,7 @@ public class Withdrawal extends Transaction {
 			// display the menu
 			String msg = "\nWithdrawal Menu:";
 			int i = 0;
-			for (Integer cashValue : MyStaticStaff.MenuCashValue)
+			for (Integer cashValue : MyStaticStuff.MenuCashValue)
 				msg += "\n" + (++i) + " - " + Screen.getDollarAmount(cashValue);
 			msg += "\n" + (++i) + " - Other";
 			msg += "\n" + CANCELED + " - Cancel withdrawal";
@@ -108,8 +108,8 @@ public class Withdrawal extends Transaction {
 				userChoice = CANCELED;
 			else if (input == CANCELED - 1)
 				userChoice = manualInputAmount(ui);
-			else if ((input >= 1) && (input <= MyStaticStaff.MenuCashValue.length))
-				userChoice = MyStaticStaff.MenuCashValue[input - 1];
+			else if ((input >= 1) && (input <= MyStaticStuff.MenuCashValue.length))
+				userChoice = MyStaticStuff.MenuCashValue[input - 1];
 			else
 				ui.screen.displayMessageLine("\nIvalid selection. Try again.");
 		} // end while
@@ -122,8 +122,8 @@ public class Withdrawal extends Transaction {
 		boolean ok;
 		do {
 			ok = true;
-			String msg = "We provide " + MyStaticStaff.getCashValuesStrings() + " note"
-					+ (MyStaticStaff.CashValues.length > 1 ? "s" : "") + " only";
+			String msg = "We provide " + MyStaticStuff.getCashValuesStrings() + " note"
+					+ (MyStaticStuff.CashValues.length > 1 ? "s" : "") + " only";
 			msg += "\nInput the amount to withdraw (input 0 to cancel): ";
 			try {
 				amount = ui.keypad.getInputInt(msg);
@@ -134,7 +134,7 @@ public class Withdrawal extends Transaction {
 			} catch (WrongInputException e) {
 				ok = false;
 				ui.screen.displayMessageLine("Invalid input");
-				MyStaticStaff.sleep();
+				MyStaticStuff.sleep();
 			}
 		} while ((wrongInputCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
 		if (!ok)

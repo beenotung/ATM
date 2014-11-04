@@ -6,7 +6,7 @@ import java.util.Scanner; // program uses Scanner to obtain user input
 
 import myutil.exception.WrongInputException;
 import myutils.MyInputHandler;
-import myutils.MyStaticStaff;
+import myutils.MyStaticStuff;
 
 public class Keypad {
 	private Screen screen;
@@ -32,7 +32,7 @@ public class Keypad {
 				screen.displayMessageLine("Please input an integer only.");
 				wrongCount++;
 				ok = false;
-				MyStaticStaff.sleep();
+				MyStaticStuff.sleep();
 			}
 		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
 		if (!ok)
@@ -57,7 +57,7 @@ public class Keypad {
 				screen.displayMessageLine("Please input an positive integer only.");
 				wrongCount++;
 				ok = false;
-				MyStaticStaff.sleep();
+				MyStaticStuff.sleep();
 			}
 		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
 		if (!ok)
@@ -79,7 +79,7 @@ public class Keypad {
 				System.out.println("Please input an real number only.");
 				wrongCount++;
 				ok = false;
-				MyStaticStaff.sleep();
+				MyStaticStuff.sleep();
 			}
 		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
 		if (!ok)
@@ -103,7 +103,7 @@ public class Keypad {
 				System.out.println("Please input a positive real number only.");
 				wrongCount++;
 				ok = false;
-				MyStaticStaff.sleep();
+				MyStaticStuff.sleep();
 			}
 		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
 		if (!ok)

@@ -9,7 +9,7 @@ import ui.UI;
 import myutil.exception.OverdrawnException;
 import myutil.exception.WrongInputException;
 import myutils.MyInputHandler;
-import myutils.MyStaticStaff;
+import myutils.MyStaticStuff;
 import myutils.MyStrings;
 
 public class Transfer {
@@ -43,7 +43,7 @@ public class Transfer {
 				wrongCount++;
 				ok = false;
 				ui.screen.displayMessageLine(MyStrings.ACCOUNT_NOT_FOUND);
-				MyStaticStaff.sleep();
+				MyStaticStuff.sleep();
 			}
 		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
 		if (!ok)
@@ -76,14 +76,14 @@ public class Transfer {
 				ok = false;
 				ui.screen.displayMessageLine(MyStrings.getOverDrawnMessage(bankDatabase
 						.getAccount(atm.getCurrentAccountNumber()).getOverdrawnLimit()));
-				MyStaticStaff.sleep();
+				MyStaticStuff.sleep();
 			}
 		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
 		if (!ok)
 			throw new WrongInputException();
 		else {
 			if (!accountFrom.isMyBankAccount())
-				ui.screen.displayMessageLine(MyStaticStaff.getExtraChargeString());
+				ui.screen.displayMessageLine(MyStaticStuff.getExtraChargeString());
 			ui.screen.displayMessageLine(MyStrings.TRANSFER_SUCCEED);
 		}
 		return result;
