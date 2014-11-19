@@ -1,4 +1,4 @@
-package atm.gui;
+package atm.core;
 
 import bank.database.BankDatabase;
 

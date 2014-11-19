@@ -2,23 +2,24 @@ package atm.gui;
 
 import javax.swing.JFrame;
 
-public class MainScreenThread extends DemoJFrameThread {
-	private JFrame screenFrame;
+public class KeypadThread extends DemoJFrameThread {
+	private JFrame keypadframe;
 
 	/**
 	 * Create the JFrame.
 	 */
-	public MainScreenThread() {
+	public KeypadThread() {
 		super();
 	}
 
 	@Override
 	public JFrame getMainJFrame() {
-		return screenFrame;
+		return keypadframe;
 	}
 
 	@Override
 	public void setMainJFrame(JFrame jFrame) {
-		screenFrame = jFrame;
+		keypadframe = jFrame;
 	}
+
 }

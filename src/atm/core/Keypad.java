@@ -1,4 +1,4 @@
-package atm.gui;
+package atm.core;
 
 // Keypad.java
 // Represents the keypad of the ATM

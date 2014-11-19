@@ -1,8 +1,6 @@
 package launcher;
 
 import atm.ATMLauncher;
-import atm.core.ATM;
-import atm.gui.MainScreenThread;
 
 // ATMCaseStudy.java
 // Driver program for the ATM case study

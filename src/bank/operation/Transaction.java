@@ -4,9 +4,9 @@ import javax.security.auth.login.AccountNotFoundException;
 
 import bank.database.BankDatabase;
 import atm.core.ATM;
-import atm.gui.Keypad;
-import atm.gui.Screen;
-import atm.gui.UI;
+import atm.core.Keypad;
+import atm.core.Screen;
+import atm.core.UI;
 import myutil.exception.CardOutException;
 import myutil.exception.WrongInputException;
 

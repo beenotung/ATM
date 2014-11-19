@@ -2,23 +2,23 @@ package atm.gui;
 
 import javax.swing.JFrame;
 
-public class MainScreenThread extends DemoJFrameThread {
-	private JFrame screenFrame;
+public class VirtualSlotThread extends DemoJFrameThread {
+	private JFrame virtualSlotFrame;
 
 	/**
 	 * Create the JFrame.
 	 */
-	public MainScreenThread() {
+	public VirtualSlotThread() {
 		super();
 	}
 
 	@Override
 	public JFrame getMainJFrame() {
-		return screenFrame;
+		return virtualSlotFrame;
 	}
 
 	@Override
 	public void setMainJFrame(JFrame jFrame) {
-		screenFrame = jFrame;
+		virtualSlotFrame = jFrame;
 	}
 }

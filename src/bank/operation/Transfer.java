@@ -7,7 +7,7 @@ import javax.security.auth.login.AccountNotFoundException;
 import bank.account.Account;
 import bank.database.BankDatabase;
 import atm.core.ATM;
-import atm.gui.UI;
+import atm.core.UI;
 import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
 import atm.utils.MyStrings;

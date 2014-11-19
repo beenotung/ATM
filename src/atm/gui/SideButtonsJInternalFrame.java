@@ -1,7 +1,5 @@
 package atm.gui;
 
-import java.awt.EventQueue;
-
 import javax.swing.JInternalFrame;
 
 public class SideButtonsJInternalFrame extends JInternalFrame {

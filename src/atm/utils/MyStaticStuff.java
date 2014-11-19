@@ -2,7 +2,7 @@ package atm.utils;
 
 import java.util.Vector;
 
-import atm.gui.Screen;
+import atm.core.Screen;
 
 public class MyStaticStuff {
 	public static int[] CashValues = { 100, 500, 1000 };
