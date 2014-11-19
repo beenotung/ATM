@@ -12,11 +12,11 @@ import myutil.exception.OverdrawnException;
 // Represents the bank account information database 
 
 public class BankDatabase {
-	private Vector<Account> accounts; // Vector of Accounts
+	// Vector of Accounts
+	private static Vector<Account> accounts = new Vector<Account>();
 
 	// no-argument BankDatabase constructor initializes accounts
-	public BankDatabase() {
-		accounts = new Vector<Account>();
+	public static void init() {
 		accounts.add(new Account("12345", "02345", 1000.0, 1000.0));
 		accounts.add(new CurrentAccount("12356", "02356", 200.0, 200.0));
 		accounts.add(new SavingAccount("12369", "02369", 100.0, 100.0));
@@ -25,7 +25,8 @@ public class BankDatabase {
 
 	/** getters **/
 	// retrieve Account object containing specified account number
-	public Account getAccount(String accountNumber) throws AccountNotFoundException {
+	public static Account getAccount(String accountNumber)
+			throws AccountNotFoundException {
 		// loop through accounts searching for matching account number
 		for (Account currentAccount : accounts) {
 			// return current account if match found
@@ -36,51 +37,51 @@ public class BankDatabase {
 												// found, throw exception
 	} // end method getAccount
 
-	public Vector<Account> getAccounts() {
+	public static Vector<Account> getAccounts() {
 		return accounts;
 	}
 
 	// return available balance of Account with specified account number
-	public double getAvailableBalance(String userAccountNumber)
+	public static double getAvailableBalance(String userAccountNumber)
 			throws AccountNotFoundException {
 		return getAccount(userAccountNumber).getAvailableBalance();
 	} // end method getAvailableBalance
 
 	// return total balance of Account with specified account number
-	public double getTotalBalance(String userAccountNumber)
+	public static double getTotalBalance(String userAccountNumber)
 			throws AccountNotFoundException {
 		return getAccount(userAccountNumber).getAvailableBalance();
 	} // end method getTotalBalance
 
 	// return interest rate of Account with specified account number
-	public double getInterestRate(String userAccountNumber)
+	public static double getInterestRate(String userAccountNumber)
 			throws AccountNotFoundException {
 		return ((SavingAccount) getAccount(userAccountNumber)).getInterestRate();
 	} // end method getInterestRate
 
 	// return interest rate of Account with specified account number
 	// in unit of %
-	public String getInterestRateString(String userAccountNumber)
+	public static String getInterestRateString(String userAccountNumber)
 			throws AccountNotFoundException {
 		return ((SavingAccount) getAccount(userAccountNumber)).getInterestRateString();
 	} // end method getInterestRateString
 
 	// return overdraw limit of Account with specified account number
-	public double getOverdrawLimit(String userAccountNumber)
+	public static double getOverdrawLimit(String userAccountNumber)
 			throws AccountNotFoundException {
 		return getAccount(userAccountNumber).getOverdrawnLimit();
 	} // end method getOverdrawLimit
 
 	/** instance methods **/
 	// determine whether the account is saving account
-	public boolean IsSavingAccount(String userAccountNumber)
+	public static boolean IsSavingAccount(String userAccountNumber)
 			throws AccountNotFoundException {
 		Account account = getAccount(userAccountNumber);
 		return account instanceof SavingAccount;
 	}
 
 	// determine whether the account is current account
-	public boolean IsCurrentAccount(String userAccountNumber)
+	public static boolean IsCurrentAccount(String userAccountNumber)
 			throws AccountNotFoundException {
 		Account account = getAccount(userAccountNumber);
 		return account instanceof CurrentAccount;
@@ -88,7 +89,7 @@ public class BankDatabase {
 
 	// determine whether user-specified account number and PIN match
 	// those of an account in the database
-	public boolean authenticateUser(String userAccountNumber, String userPIN) {
+	public static boolean authenticateUser(String userAccountNumber, String userPIN) {
 		// attempt to retrieve the account with the account number
 		Account userAccount;
 		try {
@@ -101,14 +102,14 @@ public class BankDatabase {
 	} // end method authenticateUser
 
 	// credit an amount to Account with specified account number
-	public void credit(String userAccountNumber, double amount)
+	public static void credit(String userAccountNumber, double amount)
 			throws AccountNotFoundException {
 		getAccount(userAccountNumber).credit(amount);
 	} // end method credit
 
 	// debit an amount from of Account with specified account number
-	public void debit(String userAccountNumber, double amount) throws OverdrawnException,
-			AccountNotFoundException {
+	public static void debit(String userAccountNumber, double amount)
+			throws OverdrawnException, AccountNotFoundException {
 		getAccount(userAccountNumber).debit(amount);
 	} // end method debit
 

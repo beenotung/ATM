@@ -2,7 +2,7 @@ package launcher;
 
 import atm.ATMLauncher;
 import atm.core.ATM;
-import atm.gui.MainFrame;
+import atm.gui.MainScreenThread;
 
 // ATMCaseStudy.java
 // Driver program for the ATM case study
@@ -14,9 +14,12 @@ import atm.gui.MainFrame;
 public class ATMCaseStudy {
 	// main method creates and runs the ATM
 	public static void main(String[] args) {
+		System.out.println("ATMCaseStudy start");
 		// ATM theATM = new ATM();
-		// theATM.run();
+		// theATM.run();	
+				
 		ATMLauncher atmLauncher = new ATMLauncher();
+		System.out.println("start ATM Launcher");
 		atmLauncher.start();
 	} // end main
 } // end class ATMCaseStudy
