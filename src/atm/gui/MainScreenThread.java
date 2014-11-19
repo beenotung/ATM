@@ -2,7 +2,7 @@ package atm.gui;
 
 import javax.swing.JFrame;
 
-public class MainScreenThread extends DemoJFrameThread {
+public class MainScreenThread extends AbstractDemoJFrameThread {
 	private JFrame screenFrame;
 
 	/**

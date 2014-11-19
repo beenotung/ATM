@@ -2,7 +2,7 @@ package atm.gui;
 
 import javax.swing.JFrame;
 
-public class KeypadThread extends DemoJFrameThread {
+public class KeypadThread extends AbstractDemoJFrameThread {
 	private JFrame keypadframe;
 
 	/**

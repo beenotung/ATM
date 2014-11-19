@@ -2,7 +2,7 @@ package atm.gui;
 
 import javax.swing.JFrame;
 
-public class VirtualSlotThread extends DemoJFrameThread {
+public class VirtualSlotThread extends AbstractDemoJFrameThread {
 	private JFrame virtualSlotFrame;
 
 	/**

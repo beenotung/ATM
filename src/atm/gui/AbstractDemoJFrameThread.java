@@ -4,13 +4,13 @@ import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 
-public abstract class DemoJFrameThread extends Thread {
+public abstract class AbstractDemoJFrameThread extends Thread {
 
 	public abstract JFrame getMainJFrame();
 
 	public abstract void setMainJFrame(JFrame jFrame);
 
-	public DemoJFrameThread() {
+	public AbstractDemoJFrameThread() {
 		initialize();
 	}
 
