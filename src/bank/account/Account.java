@@ -1,24 +1,24 @@
-package account;
+package bank.account;
 
 import java.util.Vector;
 
 import javax.security.auth.login.AccountNotFoundException;
 
+import atm.utils.MyStaticStuff;
 import myutil.exception.OverdrawnException;
-import myutils.MyStaticStuff;
 
 // Account.java
 // Represents a bank account
 
 public class Account {
-	private int accountNumber; // account number
-	private int pin; // PIN for authentication
-	private double availableBalance; // funds available for withdrawal
-	private double totalBalance; // funds available + pending deposits
+	protected String accountNumber; // account number
+	private String pin; // PIN for authentication
+	protected double availableBalance; // funds available for withdrawal
+	protected double totalBalance; // funds available + pending deposits
 	protected double overdrawnLimit;
 
 	/** Account constructor initializes attributes **/
-	public Account(int theAccountNumber, int thePIN, double theAvailableBalance,
+	public Account(String theAccountNumber, String thePIN, double theAvailableBalance,
 			double theTotalBalance) {
 		accountNumber = theAccountNumber;
 		pin = thePIN;
@@ -28,7 +28,7 @@ public class Account {
 	} // end Account constructor
 
 	/** Static methods **/
-	public static Account getAccount(Vector<Account> accounts, int accountNumber)
+	public static Account getAccount(Vector<Account> accounts, String accountNumber)
 			throws AccountNotFoundException {
 		for (Account account : accounts)
 			if (account.getAccountNumber() == accountNumber)
@@ -36,18 +36,14 @@ public class Account {
 		throw new AccountNotFoundException();
 	}
 
-	public static boolean isMyBankAccount(int accountNumber) {
-		String accountStr = String.valueOf(accountNumber);
-		return accountStr.charAt(0) == '1';
+	public static boolean isMyBankAccount(String accountNumber) {		
+		return accountNumber.charAt(0) == '1';
 	}
 
 	/** instance methods **/
 	// determines whether a user-specified PIN matches PIN in Account
-	public boolean validatePIN(int userPIN) {
-		if (userPIN == pin)
-			return true;
-		else
-			return false;
+	public boolean validatePIN(String userPIN) {
+		return userPIN == pin;
 	} // end method validatePIN
 
 	public boolean isMyBankAccount() {
@@ -88,7 +84,7 @@ public class Account {
 	} // end method getTotalBalance
 		// returns account number
 
-	public int getAccountNumber() {
+	public String getAccountNumber() {
 		return accountNumber;
 	} // end method getAccountNumber
 

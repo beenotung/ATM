@@ -1,4 +1,4 @@
-package myutils;
+package atm.utils;
 
 public class CashCount {
 	private final int value;

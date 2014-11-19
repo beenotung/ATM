@@ -1,20 +1,22 @@
-package core;
+package bank.operation;
 
 import java.util.Vector;
 
 import javax.security.auth.login.AccountNotFoundException;
 
-import account.Account;
-import ui.Screen;
-import ui.UI;
+import bank.account.Account;
+import atm.core.ATM;
+import atm.core.CashDispenser;
+import atm.gui.Screen;
+import atm.gui.UI;
+import atm.utils.CashCount;
+import atm.utils.MyInputHandler;
+import atm.utils.MyStaticStuff;
+import atm.utils.MyStrings;
 import myutil.exception.CardOutException;
 import myutil.exception.CashNotEnoughException;
 import myutil.exception.OverdrawnException;
 import myutil.exception.WrongInputException;
-import myutils.CashCount;
-import myutils.MyInputHandler;
-import myutils.MyStaticStuff;
-import myutils.MyStrings;
 
 // Withdrawal.java
 // Represents a withdrawal ATM transaction

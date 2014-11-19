@@ -1,9 +1,9 @@
-package core;
+package atm.core;
 
 import java.util.Vector;
 
+import atm.utils.CashCount;
 import myutil.exception.CashNotEnoughException;
-import myutils.CashCount;
 
 // CashDispenser.java
 // Represents the cash dispenser of the ATM
@@ -15,9 +15,9 @@ public class CashDispenser {
 	public CashDispenser() {
 		// set count attribute to default
 		cashCounts = new Vector<CashCount>();
-		cashCounts.add(new CashCount(100, 4));
-		cashCounts.add(new CashCount(500, 2));
-		cashCounts.add(new CashCount(1000, 1));
+		cashCounts.add(new CashCount(100, 15));
+		cashCounts.add(new CashCount(500, 8));
+		cashCounts.add(new CashCount(1000, 2));
 	} // end CashDispenser constructor
 
 	/** instance methods **/

@@ -1,10 +1,12 @@
-package core;
+package bank.operation;
 
 import javax.security.auth.login.AccountNotFoundException;
 
-import ui.Keypad;
-import ui.Screen;
-import ui.UI;
+import bank.database.BankDatabase;
+import atm.core.ATM;
+import atm.gui.Keypad;
+import atm.gui.Screen;
+import atm.gui.UI;
 import myutil.exception.CardOutException;
 import myutil.exception.WrongInputException;
 
@@ -12,7 +14,7 @@ import myutil.exception.WrongInputException;
 // Abstract superclass Transaction represents an ATM transaction
 
 public abstract class Transaction {
-	private int accountNumber; // indicates account involved
+	private String accountNumber; // indicates account involved
 	private UI ui; // ATM's screen and keypad
 	private BankDatabase bankDatabase; // account info database
 
@@ -24,7 +26,7 @@ public abstract class Transaction {
 	} // end Transaction constructor
 
 	// return account number
-	public int getAccountNumber() {
+	public String getAccountNumber() {
 		return accountNumber;
 	} // end method getAccountNumber
 
@@ -44,7 +46,8 @@ public abstract class Transaction {
 	} // end method getBankDatabase
 
 	// perform the transaction (overridden by each subclass)
-	public abstract void execute() throws WrongInputException, AccountNotFoundException, CardOutException;
+	public abstract void execute() throws WrongInputException, AccountNotFoundException,
+			CardOutException;
 } // end class Transaction
 
 /**************************************************************************

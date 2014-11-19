@@ -1,26 +1,31 @@
-package core;
+package atm.core;
 
 import java.util.Vector;
 
 import javax.security.auth.login.AccountNotFoundException;
 
-import account.Account;
-import ui.Keypad;
-import ui.Screen;
-import ui.UI;
+import bank.account.Account;
+import bank.database.BankDatabase;
+import bank.operation.BalanceInquiry;
+import bank.operation.Transaction;
+import bank.operation.Transfer;
+import bank.operation.Withdrawal;
+import atm.gui.Keypad;
+import atm.gui.Screen;
+import atm.gui.UI;
+import atm.utils.CashCount;
+import atm.utils.MyInputHandler;
+import atm.utils.MyStaticStuff;
+import atm.utils.MyStrings;
 import myutil.exception.CardOutException;
 import myutil.exception.WrongInputException;
-import myutils.CashCount;
-import myutils.MyInputHandler;
-import myutils.MyStaticStuff;
-import myutils.MyStrings;
 
 // ATM.java
 // Represents an automated teller machine
 
 public class ATM {
 	private boolean userAuthenticated; // whether user is authenticated
-	private int currentAccountNumber; // current user's account number
+	private String currentAccountNumber; // current user's account number
 	private Screen screen; // ATM's screen
 	private Keypad keypad; // ATM's keypad
 	private CashDispenser cashDispenser; // ATM's cash dispenser
@@ -36,7 +41,7 @@ public class ATM {
 	// no-argument ATM constructor initializes instance variables
 	public ATM() {
 		userAuthenticated = false; // user is not authenticated to start
-		currentAccountNumber = 0; // no current account number to start
+		currentAccountNumber = "0"; // no current account number to start
 		screen = new Screen(); // create screen
 		keypad = new Keypad(screen); // create keypad
 		cashDispenser = new CashDispenser(); // create cash dispenser
@@ -57,7 +62,7 @@ public class ATM {
 		return cashDispenser;
 	}
 
-	public int getCurrentAccountNumber() {
+	public String getCurrentAccountNumber() {
 		return currentAccountNumber;
 	}
 
@@ -94,7 +99,7 @@ public class ATM {
 			}
 			// authenticated
 			userAuthenticated = false; // reset before next ATM session
-			currentAccountNumber = 0; // reset before next ATM session
+			currentAccountNumber = "0"; // reset before next ATM session
 			popCard();
 			showBye();
 		} // end while
@@ -103,15 +108,15 @@ public class ATM {
 	// attempts to authenticate user against database
 	private void authenticateUser() {
 		// get account number from user
-		int accountNumber = 0;
-		int pin = 0;
+		String accountNumber = "";
+		String pin = "";
 		int wrongCount = 0;
 		boolean ok;
 		do {
 			ok = true;
 			try {
-				accountNumber = keypad
-						.getInputInt("\nPlease enter your account number: ");
+				accountNumber = String.valueOf(keypad
+						.getInputInt("\nPlease enter your account number: "));
 			} catch (WrongInputException e) {
 				ok = false;
 				wrongCount++;
@@ -127,7 +132,8 @@ public class ATM {
 		wrongCount = 0;
 		do {
 			try {
-				pin = keypad.getInputInt("\nEnter your PIN: ");// input PIN
+				pin = String.valueOf(keypad.getInputInt("\nEnter your PIN: "));// input
+																				// PIN
 			} catch (WrongInputException e) {
 				ok = false;
 				wrongCount++;

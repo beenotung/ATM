@@ -1,6 +1,6 @@
-package ui;
+package atm.gui;
 
-import myutils.MyStrings;
+import atm.utils.MyStrings;
 
 // Screen.java
 // Represents the screen of the ATM

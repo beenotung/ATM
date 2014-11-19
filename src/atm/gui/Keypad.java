@@ -1,12 +1,12 @@
-package ui;
+package atm.gui;
 
 // Keypad.java
 // Represents the keypad of the ATM
 import java.util.Scanner; // program uses Scanner to obtain user input
 
+import atm.utils.MyInputHandler;
+import atm.utils.MyStaticStuff;
 import myutil.exception.WrongInputException;
-import myutils.MyInputHandler;
-import myutils.MyStaticStuff;
 
 public class Keypad {
 	private Screen screen;

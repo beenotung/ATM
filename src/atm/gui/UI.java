@@ -1,6 +1,6 @@
-package ui;
+package atm.gui;
 
-import core.BankDatabase;
+import bank.database.BankDatabase;
 
 public class UI {
 	public BankDatabase bankDatabase;

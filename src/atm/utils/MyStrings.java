@@ -1,6 +1,6 @@
-package myutils;
+package atm.utils;
 
-import ui.Screen;
+import atm.gui.Screen;
 
 public class MyStrings {
 	public static String DOLLAR_SIGN = "HKD $";

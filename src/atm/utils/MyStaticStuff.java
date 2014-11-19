@@ -1,8 +1,8 @@
-package myutils;
+package atm.utils;
 
 import java.util.Vector;
 
-import ui.Screen;
+import atm.gui.Screen;
 
 public class MyStaticStuff {
 	public static int[] CashValues = { 100, 500, 1000 };

@@ -1,15 +1,23 @@
 package launcher;
 
-import core.ATM;
+import atm.ATMLauncher;
+import atm.core.ATM;
+import atm.gui.MainFrame;
 
 // ATMCaseStudy.java
 // Driver program for the ATM case study
 
+/**
+ * Standard program entry point
+ * Launch the application.
+ */
 public class ATMCaseStudy {
 	// main method creates and runs the ATM
 	public static void main(String[] args) {
-		ATM theATM = new ATM();
-		theATM.run();
+		// ATM theATM = new ATM();
+		// theATM.run();
+		ATMLauncher atmLauncher = new ATMLauncher();
+		atmLauncher.start();
 	} // end main
 } // end class ATMCaseStudy
 

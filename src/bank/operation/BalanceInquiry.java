@@ -1,6 +1,8 @@
-package core;
+package bank.operation;
 
 import javax.security.auth.login.AccountNotFoundException;
+
+import atm.core.ATM;
 
 // BalanceInquiry.java
 // Represents a balance inquiry ATM transaction
