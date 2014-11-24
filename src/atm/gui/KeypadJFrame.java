@@ -5,29 +5,28 @@ import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 
 public class KeypadJFrame extends JFrame {
-	private JButton keys[];
+	private JComponent keys[];
 	private JPanel numberKeysJPanel;
 	private JPanel functionKeysJPanel;
 
 	// constructor sets up GUI
 	public KeypadJFrame() {
-		setTitle("Keypad");
-		setVisible(false);
-		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
+		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 
 		numberKeysJPanel = new JPanel(new GridLayout(4, 3));
-		getContentPane().add(numberKeysJPanel);
+		add(numberKeysJPanel);
 
 		functionKeysJPanel = new JPanel(new GridLayout(4, 1));
-		getContentPane().add(functionKeysJPanel);
+		add(functionKeysJPanel);
 
-		keys = new JButton[16]; // array keys contains 16 JButtons
+		keys = new JComponent[16]; // array keys contains 16 JButtons
 		// initialize all digit key buttons
 		for (int i = 0; i <= 9; i++)
 			keys[i] = new JButton(String.valueOf(i));
@@ -35,7 +34,7 @@ public class KeypadJFrame extends JFrame {
 		keys[10] = new JButton("Cancel");
 		keys[11] = new JButton("Correct");
 		keys[12] = new JButton("Enter");
-		keys[13] = new JButton("");
+		keys[13] = new JPanel();
 		keys[14] = new JButton("00");
 		keys[15] = new JButton(".");
 
@@ -58,15 +57,4 @@ public class KeypadJFrame extends JFrame {
 		for (int i = 10; i <= 13; i++)
 			functionKeysJPanel.add(keys[i]);
 	} // end CalculatorFrame constructor
-
-	public void calcBounds() {
-		pack();
-		setVisible(true);
-		Rectangle client = getBounds();
-		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds()
-				.getBounds();
-		int x = screen.width - client.width;
-		int y = screen.height - client.height;
-		setLocation(x, y);
-	}
 } // end class CalculatorFrame 

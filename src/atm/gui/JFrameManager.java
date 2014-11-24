@@ -1,14 +1,16 @@
 package atm.gui;
 
 import java.awt.EventQueue;
+import java.awt.Point;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.JFrame;
 
 public class JFrameManager {
 
 	private KeypadJFrame keypadJFrame;
-	private MainScreenJFrame mainScreenJFrame;
-	private JFrame sideButtonsJFrame;
+	private MonitorJFrame monitorJFrame;
 	private JFrame virtualSlotsJFrame;
 
 	/**
@@ -32,16 +34,14 @@ public class JFrameManager {
 	}
 
 	private void showAll() {
-		keypadJFrame.setVisible(true);
-		mainScreenJFrame.setVisible(true);
-		sideButtonsJFrame.setVisible(true);
+		keypadJPanel.setVisible(true);
+		monitorJFrame.setVisible(true);
 		virtualSlotsJFrame.setVisible(true);
 	}
 
 	public void end() {
 		keypadJFrame.dispose();
-		mainScreenJFrame.dispose();
-		sideButtonsJFrame.dispose();
+		monitorJFrame.dispose();
 		virtualSlotsJFrame.dispose();
 		System.exit(0);
 	}
@@ -57,13 +57,13 @@ public class JFrameManager {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		keypadJFrame = new KeypadJFrame();
-		mainScreenJFrame = new MainScreenJFrame();
-		sideButtonsJFrame = new JFrame();
+		keypadJPanel = new KeypadJPanel();
+		monitorJFrame = new MonitorJFrame();
 		virtualSlotsJFrame = new JFrame();
 
-		mainScreenJFrame.setAlwaysOnTop(true);
-		keypadJFrame.calcBounds();
-		mainScreenJFrame.calcBounds(600,400);
+		keypadJPanel.calcBounds();
+		monitorJFrame.calcBounds(50, 50, 600, 400, 75);
+
 	}
+
 }
