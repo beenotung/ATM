@@ -83,7 +83,7 @@ public class ATM {
 			try {
 				try {
 					try {
-						performTransactions(bankDatabase.getAccounts());
+						performTransactions(BankDatabase.getAccounts());
 					} catch (AccountNotFoundException e) {
 						screen.displayMessageLine(MyStrings.ACCOUNT_NOT_FOUND);
 					}
@@ -112,8 +112,7 @@ public class ATM {
 		do {
 			ok = true;
 			try {
-				accountNumber = String.valueOf(keypad
-						.getInputInt("\nPlease enter your account number: "));
+				accountNumber = String.valueOf(keypad.getInputInt("\nPlease enter your account number: "));
 			} catch (WrongInputException e) {
 				ok = false;
 				wrongCount++;
@@ -142,7 +141,7 @@ public class ATM {
 			return;
 		}
 		// set userAuthenticated to boolean value returned by database
-		userAuthenticated = bankDatabase.authenticateUser(accountNumber, pin);
+		userAuthenticated = BankDatabase.authenticateUser(accountNumber, pin);
 
 		// check whether authentication succeeded
 		if (userAuthenticated) {
@@ -155,8 +154,8 @@ public class ATM {
 	} // end method authenticateUser
 
 	// display the main menu and perform transactions
-	private void performTransactions(Vector<Account> accounts) throws CardOutException,
-			WrongInputException, AccountNotFoundException {
+	private void performTransactions(Vector<Account> accounts) throws CardOutException, WrongInputException,
+			AccountNotFoundException {
 		// local variable to store transaction currently being processed
 		Vector<Transaction> currentTransactions = null;
 
@@ -248,8 +247,7 @@ public class ATM {
 
 	// instruct user to take cash
 	public void popCash(Vector<CashCount> cashPop) throws CardOutException {
-		screen.displayMessageLine(MyStrings.TAKE_CASH + " "
-				+ MyStaticStuff.getCashValuesStrings(cashPop));
+		screen.displayMessageLine(MyStrings.TAKE_CASH + " " + MyStaticStuff.getCashValuesStrings(cashPop));
 		MyStaticStuff.sleep();
 		throw new CardOutException();
 	}

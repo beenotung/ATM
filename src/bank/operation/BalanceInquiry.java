@@ -2,6 +2,7 @@ package bank.operation;
 
 import javax.security.auth.login.AccountNotFoundException;
 
+import bank.database.BankDatabase;
 import atm.core.ATM;
 
 // BalanceInquiry.java
@@ -19,10 +20,11 @@ public class BalanceInquiry extends Transaction {
 	public void execute() throws AccountNotFoundException {
 		getScreen().displayMessageLine("\nBalance Information:");
 
+		getBankDatabase();
 		// get & display the balance for the account on the screen
-		double availableBalance = getBankDatabase().getAvailableBalance(
-				getAccountNumber());
-		double totalBalance = getBankDatabase().getTotalBalance(getAccountNumber());
+		double availableBalance = BankDatabase.getAvailableBalance(getAccountNumber());
+		getBankDatabase();
+		double totalBalance = BankDatabase.getTotalBalance(getAccountNumber());
 		getScreen().displayMessage(" - Available balance: ");
 		getScreen().displayDollarAmount(availableBalance);
 		getScreen().displayMessageLine();
@@ -30,19 +32,19 @@ public class BalanceInquiry extends Transaction {
 		getScreen().displayDollarAmount(totalBalance);
 		getScreen().displayMessageLine();
 
+		getBankDatabase();
 		// check if the account has interest rate
-		if (getBankDatabase().IsSavingAccount(getAccountNumber())) {
+		if (BankDatabase.IsSavingAccount(getAccountNumber())) {
 			getScreen().displayMessage(" - Interest rate:     ");
-			getScreen().displayMessage(
-					getBankDatabase().getInterestRateString(getAccountNumber()));
+			getScreen().displayMessage(BankDatabase.getInterestRateString(getAccountNumber()));
 			getScreen().displayMessageLine();
 		}
 
+		getBankDatabase();
 		// check if the account has overdraw limit
-		if (getBankDatabase().IsCurrentAccount(getAccountNumber())) {
+		if (BankDatabase.IsCurrentAccount(getAccountNumber())) {
 			getScreen().displayMessage(" - Overdraw limit:     ");
-			getScreen().displayMessage(
-					getBankDatabase().getOverdrawLimit(getAccountNumber()));
+			getScreen().displayMessage(BankDatabase.getOverdrawLimit(getAccountNumber()));
 			getScreen().displayMessageLine();
 		}
 

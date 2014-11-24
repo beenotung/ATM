@@ -5,6 +5,7 @@ import java.util.Vector;
 import javax.security.auth.login.AccountNotFoundException;
 
 import bank.account.Account;
+import bank.database.BankDatabase;
 import atm.core.ATM;
 import atm.core.CashDispenser;
 import atm.core.Screen;
@@ -60,19 +61,19 @@ public class Withdrawal extends Transaction {
 			try {
 				try {
 					if (!Account.isMyBankAccount(getAccountNumber()))
-						if (!getBankDatabase().getAccount(getAccountNumber()).isEnough(
+						if (!BankDatabase.getAccount(getAccountNumber()).isEnough(
 								amount))
 							throw new OverdrawnException();
 					Vector<CashCount> cashPop = cashDispenser.dispenseCash(amount);
 					if (!Account.isMyBankAccount(getAccountNumber()))
-						getBankDatabase().debit(getAccountNumber(),
+						BankDatabase.debit(getAccountNumber(),
 								MyStaticStuff.EXTRA_CHARGE);
-					getBankDatabase().debit(getAccountNumber(), amount);
+					BankDatabase.debit(getAccountNumber(), amount);
 					cashDispensed = true; // cash was dispensed
 					atm.popCash(cashPop);
 				} catch (OverdrawnException e) {
 					getScreen().displayMessageLine(
-							MyStrings.getOverDrawnMessage(getBankDatabase().getAccount(
+							MyStrings.getOverDrawnMessage(BankDatabase.getAccount(
 									getAccountNumber()).getOverdrawnLimit()));
 					MyStaticStuff.sleep();
 				}

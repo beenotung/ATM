@@ -16,14 +16,12 @@ import myutil.exception.WrongInputException;
 
 public class Transfer {
 
-	public static Vector<Transaction> transfer(ATM atm) throws WrongInputException,
-			AccountNotFoundException {
+	public static Vector<Transaction> transfer(ATM atm) throws WrongInputException, AccountNotFoundException {
 		Vector<Transaction> result = new Vector<Transaction>();
 		UI ui = atm.getUI();
-		BankDatabase bankDatabase = atm.getBankDatabase();
 
 		String accountNumberTo;
-		Account accountFrom = bankDatabase.getAccount(atm.getCurrentAccountNumber());
+		Account accountFrom = BankDatabase.getAccount(atm.getCurrentAccountNumber());
 		Account accountTo = null;
 		double amount = 0;
 
@@ -35,7 +33,7 @@ public class Transfer {
 			accountNumberTo = String.valueOf(ui.keypad
 					.getInputInt("\nPlease input the account number of the receiver: "));
 			try {
-				accountTo = bankDatabase.getAccount(accountNumberTo);
+				accountTo = BankDatabase.getAccount(accountNumberTo);
 				if (accountFrom.getAccountNumber() == accountTo.getAccountNumber()) {
 					wrongCount++;
 					ok = false;
@@ -58,15 +56,13 @@ public class Transfer {
 		do {
 			ok = true;
 			try {
-				amount = ui.keypad
-						.getInputDouble("\nPlease the amount to transfer (input 0 to cancel): ");
+				amount = ui.keypad.getInputDouble("\nPlease the amount to transfer (input 0 to cancel): ");
 				if (amount == 0)
 					return null;
 				else if (amount < 0) {
 					wrongCount++;
 					ok = false;
-					ui.screen
-							.displayMessageLine("The amount should be positive. Please try again.");
+					ui.screen.displayMessageLine("The amount should be positive. Please try again.");
 				} else if (accountFrom.isEnough(amount)) {
 					accountFrom.debit(amount);
 					accountTo.credit(amount);
@@ -76,8 +72,8 @@ public class Transfer {
 			} catch (OverdrawnException e) {
 				wrongCount++;
 				ok = false;
-				ui.screen.displayMessageLine(MyStrings.getOverDrawnMessage(bankDatabase
-						.getAccount(atm.getCurrentAccountNumber()).getOverdrawnLimit()));
+				ui.screen.displayMessageLine(MyStrings.getOverDrawnMessage(BankDatabase.getAccount(
+						atm.getCurrentAccountNumber()).getOverdrawnLimit()));
 				MyStaticStuff.sleep();
 			}
 		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
