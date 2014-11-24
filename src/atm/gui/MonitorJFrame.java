@@ -1,27 +1,36 @@
 package atm.gui;
 
+import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.JInternalFrame;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
+
+import javax.swing.UIManager;
+import javax.swing.JLabel;
+import javax.swing.JScrollBar;
 
 public class MonitorJFrame extends JFrame {
+
+	private LeftSideButtonsJPanel leftSideButtonsJPanel;
+	private RightSideButtonsJPanel rightSideButtonsJPanel;
 	private MainScreenJPanel mainScreenJPanel;
-	private SideButtonsJPanel sideButtonsJFrame;
 
 	public MonitorJFrame() {
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setTitle("ATM Monitor");
 		setVisible(false);
 		setResizable(false);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 
-		mainScreenJPanel = new MainScreenJPanel();
-		getContentPane().add(mainScreenJPanel.mainScreenJInternalFrame, BorderLayout.CENTER);
+		leftSideButtonsJPanel = new LeftSideButtonsJPanel();
+		getContentPane().add(leftSideButtonsJPanel, BorderLayout.WEST);
 
-		sideButtonsJFrame = new SideButtonsJPanel();
-		getContentPane().add(sideButtonsJFrame.leftSideButtonsJPanel, BorderLayout.WEST);
-		getContentPane().add(sideButtonsJFrame.rightSideButtonsJPanel, BorderLayout.EAST);
+		rightSideButtonsJPanel = new RightSideButtonsJPanel();
+		getContentPane().add(rightSideButtonsJPanel, BorderLayout.EAST);
+		mainScreenJPanel = new MainScreenJPanel();
+		getContentPane().add(mainScreenJPanel, BorderLayout.CENTER);
+
 	}
 
 	public void calcBounds(int x, int y, int w, int h, int s) {
@@ -29,4 +38,8 @@ public class MonitorJFrame extends JFrame {
 		setBounds(x, y, w + s * 2, h);
 	}
 
+	@Override
+	public void dispose() {
+		super.dispose();
+	}
 }

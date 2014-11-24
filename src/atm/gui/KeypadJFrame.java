@@ -1,6 +1,5 @@
 package atm.gui;
 
-import java.awt.BorderLayout;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
@@ -18,13 +17,15 @@ public class KeypadJFrame extends JFrame {
 
 	// constructor sets up GUI
 	public KeypadJFrame() {
-		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setTitle("Keypad");
+		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
 
 		numberKeysJPanel = new JPanel(new GridLayout(4, 3));
-		add(numberKeysJPanel);
+		getContentPane().add(numberKeysJPanel);
 
 		functionKeysJPanel = new JPanel(new GridLayout(4, 1));
-		add(functionKeysJPanel);
+		getContentPane().add(functionKeysJPanel);
 
 		keys = new JComponent[16]; // array keys contains 16 JButtons
 		// initialize all digit key buttons
@@ -57,4 +58,15 @@ public class KeypadJFrame extends JFrame {
 		for (int i = 10; i <= 13; i++)
 			functionKeysJPanel.add(keys[i]);
 	} // end CalculatorFrame constructor
+
+	public void calcBounds() {
+		pack();
+		setVisible(true);
+		Rectangle client = getBounds();
+		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds()
+				.getBounds();
+		int x = screen.width - client.width;
+		int y = screen.height - client.height;
+		setLocation(x, y);
+	}
 } // end class CalculatorFrame 
