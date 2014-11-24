@@ -1,14 +1,10 @@
 package atm.gui;
 
-import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
+
+import atm.gui.mainscreen.MainScreenJPanel;
 
 import java.awt.BorderLayout;
-
-import javax.swing.UIManager;
-import javax.swing.JLabel;
-import javax.swing.JScrollBar;
 
 public class MonitorJFrame extends JFrame {
 

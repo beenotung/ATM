@@ -1,12 +1,8 @@
-package atm.gui;
+package atm.gui.mainscreen;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JInternalFrame;
-import java.awt.GridLayout;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
 
 public class MainScreenJPanel extends JPanel {
 
