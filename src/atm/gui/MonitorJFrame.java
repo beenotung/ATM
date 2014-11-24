@@ -1,18 +1,29 @@
 package atm.gui;
 
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 
-import atm.gui.mainscreen.MainScreenJPanel;
+import atm.gui.mainscreen.MainScreenCardJPanel;
+import atm.gui.sidebuttons.LeftSideButtonsJPanel;
+import atm.gui.sidebuttons.RightSideButtonsJPanel;
 
 import java.awt.BorderLayout;
+import java.net.MalformedURLException;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 
 public class MonitorJFrame extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 278412650556752290L;
 	private LeftSideButtonsJPanel leftSideButtonsJPanel;
 	private RightSideButtonsJPanel rightSideButtonsJPanel;
-	private MainScreenJPanel mainScreenJPanel;
+	private MainScreenCardJPanel mainScreenJPanel;
+	private JInternalFrame internalFrame;
 
-	public MonitorJFrame() {
+	public MonitorJFrame() throws MalformedURLException {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setTitle("ATM Monitor");
 		setVisible(false);
@@ -24,9 +35,14 @@ public class MonitorJFrame extends JFrame {
 
 		rightSideButtonsJPanel = new RightSideButtonsJPanel();
 		getContentPane().add(rightSideButtonsJPanel, BorderLayout.EAST);
-		mainScreenJPanel = new MainScreenJPanel();
-		getContentPane().add(mainScreenJPanel, BorderLayout.CENTER);
 
+		JInternalFrame internalFrame = new JInternalFrame("ATM Main Screen");
+		getContentPane().add(internalFrame, BorderLayout.CENTER);
+		mainScreenJPanel = new MainScreenCardJPanel();
+		internalFrame.getContentPane().add(mainScreenJPanel,
+				BorderLayout.CENTER);
+
+		internalFrame.setVisible(true);
 	}
 
 	public void calcBounds(int x, int y, int w, int h, int s) {

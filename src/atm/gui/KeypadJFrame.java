@@ -11,6 +11,10 @@ import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 
 public class KeypadJFrame extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7879515633562595837L;
 	private JComponent keys[];
 	private JPanel numberKeysJPanel;
 	private JPanel functionKeysJPanel;

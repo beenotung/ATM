@@ -1,7 +1,12 @@
 package atm;
 
+import java.net.MalformedURLException;
+
+import javax.swing.JOptionPane;
+
 import bank.database.BankDatabase;
 import atm.gui.ATMGUILauncher;
+import atm.utils.MyStrings;
 
 public class ATMLauncher {
 
@@ -9,7 +14,14 @@ public class ATMLauncher {
 
 	public ATMLauncher() {
 		BankDatabase.init();
-		atmguiLauncher = new ATMGUILauncher();		
+		try {
+			atmguiLauncher = new ATMGUILauncher();
+		} catch (MalformedURLException e) {
+			System.out.println(MyStrings.INTERNET_ERROR);
+			JOptionPane.showMessageDialog(null, MyStrings.INTERNET_ERROR,
+					"Internet Error", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
 	}
 
 	public void start() {

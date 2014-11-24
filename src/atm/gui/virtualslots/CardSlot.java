@@ -1,11 +1,13 @@
 package atm.gui.virtualslots;
 
+import java.awt.CardLayout;
+
 import javax.swing.JPanel;
 
 public class CardSlot extends JPanel {
-	private VirtualSlotsCardJFrame virtualSlotsCardJFrame;
+	private CardLayout cardLayout;
 
-	public CardSlot(VirtualSlotsCardJFrame virtualSlotsCardJFrame) {
-		this.virtualSlotsCardJFrame = virtualSlotsCardJFrame;
+	public CardSlot(CardLayout cardLayout) {
+		this.cardLayout=cardLayout;
 	}
 }

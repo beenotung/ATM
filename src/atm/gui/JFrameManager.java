@@ -1,5 +1,7 @@
 package atm.gui;
 
+import java.net.MalformedURLException;
+
 import javax.swing.JFrame;
 
 public class JFrameManager {
@@ -10,15 +12,17 @@ public class JFrameManager {
 
 	/**
 	 * Create the application.
+	 * @throws MalformedURLException 
 	 */
-	public JFrameManager() {
+	public JFrameManager() throws MalformedURLException {
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
+	 * @throws MalformedURLException 
 	 */
-	private void initialize() {
+	private void initialize() throws MalformedURLException {
 		keypadJFrame = new KeypadJFrame();
 		monitorJFrame = new MonitorJFrame();
 		virtualSlotsJFrame = new JFrame();
