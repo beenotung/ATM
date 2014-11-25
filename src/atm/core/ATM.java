@@ -10,6 +10,7 @@ import bank.operation.BalanceInquiry;
 import bank.operation.Transaction;
 import bank.operation.Transfer;
 import bank.operation.Withdrawal;
+import atm.gui.virtualslots.Card;
 import atm.utils.CashCount;
 import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
@@ -21,8 +22,10 @@ import myutil.exception.WrongInputException;
 // Represents an automated teller machine
 
 public class ATM {
+	private Vector<ATM> atms = new Vector<ATM>();
+
 	private boolean userAuthenticated; // whether user is authenticated
-	private String currentAccountNumber; // current user's account number
+	public static String currentAccountNumber; // current user's account number
 	private Screen screen; // ATM's screen
 	private Keypad keypad; // ATM's keypad
 	private CashDispenser cashDispenser; // ATM's cash dispenser
@@ -37,6 +40,7 @@ public class ATM {
 
 	// no-argument ATM constructor initializes instance variables
 	public ATM() {
+		atms.add(this);
 		userAuthenticated = false; // user is not authenticated to start
 		currentAccountNumber = "0"; // no current account number to start
 		screen = new Screen(); // create screen
@@ -255,6 +259,10 @@ public class ATM {
 	public void showBye() {
 		screen.displayMessageLine("\n" + MyStrings.BYE);
 		MyStaticStuff.sleep();
+	}
+
+	public static void insertCard(Card card) {
+
 	}
 } // end class ATM
 

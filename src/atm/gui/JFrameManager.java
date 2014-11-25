@@ -2,15 +2,13 @@ package atm.gui;
 
 import java.net.MalformedURLException;
 
-import javax.swing.JFrame;
-
-import atm.gui.virtualslots.VirtualSlotsCardJFrame;
+import atm.gui.virtualslots.VirtualSlotsJFrame;
 
 public class JFrameManager {
 
 	private KeypadJFrame keypadJFrame;
 	private MonitorJFrame monitorJFrame;
-	private VirtualSlotsCardJFrame virtualSlotsJFrame;
+	private VirtualSlotsJFrame virtualSlotsJFrame;
 
 	/**
 	 * Create the application.
@@ -27,7 +25,7 @@ public class JFrameManager {
 	private void initialize() throws MalformedURLException {
 		keypadJFrame = new KeypadJFrame();
 		monitorJFrame = new MonitorJFrame();
-		virtualSlotsJFrame = new VirtualSlotsCardJFrame();
+		virtualSlotsJFrame = new VirtualSlotsJFrame();
 
 		keypadJFrame.calcBounds();
 		monitorJFrame.calcBounds(50, 50, 600, 400, 75);
