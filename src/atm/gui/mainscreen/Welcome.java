@@ -11,11 +11,14 @@ import javax.swing.JLabel;
 
 import atm.utils.MyStrings;
 import atm.utils.MyURLs;
-import java.awt.Label;
 import javax.swing.BoxLayout;
 import java.awt.Component;
 
 public class Welcome extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private CardLayout cardLayout;
 
 	public Welcome(CardLayout cardLayout) {
@@ -34,6 +37,7 @@ public class Welcome extends JPanel {
 			JOptionPane.showMessageDialog(getParent(),
 					MyStrings.INTERNET_ERROR, "Internet Error",
 					JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
 		}
 
 	}

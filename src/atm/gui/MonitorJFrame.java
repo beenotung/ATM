@@ -9,8 +9,6 @@ import atm.gui.sidebuttons.RightSideButtonsJPanel;
 
 import java.awt.BorderLayout;
 import java.net.MalformedURLException;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 
 public class MonitorJFrame extends JFrame {
 

@@ -9,15 +9,16 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 
+import atm.gui.MyGUISettings;
 import atm.utils.MyURLs;
 
-import javax.swing.BoxLayout;
-
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
 import java.awt.Image;
 
 public class LeftSideButtonsJPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public Vector<JButton> buttons;
 	private ImageIcon imageIcon;
 
@@ -26,7 +27,8 @@ public class LeftSideButtonsJPanel extends JPanel {
 
 		imageIcon = new ImageIcon(new ImageIcon(new URL(
 				MyURLs.STRING_URL_IMAGE_TRIANGLE_POINT_RIGHT)).getImage()
-				.getScaledInstance(75, 75, Image.SCALE_SMOOTH));
+				.getScaledInstance(MyGUISettings.SIDE_BUTTON_SIZE,
+						MyGUISettings.SIDE_BUTTON_SIZE, Image.SCALE_SMOOTH));
 
 		buttons = new Vector<JButton>();
 		for (int i = 0; i < 4; i++) {
