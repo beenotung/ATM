@@ -27,17 +27,14 @@ public class CardSlot extends JPanel {
 
 	public CardSlot(CardLayout cardLayout) {
 		this.cardLayout = cardLayout;
-
+		 buttons=new Vector<JButton>();
 		try {
-			JButton
-
-			btnNewButton_1 = new JButton(new ImageIcon(
+			JButton btnNewButton_1 = new JButton(new ImageIcon(
 					new ImageIcon(new URL(MyURLs.STRING_URL_IMAGE_CARD1))
 							.getImage().getScaledInstance(
 									MyGUISettings.CARD_IMAGE_WIDTH,
 									MyGUISettings.CARD_IMAGE_HEIGHT,
 									Image.SCALE_SMOOTH)));
-
 			buttons.add(btnNewButton_1);
 			add(btnNewButton_1);
 

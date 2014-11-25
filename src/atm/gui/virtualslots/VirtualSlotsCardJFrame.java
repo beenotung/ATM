@@ -16,7 +16,7 @@ public class VirtualSlotsCardJFrame extends AbstractCardJFrame {
 	public VirtualSlotsCardJFrame() {
 		super("Virtual Slots");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		setSize(50,40);
+		setSize(400,300);
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class VirtualSlotsCardJFrame extends AbstractCardJFrame {
 
 	
 	public void calcBounds() {
-		pack();
+		//pack();
 		setVisible(true);
 		Rectangle client = getBounds();
 		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds()
