@@ -5,6 +5,8 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
+
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -14,6 +16,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
 public class KeypadJFrame extends JFrame {
+	private static Vector<KeypadJFrame> contents = new Vector<KeypadJFrame>();
+
 	public static final String STRING_MODE_PASSWORD = "Password";
 	public static final String STRING_MODE_ACCOUNTNUMBER = "AccountNumber";
 	public static final String STRING_MODE_Amount = "Amount";
@@ -28,6 +32,7 @@ public class KeypadJFrame extends JFrame {
 
 	// constructor sets up GUI
 	public KeypadJFrame() {
+		contents.add(this);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
 		setTitle("Keypad");
@@ -82,9 +87,10 @@ public class KeypadJFrame extends JFrame {
 			functionKeysJPanel.add(keys[i]);
 
 		switchMode(STRING_MODE_PASSWORD);
-		setTarget(null);
+		switchTarget(null);
 	} // end CalculatorFrame constructor
 
+	/** instance methods **/
 	private void switchMode(String stringModePassword) {
 		mode = stringModePassword;
 		switch (mode) {
@@ -103,7 +109,7 @@ public class KeypadJFrame extends JFrame {
 		}
 	}
 
-	public void setTarget(JTextComponent textComponent) {
+	public void switchTarget(JTextComponent textComponent) {
 		this.textComponent = textComponent;
 	}
 
@@ -181,4 +187,11 @@ public class KeypadJFrame extends JFrame {
 		setLocation(x, y);
 	}
 
+	/** static connector to instance methods **/
+	public static void switchTargetStatic(JTextComponent textComponent, String mode) {
+		for (KeypadJFrame keypadJFrame : contents) {
+			keypadJFrame.switchTarget(textComponent);
+			keypadJFrame.switchMode(mode);
+		}
+	}
 } // end class CalculatorFrame 

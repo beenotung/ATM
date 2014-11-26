@@ -25,15 +25,16 @@ public class ATMGUILauncher {
 	}
 
 	private void setLookAndFeel() {
-		String name;
+		String name = "";
 		try {
-			name = "1com.easynth.lookandfeel.EaSynthLookAndFeel";
+			// name = "com.easynth.lookandfeel.EaSynthLookAndFeel";
+			// name="com.alee.laf.WebLookAndFeel";
 			UIManager.setLookAndFeel(name);
 			System.out.println("loading native system look and feel (" + name + ")");
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e) {
 			try {
-				name = "1com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+				name = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
 				UIManager.setLookAndFeel(name);
 				System.out.println("loading native system look and feel (" + name + ")");
 			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException

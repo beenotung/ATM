@@ -10,6 +10,7 @@ import bank.operation.BalanceInquiry;
 import bank.operation.Transaction;
 import bank.operation.Transfer;
 import bank.operation.Withdrawal;
+import atm.gui.mainscreen.LoginJPanel;
 import atm.gui.mainscreen.MainScreenCardJPanel;
 import atm.gui.virtualslots.Card;
 import atm.gui.virtualslots.CardSlotCardJPanel;
@@ -281,7 +282,7 @@ public class ATM {
 	public static void checkCard(Card card) {
 		if (checkUserValid(card.accountNumber)) {
 			System.out.println("the card is valid");
-			MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_LOGIN);
+			LoginJPanel.showMeStatic();
 		} else {
 			System.out.println(MyStrings.CARD_NOT_VALID);
 			MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_CARD_NOT_VALID);
