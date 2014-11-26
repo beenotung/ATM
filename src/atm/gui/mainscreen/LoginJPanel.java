@@ -5,6 +5,18 @@ import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.BoxLayout;
 
+import java.awt.Component;
+
+import javax.swing.Box;
+
+import java.awt.BorderLayout;
+
+import javax.swing.SwingConstants;
+
+import atm.gui.MyGUISettings;
+
+import java.awt.Font;
+
 public class LoginJPanel extends JPanel {
 	/**
 	 * 
@@ -13,17 +25,24 @@ public class LoginJPanel extends JPanel {
 	private JPasswordField passwordField;
 
 	public LoginJPanel() {
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setLayout(new BorderLayout(0, 0));
+
+		Box horizontalBox = Box.createHorizontalBox();
+		horizontalBox.setAlignmentY(Component.CENTER_ALIGNMENT);
+		add(horizontalBox);
+
+		Component horizontalGlue = Box.createHorizontalGlue();
+		horizontalBox.add(horizontalGlue);
 
 		JLabel label = new JLabel("Please input the password");
-		label.setAlignmentY(0.5f);
-		label.setAlignmentX(0.5f);
-		add(label);
+		horizontalBox.add(label);
+		label.setFont(MyGUISettings.getFont(26));
+
+		Component horizontalGlue_1 = Box.createHorizontalGlue();
+		horizontalBox.add(horizontalGlue_1);
 
 		passwordField = new JPasswordField();
-		passwordField.setAlignmentY(0.5f);
-		passwordField.setAlignmentX(0.5f);
-		add(passwordField);
-
+		add(passwordField, BorderLayout.SOUTH);
+		passwordField.setFont(MyGUISettings.getFont(26));
 	}
 }
