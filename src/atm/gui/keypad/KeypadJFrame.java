@@ -12,6 +12,10 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
+import javax.swing.JTextField;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
 
 public class KeypadJFrame extends JFrame {
 	public static final String STRING_MODE_PASSWORD = "Password";
@@ -24,7 +28,7 @@ public class KeypadJFrame extends JFrame {
 	private JComponent keys[];
 	private JPanel numberKeysJPanel;
 	private JPanel functionKeysJPanel;
-	private String text;
+	private JTextComponent textComponent;
 
 	// constructor sets up GUI
 	public KeypadJFrame() {
@@ -81,8 +85,8 @@ public class KeypadJFrame extends JFrame {
 		for (int i = 10; i <= 13; i++)
 			functionKeysJPanel.add(keys[i]);
 
-		text = "";
 		switchMode(STRING_MODE_PASSWORD);
+		setTarget(null);
 	} // end CalculatorFrame constructor
 
 	private void switchMode(String stringModePassword) {
@@ -90,34 +94,62 @@ public class KeypadJFrame extends JFrame {
 		switch (mode) {
 		case STRING_MODE_PASSWORD:
 			dotEnable = false;
-			maxLength=5;
+			maxLength = 5;
 			break;
 		case STRING_MODE_Amount:
 			dotEnable = true;
-			//maxLength
+			maxLength = 8;
 			break;
 		case STRING_MODE_ACCOUNTNUMBER:
 			dotEnable = false;
+			maxLength = 13;
 			break;
 		}
 	}
 
-	private boolean hasDot() {
-		for (int i = 0; i < text.length(); i++) {
-			if (text.charAt(i) == '.')
+	public void setTarget(JTextComponent textComponent) {
+		this.textComponent = textComponent;
+	}
+
+	private boolean hasDot() throws BadLocationException {
+		for (char c : getText().toCharArray())
+			if (c == '.')
 				return true;
-		}
 		return false;
+	}
+
+	public String getText() throws BadLocationException {
+		return textComponent.getText();
+	}
+
+	public void insertText(String str) throws BadLocationException {
+		textComponent.getDocument().insertString(textComponent.getCaretPosition(), str, null);
+	}
+
+	public int getDecimalPlace(String text) {
+		int decimalPlace = 0;
+		boolean meetDot = false;
+		for (char c : text.toCharArray()) {
+			if (c == '.')
+				meetDot = true;
+			else if (meetDot)
+				decimalPlace++;
+		}
+		return decimalPlace;
 	}
 
 	private ActionListener getNumActionListener(final String content) {
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (!hasDot())
-					text += content;
-				else {
-
+				try {
+					if (textComponent.getDocument().getLength() >= maxLength)
+						return;
+					if (getDecimalPlace(textComponent.getText()) < 2)
+						insertText(content);
+				} catch (BadLocationException e1) {
+					insertTextAlternative(content);
+				} catch (NullPointerException e2) {
 				}
 			}
 		};
@@ -127,10 +159,19 @@ public class KeypadJFrame extends JFrame {
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (!hasDot())
-					text += '.';
+				try {
+					if ((!hasDot()) && dotEnable)
+						insertText(".");
+				} catch (BadLocationException e1) {
+					insertTextAlternative(".");
+				} catch (NullPointerException e2) {
+				}
 			}
 		};
+	}
+
+	private void insertTextAlternative(String content) {
+		textComponent.setText(textComponent.getText() + content);
 	}
 
 	public void calcBounds() {
@@ -143,4 +184,5 @@ public class KeypadJFrame extends JFrame {
 		int y = screen.height - client.height;
 		setLocation(x, y);
 	}
+
 } // end class CalculatorFrame 
