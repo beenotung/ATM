@@ -234,8 +234,8 @@ public class KeypadJFrame extends JFrame {
 		Rectangle client = getBounds();
 		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds()
 				.getBounds();
-		int x = screen.width - client.width;
-		int y = screen.height - client.height;
+		int x = screen.width - client.width - 10;
+		int y = screen.height - client.height - 10;
 		setLocation(x, y);
 	}
 

@@ -38,7 +38,7 @@ public class JFrameManager {
 		System.out.println("showing virtual slots");
 		virtualSlotsJFrame.calcBounds();
 		System.out.println("showing monitor");
-		monitorJFrame.calcBounds(50, 50, 600, 400, 75);
+		monitorJFrame.calcBounds(600, 400, 75);
 	}
 
 	protected void start() {

@@ -10,11 +10,6 @@ import java.awt.BorderLayout;
 import java.net.MalformedURLException;
 
 public class MonitorJFrame extends JFrame {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 278412650556752290L;
 	private LeftSideButtonsJPanel leftSideButtonsJPanel;
 	private RightSideButtonsJPanel rightSideButtonsJPanel;
 	private MainScreenCardJPanel mainScreenJPanel;
@@ -37,9 +32,9 @@ public class MonitorJFrame extends JFrame {
 		mainScreenJPanel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 	}
 
-	public void calcBounds(int x, int y, int w, int h, int s) {
-		setVisible(true);
-		setBounds(x, y, w + s * 2, h);
+	public void calcBounds(int w, int h, int s) {
+		setVisible(true);		
+		setBounds(10,10, w + s * 2, h);
 	}
 
 	@Override
