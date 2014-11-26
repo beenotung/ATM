@@ -34,6 +34,7 @@ public class MonitorJFrame extends JFrame {
 
 		mainScreenJPanel = new MainScreenCardJPanel();
 		getContentPane().add(mainScreenJPanel, BorderLayout.CENTER);
+		mainScreenJPanel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 	}
 
 	public void calcBounds(int x, int y, int w, int h, int s) {

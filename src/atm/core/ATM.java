@@ -275,10 +275,10 @@ public class ATM {
 	public static void readCard(Card card) {
 		System.out.println("inserted card:" + card.accountNumber);
 		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_READCARD);
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-		}
+		(new WaitReadCard(card)).start();
+	}
+
+	public static void checkCard(Card card) {
 		if (checkUserValid(card.accountNumber)) {
 			System.out.println("the card is valid");
 			MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_LOGIN);
@@ -288,4 +288,23 @@ public class ATM {
 			CardSlotCardJPanel.popCardStatic();
 		}
 	}
+
+	/** private class **/
+	private static class WaitReadCard extends Thread {
+		private Card card;
+
+		public WaitReadCard(Card card) {
+			this.card = card;
+		}
+
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+			}
+			ATM.checkCard(card);
+		}
+	}
+
 } // end class ATM

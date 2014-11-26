@@ -9,15 +9,15 @@ public class MyStrings {
 	public static final String TAKE_CASH = "Please take your cash";
 	public static final String TAKE_RECEIPT = "Please take your receipt";
 	public static final String CONTACTS_US = "Please contact CC Bank (9876-5432)";
-	public static final String WRONG_INPUT = "Invalid inputs, " + CONTACTS_US;
+	public static final String WRONG_INPUT = "Invalid inputs";
 	public static final String BYE = "Thank you for using our service. Have a good day!";
 	public static final String ACCOUNT_NOT_FOUND = "The account is not found";
 	public static final String TRANSFER_SAME_ACCOUNT = "Please do not transfer to the same account";
 	public static final String TRANSFER_SUCCEED = "The transfer has been done";
-	public static final String CARD_NOT_VALID = "Your card is not identified, " + CONTACTS_US;
+	public static final String CARD_NOT_VALID = "Your card is not identified";
 
 	/** System part **/
-	public static final String INTERNET_ERROR = "Internet connection is not stable, Please contact 9876-5432";
+	public static final String INTERNET_ERROR = "Internet connection is not stable";
 
 	public static String getOverDrawnMessage(Double limit) {
 		String msg = "Overdrawn (Insufficient funds in your account)";

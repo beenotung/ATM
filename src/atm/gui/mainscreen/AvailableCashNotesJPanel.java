@@ -23,6 +23,7 @@ public class AvailableCashNotesJPanel extends JPanel {
 	public AvailableCashNotesJPanel() {
 		contents.add(this);
 		setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		label = new JLabel();
 		add(label);
 

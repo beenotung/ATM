@@ -3,6 +3,7 @@ package atm.gui.virtualslots;
 import java.util.Vector;
 
 import atm.core.ATM;
+import atm.gui.mainscreen.MainScreenCardJPanel;
 import myutils.gui.cardlayout.AbstractCardJPanel;
 
 public class CardSlotCardJPanel extends AbstractCardJPanel {
@@ -41,6 +42,7 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 	}
 
 	public void popCard() {
+		System.out.println("pop");
 		CardInsideJPanel.popCardStatic();
 		switchToCard(STRING_CARD_INSIDE);
 	}
@@ -67,6 +69,12 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 		for (CardSlotCardJPanel cardSlotCardJPanel : contents) {
 			cardSlotCardJPanel.popCard();
 		}
+	}
+
+	public static void takeCardStatic() {
+		CardInsideJPanel.removeCardStatic();
+		switchToCardStatic(STRING_SELECT_CARD);
+		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_WELCOME);
 	}
 
 }

@@ -50,7 +50,7 @@ public class Card {
 		ActionListener insertCard = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				CardSlotCardJPanel.popCardStatic();
+				CardSlotCardJPanel.takeCardStatic();
 			}
 		};
 		return insertCard;

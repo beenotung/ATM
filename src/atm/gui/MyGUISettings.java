@@ -14,4 +14,7 @@ public class MyGUISettings {
 	public static Color getATMScreenBackGroundColor(){
 		return new Color(135, 206, 250);
 	}
+	public static Color getATMShellColor(){
+		return new Color(128, 128, 128);
+	}
 }

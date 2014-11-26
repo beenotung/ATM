@@ -23,10 +23,17 @@ public class RightSideButtonsJPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	public Vector<JButton> buttons;
-	private ImageIcon imageIcon;
+	private static ImageIcon imageIcon;
 
-	public RightSideButtonsJPanel() throws MalformedURLException {
+	public static void init() throws MalformedURLException {
+		imageIcon = new ImageIcon(new ImageIcon(new URL(MyURLs.IMAGE_TRIANGLE_POINT_LEFT)).getImage()
+				.getScaledInstance(MyGUISettings.SIDE_BUTTON_SIZE, MyGUISettings.SIDE_BUTTON_SIZE,
+						Image.SCALE_SMOOTH));
+	}
+
+	public RightSideButtonsJPanel() {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setBackground(MyGUISettings.getATMShellColor());
 
 		Component topVerticalStrut = Box.createVerticalStrut(75);
 		add(topVerticalStrut);
@@ -37,10 +44,6 @@ public class RightSideButtonsJPanel extends JPanel {
 
 		Component bottomVerticalStrut = Box.createVerticalStrut(25);
 		add(bottomVerticalStrut);
-
-		imageIcon = new ImageIcon(new ImageIcon(new URL(MyURLs.IMAGE_TRIANGLE_POINT_LEFT))
-				.getImage().getScaledInstance(MyGUISettings.SIDE_BUTTON_SIZE, MyGUISettings.SIDE_BUTTON_SIZE,
-						Image.SCALE_SMOOTH));
 
 		buttons = new Vector<JButton>();
 		for (int i = 0; i < 4; i++) {

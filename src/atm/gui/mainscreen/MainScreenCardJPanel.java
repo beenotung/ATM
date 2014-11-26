@@ -24,7 +24,6 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 
 	public MainScreenCardJPanel() {
 		super();
-		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		contents.add(this);
 	}
 
