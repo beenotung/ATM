@@ -5,16 +5,12 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
-
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
-import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 
 public class KeypadJFrame extends JFrame {
@@ -175,8 +171,8 @@ public class KeypadJFrame extends JFrame {
 	}
 
 	public void calcBounds() {
-		pack();
 		setVisible(true);
+		pack();
 		Rectangle client = getBounds();
 		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds()
 				.getBounds();

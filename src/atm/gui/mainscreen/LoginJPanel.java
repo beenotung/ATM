@@ -3,19 +3,13 @@ package atm.gui.mainscreen;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
-import javax.swing.BoxLayout;
-
 import java.awt.Component;
 
 import javax.swing.Box;
 
 import java.awt.BorderLayout;
 
-import javax.swing.SwingConstants;
-
 import atm.gui.MyGUISettings;
-
-import java.awt.Font;
 
 public class LoginJPanel extends JPanel {
 	/**

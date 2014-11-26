@@ -25,8 +25,8 @@ public class VirtualSlotsJFrame extends JFrame {
 	}
 
 	public void calcBounds() {
-		pack();
 		setVisible(true);
+		pack();
 		Rectangle client = getBounds();
 		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds()
 				.getBounds();

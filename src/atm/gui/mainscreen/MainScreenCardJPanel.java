@@ -4,7 +4,6 @@ import java.util.Vector;
 
 import myutils.gui.cardlayout.AbstractCardJPanel;
 
-import java.awt.Color;
 import java.awt.Component;
 
 import atm.gui.MyGUISettings;
@@ -33,7 +32,8 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 		addToCards(new ReadCardJPanel(), STRING_READCARD);
 		addToCards(new CardNotValidJPanel(), STRING_CARD_NOT_VALID);
 		addToCards(new LoginJPanel(), STRING_LOGIN);
-		switchToCard(STRING_WELCOME);
+		//switchToCard(STRING_WELCOME);
+		WelcomeJPanel.showMeStatic();
 	}
 
 	public static void switchToCardStatic(String label) {

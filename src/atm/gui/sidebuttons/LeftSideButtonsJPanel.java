@@ -1,3 +1,4 @@
+
 package atm.gui.sidebuttons;
 
 import java.awt.GridLayout;
@@ -16,7 +17,6 @@ import java.awt.Image;
 import javax.swing.BoxLayout;
 import java.awt.Component;
 import javax.swing.Box;
-import java.awt.Color;
 
 public class LeftSideButtonsJPanel extends JPanel {
 	/**

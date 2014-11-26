@@ -4,7 +4,6 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 
 import atm.gui.MyGUISettings;
-import java.awt.BorderLayout;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import java.awt.Component;

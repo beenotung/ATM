@@ -38,7 +38,7 @@ public class Card {
 	public static ActionListener getInsertActionListener(final Card card) {
 		ActionListener insertCard = new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {				
+			public void actionPerformed(ActionEvent e) {
 				CardSlotCardJPanel.insertCardStatic(card);
 			}
 		};

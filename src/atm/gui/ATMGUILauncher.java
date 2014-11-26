@@ -2,6 +2,9 @@ package atm.gui;
 
 import java.net.MalformedURLException;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import atm.gui.notes.CashNote100;
 import atm.gui.notes.CashNote1000;
 import atm.gui.notes.CashNote500;
@@ -16,7 +19,36 @@ public class ATMGUILauncher {
 		System.out.println("fetching images");
 		fetchImages();
 		System.out.println("initializing GUI");
+		setLookAndFeel();
 		frameManager = new JFrameManager();
+		frameManager.start();
+	}
+
+	private void setLookAndFeel() {
+		String name;
+		try {
+			name = "1com.easynth.lookandfeel.EaSynthLookAndFeel";
+			UIManager.setLookAndFeel(name);
+			System.out.println("loading native system look and feel (" + name + ")");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			try {
+				name = "1com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+				UIManager.setLookAndFeel(name);
+				System.out.println("loading native system look and feel (" + name + ")");
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+					| UnsupportedLookAndFeelException e1) {
+				try {
+					name = UIManager.getSystemLookAndFeelClassName();
+					UIManager.setLookAndFeel(name);
+					System.out.println("loading native system look and feel (" + name + ")");
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+						| UnsupportedLookAndFeelException e2) {
+					System.out.println("loading cross platform look and feel ("
+							+ UIManager.getCrossPlatformLookAndFeelClassName() + ")");
+				}
+			}
+		}
 	}
 
 	/**

@@ -40,6 +40,7 @@ public class MonitorJFrame extends JFrame {
 	public void calcBounds(int x, int y, int w, int h, int s) {
 		setVisible(true);
 		setBounds(x, y, w + s * 2, h);
+		// setVisible(false);
 	}
 
 	@Override

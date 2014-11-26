@@ -32,23 +32,16 @@ public class JFrameManager {
 		monitorJFrame = new MonitorJFrame();
 		System.out.println("initializing virtual slots");
 		virtualSlotsJFrame = new VirtualSlotsJFrame();
-
+		// set size and location on screen
+		System.out.println("showing keypad");
 		keypadJFrame.calcBounds();
-		monitorJFrame.calcBounds(50, 50, 600, 400, 75);
+		System.out.println("showing virtual slots");
 		virtualSlotsJFrame.calcBounds();
+		System.out.println("showing monitor");
+		monitorJFrame.calcBounds(50, 50, 600, 400, 75);
 	}
 
 	protected void start() {
-		showAll();
-	}
-
-	private void showAll() {
-		System.out.println("showing keypad");
-		keypadJFrame.setVisible(true);
-		System.out.println("showing monitor");
-		monitorJFrame.setVisible(true);
-		System.out.println("showing virtual slots");
-		virtualSlotsJFrame.setVisible(true);
 	}
 
 	public void end() {
