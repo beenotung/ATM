@@ -46,11 +46,6 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 		switchToCard(STRING_CARD_INSIDE);
 	}
 
-	public void removeCard() {
-		CardInsideJPanel.removeCardStatic();
-		switchToCard(STRING_SELECT_CARD);
-	}
-
 	/** static-instance connector **/
 	public static void switchToCardStatic(String label) {
 		for (CardSlotCardJPanel cardSlotCardJPanel : contents) {
@@ -71,7 +66,8 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 	}
 
 	public static void takeCardStatic() {
-		CardInsideJPanel.removeCardStatic();
+		System.out.println("card taken by user");
+		CardInsideJPanel.removeCard();
 		switchToCardStatic(STRING_SELECT_CARD);
 		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_WELCOME);
 	}

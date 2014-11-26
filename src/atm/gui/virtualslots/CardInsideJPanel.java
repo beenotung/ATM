@@ -34,14 +34,10 @@ public class CardInsideJPanel extends JPanel {
 	}
 
 	public void popCard() {
-		System.out.println("pop2");
 		card.labelDark.setVisible(false);
 		card.buttonTake.setVisible(true);
 	}
 
-	public void removeCard() {
-		card = null;
-	}
 
 	public static void insertCardStatic(Card card) {
 		for (CardInsideJPanel cardInsideJPanel : contents)
@@ -53,9 +49,8 @@ public class CardInsideJPanel extends JPanel {
 			cardInsideJPanel.popCard();
 	}
 
-	public static void removeCardStatic() {
-		for (CardInsideJPanel cardInsideJPanel : contents)
-			card = null;
+	public static void removeCard() {
+		CardInsideJPanel.card = null;
 	}
 
 }

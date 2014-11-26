@@ -11,6 +11,8 @@ public class MyStrings {
 	public static final String CONTACTS_US = "Please contact CC Bank (9876-5432)";
 	public static final String WRONG_INPUT = "Invalid inputs";
 	public static final String BYE = "Thank you for using our service. Have a good day!";
+	public static final String BYE1 = "Thank you for using our service.";
+	public static final String BYE2 = "Have a good day!";
 	public static final String ACCOUNT_NOT_FOUND = "The account is not found";
 	public static final String TRANSFER_SAME_ACCOUNT = "Please do not transfer to the same account";
 	public static final String TRANSFER_SUCCEED = "The transfer has been done";

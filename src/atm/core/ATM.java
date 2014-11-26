@@ -273,7 +273,7 @@ public class ATM {
 	}
 
 	public static void readCard(Card card) {
-		System.out.println("inserted card:" + card.accountNumber);
+		System.out.println("reading inserted card:" + card.accountNumber);
 		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_READCARD);
 		(new WaitReadCard(card)).start();
 	}
