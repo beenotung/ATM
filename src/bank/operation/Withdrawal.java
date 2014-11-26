@@ -25,7 +25,6 @@ import myutil.exception.WrongInputException;
 public class Withdrawal extends Transaction {
 	private int amount; // amount to withdraw
 	private ATM atm;
-	private CashDispenser cashDispenser; // reference to cash dispenser
 
 	// constant corresponding to menu option to cancel
 	private static int CANCELED;
@@ -36,14 +35,12 @@ public class Withdrawal extends Transaction {
 		// initialize superclass variables
 		super(atm);
 		this.atm = atm;
-		cashDispenser = atm.getCashDispenser();
 		CANCELED = MyStaticStuff.MenuCashValue.length + 2;
 	} // end Withdrawal constructor
 
 	@Override
 	// perform transaction
-	public void execute() throws WrongInputException, AccountNotFoundException,
-			CardOutException {
+	public void execute() throws WrongInputException, AccountNotFoundException, CardOutException {
 		boolean cashDispensed = false; // cash was not dispensed yet
 		int tryCount = 0;
 		// loop until cash is dispensed or the user cancels
@@ -61,28 +58,25 @@ public class Withdrawal extends Transaction {
 			try {
 				try {
 					if (!Account.isMyBankAccount(getAccountNumber()))
-						if (!BankDatabase.getAccount(getAccountNumber()).isEnough(
-								amount))
+						if (!BankDatabase.getAccount(getAccountNumber()).isEnough(amount))
 							throw new OverdrawnException();
 					Vector<CashCount> cashPop = CashDispenser.dispenseCash(amount);
 					if (!Account.isMyBankAccount(getAccountNumber()))
-						BankDatabase.debit(getAccountNumber(),
-								MyStaticStuff.EXTRA_CHARGE);
+						BankDatabase.debit(getAccountNumber(), MyStaticStuff.EXTRA_CHARGE);
 					BankDatabase.debit(getAccountNumber(), amount);
 					cashDispensed = true; // cash was dispensed
 					atm.popCash(cashPop);
 				} catch (OverdrawnException e) {
 					getScreen().displayMessageLine(
-							MyStrings.getOverDrawnMessage(BankDatabase.getAccount(
-									getAccountNumber()).getOverdrawnLimit()));
+							MyStrings.getOverDrawnMessage(BankDatabase.getAccount(getAccountNumber())
+									.getOverdrawnLimit()));
 					MyStaticStuff.sleep();
 				}
 			} catch (CashNotEnoughException e) {
 				// cash dispenser does not have enough cash
 				getScreen().displayMessageLine(
 						"\nInsufficient cash available in the ATM." + "\n Avaliabe cash:"
-								+ CashDispenser.getAmount()
-								+ "\n\nPlease choose a smaller amount.");
+								+ CashDispenser.getAmount() + "\n\nPlease choose a smaller amount.");
 				MyStaticStuff.sleep();
 			} // dispense cash
 		} while ((!cashDispensed) && (tryCount < MyInputHandler.MAXWRONGINPUT));

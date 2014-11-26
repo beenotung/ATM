@@ -1,25 +1,19 @@
 package atm.gui.mainscreen;
 
 import java.awt.Font;
-import java.util.Random;
 import java.util.Vector;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 
-import myutils.Utils;
 import atm.core.CashDispenser;
+import atm.gui.MyGUISettings;
 import atm.gui.notes.CashNote100;
 import atm.gui.notes.CashNote1000;
 import atm.gui.notes.CashNote500;
 import atm.utils.CashCount;
 
-import javax.swing.BoxLayout;
-
-import webs.layout.WrapLayout;
-
 import java.awt.FlowLayout;
-import java.awt.Panel;
 
 public class AvailableCashNotesJPanel extends JPanel {
 	private static Vector<AvailableCashNotesJPanel> contents = new Vector<AvailableCashNotesJPanel>();
@@ -58,7 +52,7 @@ public class AvailableCashNotesJPanel extends JPanel {
 		} else {
 			label.setText("This ATM provide the following types of cash note");
 		}
-		label.setFont(new Font("Arial", Font.PLAIN, 26));
+		label.setFont(MyGUISettings.getFont(26));
 
 		removeAll();
 

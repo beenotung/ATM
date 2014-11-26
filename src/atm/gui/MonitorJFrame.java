@@ -1,7 +1,6 @@
 package atm.gui;
 
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 
 import atm.gui.mainscreen.MainScreenCardJPanel;
 import atm.gui.sidebuttons.LeftSideButtonsJPanel;
@@ -19,7 +18,6 @@ public class MonitorJFrame extends JFrame {
 	private LeftSideButtonsJPanel leftSideButtonsJPanel;
 	private RightSideButtonsJPanel rightSideButtonsJPanel;
 	private MainScreenCardJPanel mainScreenJPanel;
-	private JInternalFrame internalFrame;
 
 	public MonitorJFrame() throws MalformedURLException {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -34,13 +32,8 @@ public class MonitorJFrame extends JFrame {
 		rightSideButtonsJPanel = new RightSideButtonsJPanel();
 		getContentPane().add(rightSideButtonsJPanel, BorderLayout.EAST);
 
-		// JInternalFrame internalFrame = new JInternalFrame("ATM Main Screen");
-		// getContentPane().add(internalFrame, BorderLayout.CENTER);
 		mainScreenJPanel = new MainScreenCardJPanel();
 		getContentPane().add(mainScreenJPanel, BorderLayout.CENTER);
-		// internalFrame.getContentPane().add(mainScreenJPanel,BorderLayout.CENTER);
-		// internalFrame.setVisible(true);
-
 	}
 
 	public void calcBounds(int x, int y, int w, int h, int s) {

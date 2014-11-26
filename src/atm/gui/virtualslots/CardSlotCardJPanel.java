@@ -3,7 +3,6 @@ package atm.gui.virtualslots;
 import java.util.Vector;
 
 import atm.core.ATM;
-import myutils.Utils;
 import myutils.gui.cardlayout.AbstractCardJPanel;
 
 public class CardSlotCardJPanel extends AbstractCardJPanel {
@@ -17,6 +16,7 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 	public static final String STRING_SELECT_CARD = "Select Card";
 	public static final String STRING_CARD_INSIDE = "Card Inside";
 
+	/** constructor **/
 	public CardSlotCardJPanel() {
 		contents.add(this);
 	}
@@ -28,6 +28,29 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 		switchToCard(STRING_SELECT_CARD);
 	}
 
+	/** static methods **/
+	public static boolean hasCard() {
+		return CardInsideJPanel.hasCard();
+	}
+
+	/** instance methods **/
+	public void insertCard(Card card) {
+		CardInsideJPanel.insertCardStatic(card);
+		switchToCard(STRING_CARD_INSIDE);
+		ATM.readCard(card);
+	}
+
+	public void popCard() {
+		CardInsideJPanel.popCardStatic();
+		switchToCard(STRING_CARD_INSIDE);
+	}
+
+	public void removeCard() {
+		CardInsideJPanel.removeCardStatic();
+		switchToCard(STRING_SELECT_CARD);
+	}
+
+	/** static-instance connector **/
 	public static void switchToCardStatic(String label) {
 		for (CardSlotCardJPanel cardSlotCardJPanel : contents) {
 			cardSlotCardJPanel.switchToCard(label);
@@ -40,19 +63,10 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 		}
 	}
 
-	public static void takeCardStatic() {
+	public static void popCardStatic() {
 		for (CardSlotCardJPanel cardSlotCardJPanel : contents) {
-			cardSlotCardJPanel.takeCard();
+			cardSlotCardJPanel.popCard();
 		}
 	}
 
-	private void insertCard(Card card) {
-		CardInsideJPanel.insertCardStatic(card);
-		switchToCard(STRING_CARD_INSIDE);
-		ATM.insertCard(card);
-	}
-
-	private void takeCard() {
-		// TODO takecard
-	}
 }

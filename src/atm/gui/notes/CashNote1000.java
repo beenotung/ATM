@@ -5,12 +5,9 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import atm.utils.MyStrings;
 import atm.utils.MyURLs;
 
-public class CashNote1000 {
+public class CashNote1000 implements CashNote{
 	public static ImageIcon imageIcon;
 	public static JLabel jLabel;
 	public static int value;

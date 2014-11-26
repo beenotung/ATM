@@ -5,15 +5,14 @@ import java.net.MalformedURLException;
 import atm.gui.notes.CashNote100;
 import atm.gui.notes.CashNote1000;
 import atm.gui.notes.CashNote500;
+import atm.gui.virtualslots.Card;
 
 public class ATMGUILauncher {
 	JFrameManager frameManager;
 
-	public ATMGUILauncher() throws MalformedURLException {
+	public ATMGUILauncher() throws MalformedURLException{
 		System.out.println("fetching images");
-		CashNote100.init();
-		CashNote500.init();
-		CashNote1000.init();
+		fetchImages();
 		System.out.println("initializing GUI");
 		frameManager = new JFrameManager();
 	}
@@ -27,4 +26,10 @@ public class ATMGUILauncher {
 		frameManager.start();
 	}
 
+	public void fetchImages() throws MalformedURLException {
+		Card.init();		
+		CashNote100.init();
+		CashNote500.init();
+		CashNote1000.init();
+	}
 }

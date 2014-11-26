@@ -13,7 +13,6 @@ import atm.gui.MyGUISettings;
 import atm.utils.MyURLs;
 
 import java.awt.Image;
-import java.awt.BorderLayout;
 import javax.swing.BoxLayout;
 import java.awt.Component;
 import javax.swing.Box;

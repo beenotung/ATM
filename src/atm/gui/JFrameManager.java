@@ -2,9 +2,6 @@ package atm.gui;
 
 import java.net.MalformedURLException;
 
-import atm.gui.notes.CashNote100;
-import atm.gui.notes.CashNote1000;
-import atm.gui.notes.CashNote500;
 import atm.gui.virtualslots.VirtualSlotsJFrame;
 
 public class JFrameManager {

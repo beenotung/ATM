@@ -10,7 +10,9 @@ import bank.operation.BalanceInquiry;
 import bank.operation.Transaction;
 import bank.operation.Transfer;
 import bank.operation.Withdrawal;
+import atm.gui.mainscreen.MainScreenCardJPanel;
 import atm.gui.virtualslots.Card;
+import atm.gui.virtualslots.CardSlotCardJPanel;
 import atm.utils.CashCount;
 import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
@@ -269,29 +271,21 @@ public class ATM {
 		}
 		return true;
 	}
-	
-	public static void insertCard(Card card) {
-		System.out.println("inserted card:"+card.accountNumber);		
+
+	public static void readCard(Card card) {
+		System.out.println("inserted card:" + card.accountNumber);
+		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_READCARD);
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+		}
 		if (checkUserValid(card.accountNumber)) {
 			System.out.println("the card is valid");
-			
+			MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_LOGIN);
 		} else {
-			System.out.println("the card is NOT valid");
-			System.out.println("Your card is not identified, Please contact 987655");
-			String a = "Your card is not identified, Please contact 987655";
+			System.out.println(MyStrings.CARD_NOT_VALID);
+			MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_CARD_NOT_VALID);
+			CardSlotCardJPanel.popCardStatic();
 		}
 	}
 } // end class ATM
-
-/**************************************************************************
- * (C) Copyright 1992-2007 by Deitel & Associates, Inc. and * Pearson Education,
- * Inc. All Rights Reserved. * * DISCLAIMER: The authors and publisher of this
- * book have used their * best efforts in preparing the book. These efforts
- * include the * development, research, and testing of the theories and programs
- * * to determine their effectiveness. The authors and publisher make * no
- * warranty of any kind, expressed or implied, with regard to these * programs
- * or to the documentation contained in these books. The authors * and publisher
- * shall not be liable in any event for incidental or * consequential damages in
- * connection with, or arising out of, the * furnishing, performance, or use of
- * these programs. *
- *************************************************************************/

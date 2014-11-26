@@ -1,17 +1,13 @@
 package atm.gui.notes;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import atm.utils.MyStrings;
 import atm.utils.MyURLs;
 
-public class CashNote100 {
+public class CashNote100 implements CashNote{
 	public static ImageIcon imageIcon;
 	public static JLabel jLabel;
 	public static int value;

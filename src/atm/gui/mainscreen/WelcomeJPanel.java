@@ -5,6 +5,8 @@ import java.util.Vector;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 
+import atm.gui.MyGUISettings;
+
 public class WelcomeJPanel extends JPanel {
 	/**
 	 * 
@@ -18,6 +20,7 @@ public class WelcomeJPanel extends JPanel {
 
 	public WelcomeJPanel() {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 
 		bannerJPanel = new BannerJPanel();
 		add(bannerJPanel);
