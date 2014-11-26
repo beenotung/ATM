@@ -65,7 +65,7 @@ public class Card {
 				MyGUISettings.CARD_IMAGE_WIDTH, MyGUISettings.CARD_IMAGE_HEIGHT, Image.SCALE_SMOOTH));
 		buttonInsert = new JButton(imageIconBright);
 		buttonInsert.addActionListener(getInsertActionListener(this));
-		buttonTake = new JButton(imageIconBright);
+		buttonTake = new JButton(new ImageIcon(imageIconBright.getImage()));
 		buttonTake.addActionListener(getTakeActionListener(this));
 		labelDark = new JLabel(imageIconDark);
 		this.accountNumber = accountNumber;

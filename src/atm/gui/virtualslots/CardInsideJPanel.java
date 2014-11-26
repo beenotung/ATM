@@ -28,11 +28,15 @@ public class CardInsideJPanel extends JPanel {
 		CardInsideJPanel.card = card;
 		removeAll();
 		add(card.labelDark);
+		card.labelDark.setVisible(true);
+		add(card.buttonTake);
+		card.buttonTake.setVisible(false);
 	}
 
 	public void popCard() {
-		removeAll();
-		add(card.buttonTake);
+		System.out.println("pop2");
+		card.labelDark.setVisible(false);
+		card.buttonTake.setVisible(true);
 	}
 
 	public void removeCard() {
