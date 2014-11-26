@@ -5,6 +5,7 @@ import java.util.Vector;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 
+import atm.core.ATM;
 import atm.gui.MyGUISettings;
 
 public class WelcomeJPanel extends JPanel {
@@ -31,6 +32,7 @@ public class WelcomeJPanel extends JPanel {
 
 	public void showMe() {
 		availableCashNotesJPanel.myUpdate();
+		ATM.initStatic();
 	}
 
 	public static void showMeStatic() {

@@ -25,7 +25,7 @@ import myutil.exception.WrongInputException;
 // Represents an automated teller machine
 
 public class ATM {
-	private Vector<ATM> atms = new Vector<ATM>();
+	private static Vector<ATM> atms = new Vector<ATM>();
 
 	private boolean userAuthenticated; // whether user is authenticated
 	public static String currentAccountNumber; // current user's account number
@@ -34,6 +34,7 @@ public class ATM {
 	private CashDispenser cashDispenser; // ATM's cash dispenser
 	private BankDatabase bankDatabase; // account information database
 	private UI ui;
+	private int wrongCount;
 
 	// constants corresponding to main menu options
 	private static final int BALANCE_INQUIRY = 1;
@@ -44,14 +45,20 @@ public class ATM {
 	// no-argument ATM constructor initializes instance variables
 	public ATM() {
 		atms.add(this);
-		userAuthenticated = false; // user is not authenticated to start
-		currentAccountNumber = "0"; // no current account number to start
 		screen = new Screen(); // create screen
 		keypad = new Keypad(screen); // create keypad
 		cashDispenser = new CashDispenser(); // create cash dispenser
 		bankDatabase = new BankDatabase(); // create acct info database
 		ui = new UI(screen, bankDatabase, keypad);
+		init();
 	} // end no-argument ATM constructor
+
+	public void init() {
+		// user is not authenticated to start/restart
+		userAuthenticated = false;
+		// no current account number to start/restart
+		currentAccountNumber = "0";
+	}
 
 	/** getters **/
 	public UI getUI() {
@@ -84,7 +91,7 @@ public class ATM {
 			// loop while user is not yet authenticated
 			while (!userAuthenticated) {
 				screen.displayMessageLine("\nWelcome to CC Bank ATM!");
-				authenticateUser();
+				authenticateUser_old();
 			} // end while
 
 			try {
@@ -110,7 +117,8 @@ public class ATM {
 	} // end method run
 
 	// attempts to authenticate user against database
-	private void authenticateUser() {
+	@Deprecated
+	private void authenticateUser_old() {
 		// get account number from user
 		String accountNumber = "";
 		String pin = "";
@@ -148,7 +156,7 @@ public class ATM {
 			return;
 		}
 		// set userAuthenticated to boolean value returned by database
-		userAuthenticated = BankDatabase.authenticateUser(accountNumber, pin);
+		userAuthenticated = BankDatabase.authenticateUser_old(accountNumber, pin);
 
 		// check whether authentication succeeded
 		if (userAuthenticated) {
@@ -159,6 +167,14 @@ public class ATM {
 			MyStaticStuff.sleep();
 		}
 	} // end method authenticateUser
+
+	private void authenticateUser(char[] pin) {
+		userAuthenticated = BankDatabase.authenticateUser(currentAccountNumber, pin);
+		if (!userAuthenticated) {
+			wrongCount++;
+			LoginJPanel.showMeWrongStatic(wrongCount);
+		}
+	}
 
 	// display the main menu and perform transactions
 	private void performTransactions(Vector<Account> accounts) throws CardOutException, WrongInputException,
@@ -282,11 +298,25 @@ public class ATM {
 	public static void checkCard(Card card) {
 		if (checkUserValid(card.accountNumber)) {
 			System.out.println("the card is valid");
+			currentAccountNumber = card.accountNumber;
 			LoginJPanel.showMeStatic();
 		} else {
 			System.out.println(MyStrings.CARD_NOT_VALID);
 			MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_CARD_NOT_VALID);
 			CardSlotCardJPanel.popCardStatic();
+		}
+	}
+
+	/** static connectors to instance methods **/
+	public static void initStatic() {
+		for (ATM atm : atms) {
+			atm.init();
+		}
+	}
+
+	public static void authenticateUserStatic(char[] pin) {
+		for (ATM atm : atms) {
+			atm.authenticateUser(pin);
 		}
 	}
 

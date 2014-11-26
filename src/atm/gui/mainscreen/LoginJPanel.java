@@ -15,6 +15,7 @@ import java.util.Vector;
 import atm.core.Keypad;
 import atm.gui.MyGUISettings;
 import atm.gui.keypad.KeypadJFrame;
+import atm.utils.MyStrings;
 
 public class LoginJPanel extends JPanel {
 	/**
@@ -24,6 +25,7 @@ public class LoginJPanel extends JPanel {
 	private static Vector<LoginJPanel> contents = new Vector<LoginJPanel>();
 
 	private JPasswordField passwordField;
+	private JLabel lblWrongPassword;
 
 	public LoginJPanel() {
 		contents.add(this);
@@ -37,9 +39,15 @@ public class LoginJPanel extends JPanel {
 		Component horizontalGlue = Box.createHorizontalGlue();
 		horizontalBox.add(horizontalGlue);
 
-		JLabel label = new JLabel("Please input the password");
-		horizontalBox.add(label);
-		label.setFont(MyGUISettings.getFont(26));
+		Box verticalBox = Box.createVerticalBox();
+		horizontalBox.add(verticalBox);
+
+		lblWrongPassword = new JLabel("Wrong PIN");
+		verticalBox.add(lblWrongPassword);
+
+		JLabel lblInputPassword = new JLabel("Please input the password");
+		verticalBox.add(lblInputPassword);
+		lblInputPassword.setFont(MyGUISettings.getFont(26));
 
 		Component horizontalGlue_1 = Box.createHorizontalGlue();
 		horizontalBox.add(horizontalGlue_1);
@@ -51,6 +59,16 @@ public class LoginJPanel extends JPanel {
 
 	/** instance methods **/
 	public void showMe() {
+		lblWrongPassword.setVisible(false);
+		passwordField.setText("");
+		KeypadJFrame.switchTargetStatic(passwordField, KeypadJFrame.STRING_MODE_PASSWORD);
+		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_LOGIN);
+	}
+
+	public void showMeWrong(int wrongCount) {
+		lblWrongPassword.setText("Wrong PIN (" + wrongCount + ")");
+		lblWrongPassword.setVisible(true);
+		passwordField.setText("");
 		KeypadJFrame.switchTargetStatic(passwordField, KeypadJFrame.STRING_MODE_PASSWORD);
 		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_LOGIN);
 	}
@@ -59,6 +77,12 @@ public class LoginJPanel extends JPanel {
 	public static void showMeStatic() {
 		for (LoginJPanel loginJPanel : contents) {
 			loginJPanel.showMe();
+		}
+	}
+
+	public static void showMeWrongStatic(int wrongCount) {
+		for (LoginJPanel loginJPanel : contents) {
+			loginJPanel.showMeWrong(wrongCount);
 		}
 	}
 }

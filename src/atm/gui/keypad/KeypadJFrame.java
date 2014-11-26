@@ -12,15 +12,19 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
+import javax.swing.JPasswordField;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
+
+import atm.core.ATM;
 
 public class KeypadJFrame extends JFrame {
 	private static Vector<KeypadJFrame> contents = new Vector<KeypadJFrame>();
 
 	public static final String STRING_MODE_PASSWORD = "Password";
 	public static final String STRING_MODE_ACCOUNTNUMBER = "AccountNumber";
-	public static final String STRING_MODE_Amount = "Amount";
+	public static final String STRING_MODE_AMOUNT = "Amount";
+	public static final String STRING_MODE_NULL = "Null";
 	private String mode;
 	private boolean dotEnable;
 	private int maxLength;
@@ -55,14 +59,17 @@ public class KeypadJFrame extends JFrame {
 		{
 			JButton button = new JButton(KeyPadButtonIcons.IMAGEICON_CANCEL);
 			keys[10] = button;
+			button.addActionListener(getCancelActionListener());
 		}
 		{
 			JButton button = new JButton(KeyPadButtonIcons.IMAGEICON_CLEAR);
 			keys[11] = button;
+			button.addActionListener(getClearActionListener());
 		}
 		{
 			JButton button = new JButton(KeyPadButtonIcons.IMAGEICON_ENTER);
 			keys[12] = button;
+			button.addActionListener(getEnterActionListener());
 		}
 		keys[13] = new JPanel();
 		{
@@ -107,13 +114,17 @@ public class KeypadJFrame extends JFrame {
 			dotEnable = false;
 			maxLength = 5;
 			break;
-		case STRING_MODE_Amount:
+		case STRING_MODE_AMOUNT:
 			dotEnable = true;
 			maxLength = 8;
 			break;
 		case STRING_MODE_ACCOUNTNUMBER:
 			dotEnable = false;
 			maxLength = 13;
+			break;
+		case STRING_MODE_NULL:
+			dotEnable = false;
+			maxLength = 0;
 			break;
 		}
 	}
@@ -176,6 +187,36 @@ public class KeypadJFrame extends JFrame {
 				} catch (BadLocationException e1) {
 					insertTextAlternative(".");
 				} catch (NullPointerException e2) {
+				}
+			}
+		};
+	}
+
+	private ActionListener getCancelActionListener() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO cancel function key: return to main menu
+			}
+		};
+	}
+
+	private ActionListener getClearActionListener() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				textComponent.setText("");
+			}
+		};
+	}
+
+	private ActionListener getEnterActionListener() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				switch (mode) {
+				case STRING_MODE_PASSWORD:
+					ATM.authenticateUserStatic(((JPasswordField) textComponent).getPassword());
 				}
 			}
 		};
