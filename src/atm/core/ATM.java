@@ -3,6 +3,7 @@ package atm.core;
 import java.util.Vector;
 
 import javax.security.auth.login.AccountNotFoundException;
+import javax.swing.text.AbstractDocument.Content;
 
 import bank.account.Account;
 import bank.database.BankDatabase;
@@ -25,7 +26,7 @@ import myutil.exception.WrongInputException;
 // Represents an automated teller machine
 
 public class ATM {
-	private static Vector<ATM> atms = new Vector<ATM>();
+	private static ATM atm = null;
 
 	private boolean userAuthenticated; // whether user is authenticated
 	public static String currentAccountNumber; // current user's account number
@@ -43,8 +44,7 @@ public class ATM {
 	private static final int EXIT = 4;
 
 	// no-argument ATM constructor initializes instance variables
-	public ATM() {
-		atms.add(this);
+	private ATM() {
 		screen = new Screen(); // create screen
 		keypad = new Keypad(screen); // create keypad
 		cashDispenser = new CashDispenser(); // create cash dispenser
@@ -61,6 +61,12 @@ public class ATM {
 	}
 
 	/** getters **/
+	public static ATM getATM() {
+		if (atm == null)
+			atm = new ATM();
+		return atm;
+	}
+
 	public UI getUI() {
 		return ui;
 	}
@@ -168,12 +174,15 @@ public class ATM {
 		}
 	} // end method authenticateUser
 
-	private void authenticateUser(char[] pin) {
+	public void authenticateUser(char[] pin) {
+		System.out.println("attend to login");
 		userAuthenticated = BankDatabase.authenticateUser(currentAccountNumber, pin);
 		if (!userAuthenticated) {
 			wrongCount++;
+			System.out.println("wrong pin");
 			LoginJPanel.showMeWrongStatic(wrongCount);
 		}
+		System.out.println("logged in");
 	}
 
 	// display the main menu and perform transactions
@@ -280,15 +289,6 @@ public class ATM {
 		MyStaticStuff.sleep();
 	}
 
-	public static boolean checkUserValid(String accountNumber) {
-		try {
-			Integer.parseInt(accountNumber);
-		} catch (NumberFormatException e) {
-			return false;
-		}
-		return true;
-	}
-
 	public static void readCard(Card card) {
 		System.out.println("reading inserted card:" + card.accountNumber);
 		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_READCARD);
@@ -296,27 +296,15 @@ public class ATM {
 	}
 
 	public static void checkCard(Card card) {
-		if (checkUserValid(card.accountNumber)) {
+		try {
+			currentAccountNumber = String.valueOf(Integer.parseInt(card.accountNumber));
 			System.out.println("the card is valid");
-			currentAccountNumber = card.accountNumber;
 			LoginJPanel.showMeStatic();
-		} else {
+		} catch (NumberFormatException e) {
+			currentAccountNumber = "0";
 			System.out.println(MyStrings.CARD_NOT_VALID);
 			MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_CARD_NOT_VALID);
 			CardSlotCardJPanel.popCardStatic();
-		}
-	}
-
-	/** static connectors to instance methods **/
-	public static void initStatic() {
-		for (ATM atm : atms) {
-			atm.init();
-		}
-	}
-
-	public static void authenticateUserStatic(char[] pin) {
-		for (ATM atm : atms) {
-			atm.authenticateUser(pin);
 		}
 	}
 
@@ -336,6 +324,12 @@ public class ATM {
 			}
 			ATM.checkCard(card);
 		}
+	}
+
+	/** static connectors to instance methods **/
+	public static void initStatic() {
+		ATM.atm = new ATM();
+		atm.init();
 	}
 
 } // end class ATM

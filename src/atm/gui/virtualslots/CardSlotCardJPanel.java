@@ -42,8 +42,8 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 	}
 
 	public void popCard() {
-		CardInsideJPanel.popCardStatic();
 		switchToCard(STRING_CARD_INSIDE);
+		CardInsideJPanel.popCardStatic();
 	}
 
 	/** static-instance connector **/

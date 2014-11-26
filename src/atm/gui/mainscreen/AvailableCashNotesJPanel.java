@@ -14,6 +14,12 @@ import atm.utils.CashCount;
 
 import java.awt.FlowLayout;
 
+import javax.swing.BoxLayout;
+
+import sun.org.mozilla.javascript.WrapFactory;
+import webs.layout.CircleLayout;
+import webs.layout.WrapLayout;
+
 public class AvailableCashNotesJPanel extends JPanel {
 	private static Vector<AvailableCashNotesJPanel> contents = new Vector<AvailableCashNotesJPanel>();
 	private JLabel label;
@@ -21,8 +27,10 @@ public class AvailableCashNotesJPanel extends JPanel {
 
 	public AvailableCashNotesJPanel() {
 		contents.add(this);
-		setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		// setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setLayout(new WrapLayout());
+
 		label = new JLabel();
 		add(label);
 

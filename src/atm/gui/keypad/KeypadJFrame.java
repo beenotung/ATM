@@ -102,7 +102,7 @@ public class KeypadJFrame extends JFrame {
 		for (int i = 10; i <= 13; i++)
 			functionKeysJPanel.add(keys[i]);
 
-		switchMode(STRING_MODE_PASSWORD);
+		switchMode(STRING_MODE_NULL);
 		switchTarget(null);
 	} // end CalculatorFrame constructor
 
@@ -216,7 +216,9 @@ public class KeypadJFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				switch (mode) {
 				case STRING_MODE_PASSWORD:
-					ATM.authenticateUserStatic(((JPasswordField) textComponent).getPassword());
+					System.out.println("[Enter] password mode");
+					ATM.getATM().authenticateUser(((JPasswordField) textComponent).getPassword());
+					break;
 				}
 			}
 		};

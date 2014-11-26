@@ -42,6 +42,7 @@ public class LeftSideButtonsJPanel extends JPanel {
 		JPanel centerPanel = new JPanel();
 		add(centerPanel);
 		centerPanel.setLayout(new GridLayout(4, 1, 0, 0));
+		centerPanel.setBackground(MyGUISettings.getATMShellColor());
 
 		Component bottomVerticalStrut = Box.createVerticalStrut(25);
 		add(bottomVerticalStrut);

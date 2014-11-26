@@ -63,11 +63,14 @@ public class ATMGUILauncher {
 	}
 
 	public void fetchImages() throws MalformedURLException {
+		System.out.println("fetching images of cards");
 		Card.init();
-		KeyPadButtonIcons.init();
+		System.out.println("fetching images of cash notes");
 		CashNote100.init();
 		CashNote500.init();
 		CashNote1000.init();
+		System.out.println("fetching images of keypads");
+		KeyPadButtonIcons.init();
 		LeftSideButtonsJPanel.init();
 		RightSideButtonsJPanel.init();
 	}
