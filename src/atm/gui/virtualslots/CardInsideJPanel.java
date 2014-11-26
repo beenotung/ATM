@@ -14,25 +14,31 @@ public class CardInsideJPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Vector<Card> cards;
+	private static Vector<CardInsideJPanel> contents = new Vector<CardInsideJPanel>();
 
 	public CardInsideJPanel() {
-		cards = new Vector<Card>();
-		try {
-			cards.add(new Card(MyURLs.IMAGE_CARD1, MyURLs.IMAGE_CARD1_DARK, "12356"));
-			cards.add(new Card(MyURLs.IMAGE_CARD2, MyURLs.IMAGE_CARD2_DARK, "12369"));
-			cards.add(new Card(MyURLs.IMAGE_CARD3, MyURLs.IMAGE_CARD3_DARK, "45678"));
-			cards.add(new Card(MyURLs.IMAGE_CARD4, MyURLs.IMAGE_CARD4_DARK, "E3545"));
+		contents.add(this);
+	}
 
-			for (Card card : cards) {
-				add(card.button);
-			}
-		} catch (MalformedURLException e) {
-			System.out.println(MyStrings.INTERNET_ERROR);
-			JOptionPane.showMessageDialog(getParent(), MyStrings.INTERNET_ERROR, "Internet Error",
-					JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
+	public void insertCard(Card card) {
+		removeAll();
+		add(card.labelDark);
+	}
+
+	public void popCard(Card card) {
+		removeAll();
+		add(card.buttonTake);
+	}
+
+	public static void insertCardStatic(Card card) {
+		for (CardInsideJPanel cardInsideJPanel : contents) {
+			cardInsideJPanel.insertCard(card);
 		}
 	}
 
+	public static void popStatic(Card card) {
+		for (CardInsideJPanel cardInsideJPanel : contents) {
+			cardInsideJPanel.insertCard(card);
+		}
+	}
 }
