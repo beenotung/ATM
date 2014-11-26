@@ -2,7 +2,9 @@ package atm.gui;
 
 import javax.swing.JFrame;
 
+import atm.gui.mainscreen.MainMenuJPanel;
 import atm.gui.mainscreen.MainScreenCardJPanel;
+import atm.gui.mainscreen.ViewBalanceJPanel;
 import atm.gui.sidebuttons.LeftSideButtonsJPanel;
 import atm.gui.sidebuttons.RightSideButtonsJPanel;
 
@@ -13,6 +15,8 @@ public class MonitorJFrame extends JFrame {
 	private LeftSideButtonsJPanel leftSideButtonsJPanel;
 	private RightSideButtonsJPanel rightSideButtonsJPanel;
 	private MainScreenCardJPanel mainScreenJPanel;
+
+	public static String STATE = "";
 
 	public MonitorJFrame() throws MalformedURLException {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -33,12 +37,24 @@ public class MonitorJFrame extends JFrame {
 	}
 
 	public void calcBounds(int w, int h, int s) {
-		setVisible(true);		
-		setBounds(10,10, w + s * 2, h);
+		setVisible(true);
+		setBounds(10, 10, w + s * 2, h);
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
+	}
+
+	public static void sideButtonClick(String label) {
+		switch (STATE) {
+		case MainScreenCardJPanel.STRING_MAIN_MENU:
+			switch (label) {
+			case MainMenuJPanel.STRING_VIEW_BALANCE:
+				ViewBalanceJPanel.showMe();
+				break;
+			}
+			break;
+		}
 	}
 }

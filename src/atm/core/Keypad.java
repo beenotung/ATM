@@ -5,9 +5,9 @@ package atm.core;
 // Represents the keypad of the ATM
 import java.util.Scanner; // program uses Scanner to obtain user input
 
+import atm.exception.WrongInputException;
 import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
-import myutil.exception.WrongInputException;
 
 public class Keypad {
 	private Screen screen;
@@ -35,7 +35,7 @@ public class Keypad {
 				ok = false;
 				MyStaticStuff.sleep();
 			}
-		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
 		if (!ok)
 			throw new WrongInputException();
 		else
@@ -60,7 +60,7 @@ public class Keypad {
 				ok = false;
 				MyStaticStuff.sleep();
 			}
-		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
 		if (!ok)
 			throw new WrongInputException();
 		else
@@ -82,7 +82,7 @@ public class Keypad {
 				ok = false;
 				MyStaticStuff.sleep();
 			}
-		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
 		if (!ok)
 			throw new WrongInputException();
 		else
@@ -106,7 +106,7 @@ public class Keypad {
 				ok = false;
 				MyStaticStuff.sleep();
 			}
-		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
 		if (!ok)
 			throw new WrongInputException();
 		else

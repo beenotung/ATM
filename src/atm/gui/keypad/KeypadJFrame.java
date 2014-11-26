@@ -182,8 +182,11 @@ public class KeypadJFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if ((!hasDot()) && dotEnable)
+					if ((!hasDot()) && dotEnable) {
+						if (textComponent.getDocument().getLength() == 0)
+							insertText("0");
 						insertText(".");
+					}
 				} catch (BadLocationException e1) {
 					insertTextAlternative(".");
 				} catch (NullPointerException e2) {

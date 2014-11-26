@@ -10,14 +10,14 @@ import atm.core.ATM;
 import atm.core.CashDispenser;
 import atm.core.Screen;
 import atm.core.UI;
+import atm.exception.CardOutException;
+import atm.exception.CashNotEnoughException;
+import atm.exception.OverdrawnException;
+import atm.exception.WrongInputException;
 import atm.utils.CashCount;
 import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
 import atm.utils.MyStrings;
-import myutil.exception.CardOutException;
-import myutil.exception.CashNotEnoughException;
-import myutil.exception.OverdrawnException;
-import myutil.exception.WrongInputException;
 
 // Withdrawal.java
 // Represents a withdrawal ATM transaction
@@ -79,7 +79,7 @@ public class Withdrawal extends Transaction {
 								+ CashDispenser.getAmount() + "\n\nPlease choose a smaller amount.");
 				MyStaticStuff.sleep();
 			} // dispense cash
-		} while ((!cashDispensed) && (tryCount < MyInputHandler.MAXWRONGINPUT));
+		} while ((!cashDispensed) && (tryCount < MyInputHandler.MAX_WRONG_INPUT));
 	} // end method execute
 
 	// display a menu of withdrawal amounts and the option to cancel;
@@ -133,7 +133,7 @@ public class Withdrawal extends Transaction {
 				ui.screen.displayMessageLine("Invalid input");
 				MyStaticStuff.sleep();
 			}
-		} while ((wrongInputCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		} while ((wrongInputCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
 		if (!ok)
 			throw new WrongInputException();
 		return amount;

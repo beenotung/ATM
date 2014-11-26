@@ -40,4 +40,5 @@ public class MyStaticStuff {
 						+ cashCount.getCount());
 		return cashValuesStrings.toString();
 	}
+
 }

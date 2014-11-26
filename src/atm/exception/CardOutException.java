@@ -1,4 +1,4 @@
-package myutil.exception;
+package atm.exception;
 
 public class CardOutException extends Exception {
 	/**

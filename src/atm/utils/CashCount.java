@@ -1,6 +1,6 @@
 package atm.utils;
 
-import myutil.exception.CashNotEnoughException;
+import atm.exception.CashNotEnoughException;
 
 public class CashCount {
 	private final int value;

@@ -2,8 +2,8 @@ package atm.core;
 
 import java.util.Vector;
 
+import atm.exception.CashNotEnoughException;
 import atm.utils.CashCount;
-import myutil.exception.CashNotEnoughException;
 
 // CashDispenser.java
 // Represents the cash dispenser of the ATM

@@ -1,4 +1,4 @@
-package myutil.exception;
+package atm.exception;
 
 public class WrongInputException extends Exception {
 	/**

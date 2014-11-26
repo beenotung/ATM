@@ -7,15 +7,11 @@ import javax.swing.JPasswordField;
 import java.awt.Component;
 
 import javax.swing.Box;
-import javax.swing.text.BadLocationException;
-
 import java.awt.BorderLayout;
 import java.util.Vector;
 
-import atm.core.Keypad;
 import atm.gui.MyGUISettings;
 import atm.gui.keypad.KeypadJFrame;
-import atm.utils.MyStrings;
 
 public class LoginJPanel extends JPanel {
 	/**

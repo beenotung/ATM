@@ -12,12 +12,6 @@ import atm.gui.notes.CashNote1000;
 import atm.gui.notes.CashNote500;
 import atm.utils.CashCount;
 
-import java.awt.FlowLayout;
-
-import javax.swing.BoxLayout;
-
-import sun.org.mozilla.javascript.WrapFactory;
-import webs.layout.CircleLayout;
 import webs.layout.WrapLayout;
 
 public class AvailableCashNotesJPanel extends JPanel {
@@ -60,7 +54,8 @@ public class AvailableCashNotesJPanel extends JPanel {
 		} else {
 			label.setText("This ATM provide the following types of cash note");
 		}
-		label.setFont(MyGUISettings.getFont(26));
+		// label.setFont(MyGUISettings.getFont(26));
+		label.setFont(MyGUISettings.getBoldFont(24));
 
 		removeAll();
 

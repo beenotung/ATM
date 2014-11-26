@@ -9,8 +9,7 @@ import atm.gui.keypad.KeyPadButtonIcons;
 import atm.gui.notes.CashNote100;
 import atm.gui.notes.CashNote1000;
 import atm.gui.notes.CashNote500;
-import atm.gui.sidebuttons.LeftSideButtonsJPanel;
-import atm.gui.sidebuttons.RightSideButtonsJPanel;
+import atm.gui.sidebuttons.SideButtons;
 import atm.gui.virtualslots.Card;
 
 public class ATMGUILauncher {
@@ -71,7 +70,6 @@ public class ATMGUILauncher {
 		CashNote1000.init();
 		System.out.println("fetching images of keypads");
 		KeyPadButtonIcons.init();
-		LeftSideButtonsJPanel.init();
-		RightSideButtonsJPanel.init();
+		SideButtons.init();		
 	}
 }

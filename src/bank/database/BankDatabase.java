@@ -4,12 +4,10 @@ import java.util.Vector;
 
 import javax.security.auth.login.AccountNotFoundException;
 
+import atm.exception.OverdrawnException;
 import bank.account.Account;
 import bank.account.CurrentAccount;
 import bank.account.SavingAccount;
-import myutil.exception.OverdrawnException;
-// BankDatabase.java
-// Represents the bank account information database 
 
 public class BankDatabase {
 	// Vector of Accounts

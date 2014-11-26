@@ -13,6 +13,10 @@ public class MyGUISettings {
 	public static Font getFont(int fontSize) {
 		return new Font("Arial", Font.PLAIN, fontSize);
 	}
+	
+	public static Font getBoldFont(int fontSize) {
+		return new Font("Arial", Font.BOLD, fontSize);
+	}
 
 	public static Color getATMScreenBackGroundColor() {
 		return new Color(135, 206, 250);

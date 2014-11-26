@@ -5,8 +5,8 @@ import java.util.Vector;
 
 import javax.security.auth.login.AccountNotFoundException;
 
+import atm.exception.OverdrawnException;
 import atm.utils.MyStaticStuff;
-import myutil.exception.OverdrawnException;
 
 // Account.java
 // Represents a bank account

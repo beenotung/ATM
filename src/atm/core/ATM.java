@@ -3,7 +3,6 @@ package atm.core;
 import java.util.Vector;
 
 import javax.security.auth.login.AccountNotFoundException;
-import javax.swing.text.AbstractDocument.Content;
 
 import bank.account.Account;
 import bank.database.BankDatabase;
@@ -11,7 +10,10 @@ import bank.operation.BalanceInquiry;
 import bank.operation.Transaction;
 import bank.operation.Transfer;
 import bank.operation.Withdrawal;
+import atm.exception.CardOutException;
+import atm.exception.WrongInputException;
 import atm.gui.mainscreen.LoginJPanel;
+import atm.gui.mainscreen.MainMenuJPanel;
 import atm.gui.mainscreen.MainScreenCardJPanel;
 import atm.gui.virtualslots.Card;
 import atm.gui.virtualslots.CardSlotCardJPanel;
@@ -19,8 +21,6 @@ import atm.utils.CashCount;
 import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
 import atm.utils.MyStrings;
-import myutil.exception.CardOutException;
-import myutil.exception.WrongInputException;
 
 // ATM.java
 // Represents an automated teller machine
@@ -139,7 +139,7 @@ public class ATM {
 				wrongCount++;
 				screen.displayMessageLine();
 			}
-		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
 		if (!ok) {
 			userAuthenticated = false;
 			return;
@@ -156,7 +156,7 @@ public class ATM {
 				wrongCount++;
 				screen.displayMessageLine();
 			}
-		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
 		if (!ok) {
 			userAuthenticated = false;
 			return;
@@ -180,9 +180,13 @@ public class ATM {
 		if (!userAuthenticated) {
 			wrongCount++;
 			System.out.println("wrong pin");
-			LoginJPanel.showMeWrongStatic(wrongCount);
+			if (wrongCount <= MyInputHandler.MAX_WRONG_INPUT)
+				LoginJPanel.showMeWrongStatic(wrongCount);
+			else
+				CardSlotCardJPanel.popCardStatic();
 		}
 		System.out.println("logged in");
+		MainMenuJPanel.showMe();
 	}
 
 	// display the main menu and perform transactions
@@ -201,7 +205,7 @@ public class ATM {
 			try {
 				mainMenuSelection = displayMainMenu();
 			} catch (WrongInputException e) {
-				if (++wrongCount > MyInputHandler.MAXWRONGINPUT)
+				if (++wrongCount > MyInputHandler.MAX_WRONG_INPUT)
 					mainMenuSelection = EXIT;
 			}
 			// decide how to proceed based on user's menu selection
@@ -284,6 +288,7 @@ public class ATM {
 		throw new CardOutException();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void showBye() {
 		screen.displayMessageLine("\n" + MyStrings.BYE);
 		MyStaticStuff.sleep();

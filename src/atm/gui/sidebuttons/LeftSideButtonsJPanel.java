@@ -1,21 +1,18 @@
-
 package atm.gui.sidebuttons;
 
 import java.awt.GridLayout;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Vector;
 
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.JPanel;
 
 import atm.gui.MyGUISettings;
-import atm.utils.MyURLs;
-
-import java.awt.Image;
 import javax.swing.BoxLayout;
+
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.Box;
 
 public class LeftSideButtonsJPanel extends JPanel {
@@ -24,13 +21,6 @@ public class LeftSideButtonsJPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	public Vector<JButton> buttons;
-	private static ImageIcon imageIcon;
-
-	public static void init() throws MalformedURLException {
-		imageIcon = new ImageIcon(new ImageIcon(new URL(MyURLs.IMAGE_TRIANGLE_POINT_RIGHT)).getImage()
-				.getScaledInstance(MyGUISettings.SIDE_BUTTON_SIZE, MyGUISettings.SIDE_BUTTON_SIZE,
-						Image.SCALE_SMOOTH));
-	}
 
 	public LeftSideButtonsJPanel() {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -49,9 +39,19 @@ public class LeftSideButtonsJPanel extends JPanel {
 
 		buttons = new Vector<JButton>();
 		for (int i = 0; i < 4; i++) {
-			JButton button = new JButton(imageIcon);
+			JButton button = new JButton(SideButtons.triangle_point_right_imageIcon);
 			buttons.add(button);
+			button.addActionListener(getActionListener(i));
 			centerPanel.add(button);
 		}
+	}
+
+	private ActionListener getActionListener(final int id) {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SideButtons.click(id * 2 + 1);
+			}
+		};
 	}
 }

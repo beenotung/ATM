@@ -8,11 +8,11 @@ import bank.account.Account;
 import bank.database.BankDatabase;
 import atm.core.ATM;
 import atm.core.UI;
+import atm.exception.OverdrawnException;
+import atm.exception.WrongInputException;
 import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
 import atm.utils.MyStrings;
-import myutil.exception.OverdrawnException;
-import myutil.exception.WrongInputException;
 
 public class Transfer {
 
@@ -45,7 +45,7 @@ public class Transfer {
 				ui.screen.displayMessageLine(MyStrings.ACCOUNT_NOT_FOUND);
 				MyStaticStuff.sleep();
 			}
-		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
 		if (!ok)
 			throw new WrongInputException();
 
@@ -76,7 +76,7 @@ public class Transfer {
 						atm.getCurrentAccountNumber()).getOverdrawnLimit()));
 				MyStaticStuff.sleep();
 			}
-		} while ((wrongCount <= MyInputHandler.MAXWRONGINPUT) && (!ok));
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
 		if (!ok)
 			throw new WrongInputException();
 		else {

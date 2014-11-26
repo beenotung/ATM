@@ -7,8 +7,8 @@ import atm.core.ATM;
 import atm.core.Keypad;
 import atm.core.Screen;
 import atm.core.UI;
-import myutil.exception.CardOutException;
-import myutil.exception.WrongInputException;
+import atm.exception.CardOutException;
+import atm.exception.WrongInputException;
 
 // Transaction.java
 // Abstract superclass Transaction represents an ATM transaction

@@ -17,6 +17,8 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 	public static final String STRING_SELECT_CARD = "Select Card";
 	public static final String STRING_CARD_INSIDE = "Card Inside";
 
+	public static String STATE = "";
+
 	/** constructor **/
 	public CardSlotCardJPanel() {
 		contents.add(this);
@@ -44,6 +46,12 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 	public void popCard() {
 		switchToCard(STRING_CARD_INSIDE);
 		CardInsideJPanel.popCardStatic();
+	}
+
+	@Override
+	public void switchToCard(String label) {
+		STATE = label;
+		super.switchToCard(label);
 	}
 
 	/** static-instance connector **/
