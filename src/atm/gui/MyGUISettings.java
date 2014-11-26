@@ -7,14 +7,18 @@ public class MyGUISettings {
 	public static int SIDE_BUTTON_SIZE = 50;
 	public static int CARD_IMAGE_WIDTH = 128;
 	public static int CARD_IMAGE_HEIGHT = 64;
+	public static int FUNCTION_BUTTON_WIDTH = 64;
+	public static int FUNCTION_BUTTON_HEIGHT = 32;
 
 	public static Font getFont(int fontSize) {
 		return new Font("Arial", Font.PLAIN, fontSize);
 	}
-	public static Color getATMScreenBackGroundColor(){
+
+	public static Color getATMScreenBackGroundColor() {
 		return new Color(135, 206, 250);
 	}
-	public static Color getATMShellColor(){
+
+	public static Color getATMShellColor() {
 		return new Color(128, 128, 128);
 	}
 }

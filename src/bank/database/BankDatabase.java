@@ -17,9 +17,9 @@ public class BankDatabase {
 
 	// no-argument BankDatabase constructor initializes accounts
 	public static void init() {
-		accounts.add(new Account("12345", "02345", 1000.0, 1000.0));
-		accounts.add(new CurrentAccount("12356", "02356", 200.0, 200.0));
-		accounts.add(new SavingAccount("12369", "02369", 100.0, 100.0));
+		accounts.add(new Account("12345", "02345", 5000.0, 5000.0));
+		accounts.add(new CurrentAccount("12356", "02356", 9000.0, 10000.0));
+		accounts.add(new SavingAccount("12369", "02369", 23000.0, 23000.0));
 		accounts.add(new Account("45678", "05678", 2000.0, 2000.0));
 	} // end no-argument BankDatabase constructor
 

@@ -52,9 +52,18 @@ public class KeypadJFrame extends JFrame {
 			button.addActionListener(getNumActionListener(String.valueOf(i)));
 		}
 		// initialize all function key buttons
-		keys[10] = new JButton("Cancel");
-		keys[11] = new JButton("Correct");
-		keys[12] = new JButton("Enter");
+		{
+			JButton button = new JButton(KeyPadButtonIcons.IMAGEICON_CANCEL);
+			keys[10] = button;
+		}
+		{
+			JButton button = new JButton(KeyPadButtonIcons.IMAGEICON_CLEAR);
+			keys[11] = button;
+		}
+		{
+			JButton button = new JButton(KeyPadButtonIcons.IMAGEICON_ENTER);
+			keys[12] = button;
+		}
 		keys[13] = new JPanel();
 		{
 			JButton button = new JButton("00");

@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import atm.gui.keypad.KeyPadButtonIcons;
 import atm.gui.notes.CashNote100;
 import atm.gui.notes.CashNote1000;
 import atm.gui.notes.CashNote500;
@@ -63,6 +64,7 @@ public class ATMGUILauncher {
 
 	public void fetchImages() throws MalformedURLException {
 		Card.init();
+		KeyPadButtonIcons.init();
 		CashNote100.init();
 		CashNote500.init();
 		CashNote1000.init();
