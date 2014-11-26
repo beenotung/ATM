@@ -13,6 +13,10 @@ import atm.gui.MyGUISettings;
 import atm.utils.MyURLs;
 
 import java.awt.Image;
+import java.awt.BorderLayout;
+import javax.swing.BoxLayout;
+import java.awt.Component;
+import javax.swing.Box;
 
 public class LeftSideButtonsJPanel extends JPanel {
 	/**
@@ -23,20 +27,27 @@ public class LeftSideButtonsJPanel extends JPanel {
 	private ImageIcon imageIcon;
 
 	public LeftSideButtonsJPanel() throws MalformedURLException {
-		setLayout(new GridLayout(4, 1, 0, 0));
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-		imageIcon = new ImageIcon(new ImageIcon(new URL(
-				MyURLs.STRING_URL_IMAGE_TRIANGLE_POINT_RIGHT)).getImage()
-				.getScaledInstance(MyGUISettings.SIDE_BUTTON_SIZE,
-						MyGUISettings.SIDE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+		Component topVerticalStrut = Box.createVerticalStrut(75);
+		add(topVerticalStrut);
+
+		JPanel centerPanel = new JPanel();
+		add(centerPanel);
+		centerPanel.setLayout(new GridLayout(4, 1, 0, 0));
+
+		Component bottomVerticalStrut = Box.createVerticalStrut(25);
+		add(bottomVerticalStrut);
+
+		imageIcon = new ImageIcon(new ImageIcon(new URL(MyURLs.IMAGE_TRIANGLE_POINT_RIGHT))
+				.getImage().getScaledInstance(MyGUISettings.SIDE_BUTTON_SIZE, MyGUISettings.SIDE_BUTTON_SIZE,
+						Image.SCALE_SMOOTH));
 
 		buttons = new Vector<JButton>();
 		for (int i = 0; i < 4; i++) {
-			JPanel panel = new JPanel();
-			add(panel);
 			JButton button = new JButton(imageIcon);
 			buttons.add(button);
-			panel.add(button);
+			centerPanel.add(button);
 		}
 	}
 }

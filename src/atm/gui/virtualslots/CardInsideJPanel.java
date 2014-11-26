@@ -19,10 +19,10 @@ public class CardInsideJPanel extends JPanel {
 	public CardInsideJPanel() {
 		cards = new Vector<Card>();
 		try {
-			cards.add(new Card(MyURLs.STRING_URL_IMAGE_CARD1, "12356"));
-			cards.add(new Card(MyURLs.STRING_URL_IMAGE_CARD2, "12369"));
-			cards.add(new Card(MyURLs.STRING_URL_IMAGE_CARD3, "45678"));
-			cards.add(new Card(MyURLs.STRING_URL_IMAGE_CARD4, "E3545"));
+			cards.add(new Card(MyURLs.IMAGE_CARD1, MyURLs.IMAGE_CARD1_DARK, "12356"));
+			cards.add(new Card(MyURLs.IMAGE_CARD2, MyURLs.IMAGE_CARD2_DARK, "12369"));
+			cards.add(new Card(MyURLs.IMAGE_CARD3, MyURLs.IMAGE_CARD3_DARK, "45678"));
+			cards.add(new Card(MyURLs.IMAGE_CARD4, MyURLs.IMAGE_CARD4_DARK, "E3545"));
 
 			for (Card card : cards) {
 				add(card.button);

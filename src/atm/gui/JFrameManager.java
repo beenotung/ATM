@@ -2,6 +2,9 @@ package atm.gui;
 
 import java.net.MalformedURLException;
 
+import atm.gui.notes.CashNote100;
+import atm.gui.notes.CashNote1000;
+import atm.gui.notes.CashNote500;
 import atm.gui.virtualslots.VirtualSlotsJFrame;
 
 public class JFrameManager {
@@ -12,7 +15,8 @@ public class JFrameManager {
 
 	/**
 	 * Create the application.
-	 * @throws MalformedURLException 
+	 * 
+	 * @throws MalformedURLException
 	 */
 	public JFrameManager() throws MalformedURLException {
 		initialize();
@@ -20,11 +24,15 @@ public class JFrameManager {
 
 	/**
 	 * Initialize the contents of the frame.
-	 * @throws MalformedURLException 
+	 * 
+	 * @throws MalformedURLException
 	 */
 	private void initialize() throws MalformedURLException {
+		System.out.println("initializing keypad");
 		keypadJFrame = new KeypadJFrame();
+		System.out.println("initializing monitor");
 		monitorJFrame = new MonitorJFrame();
+		System.out.println("initializing virtual slots");
 		virtualSlotsJFrame = new VirtualSlotsJFrame();
 
 		keypadJFrame.calcBounds();
@@ -37,8 +45,11 @@ public class JFrameManager {
 	}
 
 	private void showAll() {
+		System.out.println("showing keypad");
 		keypadJFrame.setVisible(true);
+		System.out.println("showing monitor");
 		monitorJFrame.setVisible(true);
+		System.out.println("showing virtual slots");
 		virtualSlotsJFrame.setVisible(true);
 	}
 

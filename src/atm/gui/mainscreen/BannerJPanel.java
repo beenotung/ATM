@@ -1,6 +1,5 @@
 package atm.gui.mainscreen;
 
-import java.awt.CardLayout;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -14,31 +13,25 @@ import atm.utils.MyURLs;
 import javax.swing.BoxLayout;
 import java.awt.Component;
 
-public class Welcome extends JPanel {
+public class BannerJPanel extends JPanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private CardLayout cardLayout;
 
-	public Welcome(CardLayout cardLayout) {
-		this.cardLayout = cardLayout;
-
+	public BannerJPanel() {
 		try {
 			JLabel lblBanner;
 			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-			lblBanner = new JLabel(new ImageIcon(new URL(
-					MyURLs.STRING_URL_IMAGE_BANNER)));
+			lblBanner = new JLabel(new ImageIcon(new URL(MyURLs.IMAGE_BANNER)));
 			lblBanner.setAlignmentY(Component.TOP_ALIGNMENT);
 			lblBanner.setAlignmentX(Component.CENTER_ALIGNMENT);
 			add(lblBanner);
 		} catch (MalformedURLException e) {
 			System.out.println(MyStrings.INTERNET_ERROR);
-			JOptionPane.showMessageDialog(getParent(),
-					MyStrings.INTERNET_ERROR, "Internet Error",
+			JOptionPane.showMessageDialog(getParent(), MyStrings.INTERNET_ERROR, "Internet Error",
 					JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
-
 	}
 }

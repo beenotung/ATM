@@ -1,6 +1,5 @@
 package atm.gui.virtualslots;
 
-import java.awt.CardLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,13 +15,17 @@ import atm.gui.mainscreen.MainScreenCardJPanel;
 
 public class Card {
 	public JButton button;
-	public ImageIcon imageIcon;
+	public ImageIcon imageIconBright;
+	public ImageIcon imageIconDark;
 	public String accountNumber;
 
-	public Card(String imageURL, String accountNumber) throws MalformedURLException {
-		imageIcon = new ImageIcon(new ImageIcon(new URL(imageURL)).getImage().getScaledInstance(
+	public Card(String imageURLBright, String imageURLDark, String accountNumber)
+			throws MalformedURLException {
+		imageIconBright = new ImageIcon(new ImageIcon(new URL(imageURLBright)).getImage().getScaledInstance(
 				MyGUISettings.CARD_IMAGE_WIDTH, MyGUISettings.CARD_IMAGE_HEIGHT, Image.SCALE_SMOOTH));
-		button = new JButton(imageIcon);
+		imageIconDark = new ImageIcon(new ImageIcon(new URL(imageURLDark)).getImage().getScaledInstance(
+				MyGUISettings.CARD_IMAGE_WIDTH, MyGUISettings.CARD_IMAGE_HEIGHT, Image.SCALE_SMOOTH));
+		button = new JButton(imageIconBright);
 		this.accountNumber = accountNumber;
 		button.addActionListener(getActionListener(this));
 	}
@@ -32,8 +35,6 @@ public class Card {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ATM.insertCard(card);
-				MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_LOGIN);
-				CardSlotCardJPanel.switchToCardStatic(CardSlotCardJPanel.STRING_CARD_INSIDE);
 			}
 		};
 		return insertCard;

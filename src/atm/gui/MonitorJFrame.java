@@ -34,13 +34,13 @@ public class MonitorJFrame extends JFrame {
 		rightSideButtonsJPanel = new RightSideButtonsJPanel();
 		getContentPane().add(rightSideButtonsJPanel, BorderLayout.EAST);
 
-		JInternalFrame internalFrame = new JInternalFrame("ATM Main Screen");
-		getContentPane().add(internalFrame, BorderLayout.CENTER);
+		// JInternalFrame internalFrame = new JInternalFrame("ATM Main Screen");
+		// getContentPane().add(internalFrame, BorderLayout.CENTER);
 		mainScreenJPanel = new MainScreenCardJPanel();
-		internalFrame.getContentPane().add(mainScreenJPanel,
-				BorderLayout.CENTER);
+		getContentPane().add(mainScreenJPanel, BorderLayout.CENTER);
+		// internalFrame.getContentPane().add(mainScreenJPanel,BorderLayout.CENTER);
+		// internalFrame.setVisible(true);
 
-		internalFrame.setVisible(true);
 	}
 
 	public void calcBounds(int x, int y, int w, int h, int s) {

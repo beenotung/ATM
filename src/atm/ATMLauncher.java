@@ -5,7 +5,9 @@ import java.net.MalformedURLException;
 import javax.swing.JOptionPane;
 
 import bank.database.BankDatabase;
+import atm.core.CashDispenser;
 import atm.gui.ATMGUILauncher;
+import atm.gui.notes.CashNote1000;
 import atm.utils.MyStrings;
 
 public class ATMLauncher {
@@ -14,6 +16,7 @@ public class ATMLauncher {
 
 	public ATMLauncher() {
 		BankDatabase.init();
+		CashDispenser.init();
 		try {
 			atmguiLauncher = new ATMGUILauncher();
 		} catch (MalformedURLException e) {

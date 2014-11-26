@@ -64,7 +64,7 @@ public class Withdrawal extends Transaction {
 						if (!BankDatabase.getAccount(getAccountNumber()).isEnough(
 								amount))
 							throw new OverdrawnException();
-					Vector<CashCount> cashPop = cashDispenser.dispenseCash(amount);
+					Vector<CashCount> cashPop = CashDispenser.dispenseCash(amount);
 					if (!Account.isMyBankAccount(getAccountNumber()))
 						BankDatabase.debit(getAccountNumber(),
 								MyStaticStuff.EXTRA_CHARGE);
@@ -81,7 +81,7 @@ public class Withdrawal extends Transaction {
 				// cash dispenser does not have enough cash
 				getScreen().displayMessageLine(
 						"\nInsufficient cash available in the ATM." + "\n Avaliabe cash:"
-								+ cashDispenser.getAmount()
+								+ CashDispenser.getAmount()
 								+ "\n\nPlease choose a smaller amount.");
 				MyStaticStuff.sleep();
 			} // dispense cash

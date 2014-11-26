@@ -22,8 +22,8 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 
 	@Override
 	protected void myInit() {
-		addToCards(new Welcome(cardLayout), STRING_WELCOME);
-		addToCards(new Login(cardLayout), STRING_LOGIN);
+		addToCards(new WelcomeJPanel(), STRING_WELCOME);
+		addToCards(new LoginJPanel(), STRING_LOGIN);
 		switchToCard(STRING_WELCOME);
 	}
 

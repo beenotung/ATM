@@ -261,8 +261,25 @@ public class ATM {
 		MyStaticStuff.sleep();
 	}
 
+	public static boolean checkUserValid(String accountNumber) {
+		try {
+			Integer.parseInt(accountNumber);
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		return true;
+	}
+	
 	public static void insertCard(Card card) {
-
+		System.out.println("inserted card:"+card.accountNumber);		
+		if (checkUserValid(card.accountNumber)) {
+			System.out.println("the card is valid");
+			
+		} else {
+			System.out.println("the card is NOT valid");
+			System.out.println("Your card is not identified, Please contact 987655");
+			String a = "Your card is not identified, Please contact 987655";
+		}
 	}
 } // end class ATM
 
