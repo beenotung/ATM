@@ -35,12 +35,7 @@ public class ViewBalanceJPanel extends JPanel {
 		Component horizontalGlue = Box.createHorizontalGlue();
 		horizontalBox.add(horizontalGlue);
 
-		JLabel label = new JLabel(new ImageIcon(MyImages.viewBalance)) {
-			{
-				setOpaque(false);
-			}
-		};
-		new JLabel(new ImageIcon(MyImages.viewBalance));
+		JLabel label = new JLabel(MyImages.viewBalance);
 		label.setAlignmentX(0.5f);
 		horizontalBox.add(label);
 

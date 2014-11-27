@@ -13,7 +13,7 @@ import atm.utils.MyStaticStuff;
 
 public class Account {
 	protected String accountNumber; // account number
-	private char[] pin; // PIN for authentication
+	private String pin; // PIN for authentication
 	protected double availableBalance; // funds available for withdrawal
 	protected double totalBalance; // funds available + pending deposits
 	protected double overdrawnLimit;
@@ -21,7 +21,7 @@ public class Account {
 	/** Account constructor initializes attributes **/
 	public Account(String theAccountNumber, String thePIN, double theAvailableBalance, double theTotalBalance) {
 		accountNumber = theAccountNumber;
-		pin = thePIN.toCharArray();
+		pin = thePIN;
 		availableBalance = theAvailableBalance;
 		totalBalance = theTotalBalance;
 		overdrawnLimit = 0.0;
@@ -43,14 +43,10 @@ public class Account {
 	/** instance methods **/
 
 	// determines whether a user-specified PIN matches PIN in Account
-	@Deprecated
 	public boolean validatePIN(String userPIN) {
-		return Arrays.equals(pin, userPIN.toCharArray());
+		System.out.println("right pin:"+pin);System.out.println("trying pin:"+userPIN);
+		return pin.equals(userPIN);
 	} // end method validatePIN
-
-	public boolean validatePIN(char[] userPIN) {
-		return Arrays.equals(pin, userPIN);
-	}
 
 	public boolean isMyBankAccount() {
 		String accountStr = String.valueOf(accountNumber);

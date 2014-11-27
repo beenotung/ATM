@@ -20,7 +20,7 @@ public class BannerJPanel extends JPanel {
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-		JLabel lblBanner = new JLabel(new ImageIcon(MyImages.banner));
+		JLabel lblBanner = new JLabel(MyImages.banner);
 		lblBanner.setAlignmentY(Component.TOP_ALIGNMENT);
 		lblBanner.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(lblBanner);

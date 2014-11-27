@@ -162,7 +162,7 @@ public class ATM {
 			return;
 		}
 		// set userAuthenticated to boolean value returned by database
-		userAuthenticated = BankDatabase.authenticateUser_old(accountNumber, pin);
+		userAuthenticated = BankDatabase.authenticateUser(accountNumber, pin);
 
 		// check whether authentication succeeded
 		if (userAuthenticated) {
@@ -174,7 +174,7 @@ public class ATM {
 		}
 	} // end method authenticateUser
 
-	public void authenticateUser(char[] pin) {
+	public void authenticateUser(String pin) {
 		System.out.println("attend to login");
 		userAuthenticated = BankDatabase.authenticateUser(currentAccountNumber, pin);
 		if (!userAuthenticated) {

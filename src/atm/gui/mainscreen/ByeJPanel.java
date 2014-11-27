@@ -21,7 +21,7 @@ public class ByeJPanel extends JPanel {
 
 		JPanel panel = new JPanel();
 		add(panel);
-		panel.setBackground(getParent().getBackground());
+		panel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		JLabel lblNewLabel1 = new JLabel(MyStrings.BYE1);

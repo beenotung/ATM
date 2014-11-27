@@ -220,7 +220,7 @@ public class KeypadJFrame extends JFrame {
 				switch (mode) {
 				case STRING_MODE_PASSWORD:
 					System.out.println("[Enter] password mode");
-					ATM.getATM().authenticateUser(((JPasswordField) textComponent).getPassword());
+					ATM.getATM().authenticateUser(String.valueOf(((JPasswordField) textComponent).getPassword()));
 					break;
 				}
 			}

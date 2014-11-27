@@ -25,10 +25,11 @@ public class BankDatabase {
 	// retrieve Account object containing specified account number
 	public static Account getAccount(String accountNumber) throws AccountNotFoundException {
 		// loop through accounts searching for matching account number
-		for (Account currentAccount : accounts) {
+		for (Account account : accounts) {
 			// return current account if match found
-			if (currentAccount.getAccountNumber() == accountNumber)
-				return currentAccount;
+			System.out.println("loading"+account.getAccountNumber());
+			if (account.getAccountNumber() == accountNumber)
+				return account;
 		} // end for
 		throw new AccountNotFoundException(); // if no matching account was
 												// found, throw exception
@@ -79,28 +80,18 @@ public class BankDatabase {
 
 	// determine whether user-specified account number and PIN match
 	// those of an account in the database
-	@Deprecated
-	public static boolean authenticateUser_old(String userAccountNumber, String userPIN) {
+	public static boolean authenticateUser(String userAccountNumber, String userPIN) {
 		// attempt to retrieve the account with the account number
-		Account userAccount;
+		Account userAccount;		
 		try {
 			userAccount = getAccount(userAccountNumber);
 			// if account exists, return result of Account method validateIN
 			return userAccount.validatePIN(userPIN);
 		} catch (AccountNotFoundException e) {
+			System.out.println("Account not found");
 			return false; // account number not found, so return false
 		}
 	} // end method authenticateUser
-
-	public static boolean authenticateUser(String userAccountNumber, char[] userPIN) {
-		Account userAccount;
-		try {
-			userAccount = getAccount(userAccountNumber);
-			return userAccount.validatePIN(userPIN);
-		} catch (AccountNotFoundException e) {
-			return false;
-		}
-	}
 
 	// credit an amount to Account with specified account number
 	public static void credit(String userAccountNumber, double amount) throws AccountNotFoundException {
