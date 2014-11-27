@@ -10,6 +10,7 @@ import atm.gui.GUIPrinter;
 import atm.gui.MonitorJFrame;
 import atm.gui.MyGUISettings;
 import atm.gui.sidebuttons.SideButtons;
+import atm.gui.virtualslots.CardInsideJPanel;
 import atm.gui.virtualslots.CardSlotCardJPanel;
 import atm.utils.MyImages;
 import bank.operation.Transaction;
@@ -27,16 +28,20 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
 
+import org.w3c.dom.css.ViewCSS;
+
 import java.awt.BorderLayout;
 import java.util.Vector;
 
 public class ViewBalanceJPanel extends JPanel {
+	private static Vector<ViewBalanceJPanel> contents = new Vector<ViewBalanceJPanel>();
 	public static final String STRING_MAIN_MENU = "Main Menu";
 	public static final String STRING_TAKE_CARD = "Take Card";
 
 	public static final String[] commands = { "", "", "", "", "", "", STRING_MAIN_MENU, STRING_TAKE_CARD };
 
 	public ViewBalanceJPanel() {
+		contents.add(this);
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -92,7 +97,6 @@ public class ViewBalanceJPanel extends JPanel {
 
 		Component verticalStrut_1 = Box.createVerticalStrut(25);
 		add(verticalStrut_1);
-
 	}
 
 	public void loadinfo() {
@@ -117,9 +121,16 @@ public class ViewBalanceJPanel extends JPanel {
 		GUIPrinter.stop();
 	}
 
-	public static void showMe() {
+	public void showMe() {
+		loadinfo();
 		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_VIEW_BALANCE;
 		SideButtons.commands = ViewBalanceJPanel.commands;
 		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_VIEW_BALANCE);
+	}
+
+	public static void showMeStatic() {
+		for (ViewBalanceJPanel content : contents) {
+			content.showMe();
+		}
 	}
 }

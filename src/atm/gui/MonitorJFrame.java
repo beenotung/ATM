@@ -52,7 +52,7 @@ public class MonitorJFrame extends JFrame {
 		case MainScreenCardJPanel.STRING_MAIN_MENU:
 			switch (command) {
 			case MainMenuJPanel.STRING_VIEW_BALANCE:
-				ViewBalanceJPanel.showMe();
+				ViewBalanceJPanel.showMeStatic();
 				break;
 			case MainMenuJPanel.STRING_TAKE_CARD:
 				CardSlotCardJPanel.popCardStatic();
