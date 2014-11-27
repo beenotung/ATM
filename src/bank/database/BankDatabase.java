@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import javax.security.auth.login.AccountNotFoundException;
 
+import atm.core.ATM;
 import atm.exception.OverdrawnException;
 import bank.account.Account;
 import bank.account.CurrentAccount;
@@ -27,6 +28,8 @@ public class BankDatabase {
 		// loop through accounts searching for matching account number
 		for (Account account : accounts) {
 			// return current account if match found
+			System.out.println("BackDatabase: comapring user [" + accountNumber + "]--["
+					+ account.getAccountNumber() + "]");
 			if (account.getAccountNumber().equals(accountNumber))
 				return account;
 		} // end for
@@ -79,11 +82,22 @@ public class BankDatabase {
 
 	// determine whether user-specified account number and PIN match
 	// those of an account in the database
-	public static boolean authenticateUser(String userAccountNumber, String userPIN)
+	@Deprecated
+	public static boolean authenticateUser_old(String userAccountNumber, String userPIN)
 			throws AccountNotFoundException {
 		// attempt to retrieve the account with the account number
 		Account userAccount;
 		userAccount = getAccount(userAccountNumber);
+		// if account exists, return result of Account method validateIN
+		return userAccount.validatePIN(userPIN);
+	} // end method authenticateUser
+	
+	
+	public static boolean authenticateUser(String userPIN)
+			throws AccountNotFoundException {
+		// attempt to retrieve the account with the account number
+		Account userAccount;
+		userAccount = getAccount(ATM.currentAccountNumber);
 		// if account exists, return result of Account method validateIN
 		return userAccount.validatePIN(userPIN);
 	} // end method authenticateUser

@@ -37,7 +37,7 @@ public class ATM {
 	private CashDispenser cashDispenser; // ATM's cash dispenser
 	private BankDatabase bankDatabase; // account information database
 	private UI ui;
-	private int wrongCount;
+	private int wrongCount = 0;
 
 	// constants corresponding to main menu options
 	public static final int BALANCE_INQUIRY = 1;
@@ -56,10 +56,6 @@ public class ATM {
 	} // end no-argument ATM constructor
 
 	public void init() {
-		// user is not authenticated to start/restart
-		userAuthenticated = false;
-		// no current account number to start/restart
-		currentAccountNumber = "0";
 		wrongCount = 0;
 	}
 
@@ -83,7 +79,7 @@ public class ATM {
 	}
 
 	public String getCurrentAccountNumber() {
-		return currentAccountNumber;
+		return ATM.currentAccountNumber;
 	}
 
 	/** setters **/
@@ -106,7 +102,7 @@ public class ATM {
 			try {
 				try {
 					try {
-						performTransactions(BankDatabase.getAccounts());
+						performTransactions();
 					} catch (AccountNotFoundException e) {
 						screen.displayMessageLine(MyStrings.ACCOUNT_NOT_FOUND);
 					}
@@ -119,7 +115,7 @@ public class ATM {
 			}
 			// authenticated
 			userAuthenticated = false; // reset before next ATM session
-			currentAccountNumber = "0"; // reset before next ATM session
+			ATM.currentAccountNumber = "0"; // reset before next ATM session
 			popCard();
 			showBye();
 		} // end while
@@ -166,14 +162,14 @@ public class ATM {
 		}
 		// set userAuthenticated to boolean value returned by database
 		try {
-			userAuthenticated = BankDatabase.authenticateUser(accountNumber, pin);
+			userAuthenticated = BankDatabase.authenticateUser_old(accountNumber, pin);
 		} catch (AccountNotFoundException e) {
 			System.out.println("Account not Found");
 		}
 
 		// check whether authentication succeeded
 		if (userAuthenticated) {
-			currentAccountNumber = accountNumber; // save user's account #
+			ATM.currentAccountNumber = accountNumber; // save user's account #
 		} // end if
 		else {
 			screen.displayMessageLine("Invalid account number or PIN. Please try again.");
@@ -181,15 +177,21 @@ public class ATM {
 		}
 	} // end method authenticateUser
 
-	public void authenticateUser(String pin) throws AccountNotFoundException {
+	public void authenticateUser(String pin) {
 		System.out.println("attend to login");
-		userAuthenticated = BankDatabase.authenticateUser(currentAccountNumber, pin);
+		try {
+			userAuthenticated = BankDatabase.authenticateUser_old(ATM.currentAccountNumber, pin);
+		} catch (AccountNotFoundException e) {
+			CardNotValidJPanel.showMe();
+			(new WaitPopCard()).start();
+		}
 		if (!userAuthenticated) {
 			wrongCount++;
-			System.out.println("wrong pin");
-			if (wrongCount <= MyInputHandler.MAX_WRONG_INPUT)
+			if (wrongCount < MyInputHandler.MAX_WRONG_INPUT) {
+				System.out.println("wrong pin");
 				LoginJPanel.showMeWrongStatic(wrongCount);
-			else {
+			} else {
+				System.out.println("too many wrong try");
 				MaxWrongTryJPanel.showMe();
 				(new WaitPopCard()).start();
 			}
@@ -201,8 +203,7 @@ public class ATM {
 	}
 
 	// display the main menu and perform transactions
-	private void performTransactions(Vector<Account> accounts) throws CardOutException, WrongInputException,
-			AccountNotFoundException {
+	private void performTransactions() throws CardOutException, WrongInputException, AccountNotFoundException {
 		// local variable to store transaction currently being processed
 		Vector<Transaction> currentTransactions = null;
 
@@ -225,7 +226,7 @@ public class ATM {
 			case BALANCE_INQUIRY:
 			case WITHDRAWAL:
 			case TRANSFER:
-				currentTransactions = createTransactions(mainMenuSelection, accounts);
+				currentTransactions = createTransactions(mainMenuSelection);
 				if (currentTransactions == null) {
 					userExited = false;
 					break;
@@ -252,7 +253,7 @@ public class ATM {
 	// display the main menu and return an input selection
 	private int displayMainMenu() throws WrongInputException {
 		screen.clear();
-		if (!Account.isMyBankAccount(currentAccountNumber))
+		if (!Account.isMyBankAccount(ATM.currentAccountNumber))
 			screen.displayMessageLine(MyStaticStuff.getExtraChargeString());
 		String msg = "\nMain menu:";
 		msg += "\n1 - View my balance";
@@ -264,8 +265,8 @@ public class ATM {
 	} // end method displayMainMenu
 
 	// return object of specified Transaction subclass
-	private Vector<Transaction> createTransactions(int type, Vector<Account> accounts)
-			throws CardOutException, WrongInputException, AccountNotFoundException {
+	public Vector<Transaction> createTransactions(int type) throws CardOutException, WrongInputException,
+			AccountNotFoundException {
 		// temporary Transaction variable
 		Vector<Transaction> result = new Vector<Transaction>();
 
@@ -313,8 +314,8 @@ public class ATM {
 
 	public static void checkCard(Card card) {
 		try {
-			currentAccountNumber = String.valueOf(Integer.parseInt(card.accountNumber));
-			System.out.println("the card is valid");
+			ATM.currentAccountNumber = String.valueOf(Integer.parseInt(card.accountNumber));
+			System.out.println("the card [" + ATM.currentAccountNumber + "] is valid");
 			LoginJPanel.showMeStatic();
 		} catch (NumberFormatException e) {
 			CardNotValidJPanel.showMe();
@@ -359,6 +360,10 @@ public class ATM {
 	/** static connectors to instance methods **/
 	public static void initStatic() {
 		ATM.atm = new ATM();
+		// user is not authenticated to start/restart
+		atm.userAuthenticated = false;
+		// no current account number to start/restart
+		ATM.currentAccountNumber = "0";
 		atm.init();
 	}
 

@@ -12,6 +12,7 @@ import java.awt.Component;
 
 import javax.swing.Box;
 
+import atm.core.ATM;
 import atm.gui.MonitorJFrame;
 import atm.gui.MyGUISettings;
 import atm.gui.sidebuttons.SideButtons;
@@ -53,6 +54,7 @@ public class MainMenuJPanel extends JPanel {
 	}
 
 	public static void showMe() {
+		ATM.getATM().init();
 		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_MAIN_MENU;
 		SideButtons.commands = MainMenuJPanel.commands;
 		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_MAIN_MENU);

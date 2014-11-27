@@ -6,6 +6,8 @@ import myutils.gui.cardlayout.AbstractCardJPanel;
 
 import java.awt.Component;
 
+import com.sun.corba.se.spi.orbutil.fsm.State;
+
 import atm.gui.MonitorJFrame;
 import atm.gui.MyGUISettings;
 
@@ -68,4 +70,5 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 		super.addToCards(component, label);
 		component.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 	}
+
 }

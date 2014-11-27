@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
+import javax.management.monitor.Monitor;
 import javax.security.auth.login.AccountNotFoundException;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -18,6 +19,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
 import atm.core.ATM;
+import atm.gui.MonitorJFrame;
+import atm.gui.mainscreen.MainScreenCardJPanel;
 
 public class KeypadJFrame extends JFrame {
 	private static Vector<KeypadJFrame> contents = new Vector<KeypadJFrame>();
@@ -199,8 +202,8 @@ public class KeypadJFrame extends JFrame {
 	private ActionListener getCancelActionListener() {
 		return new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO cancel function key: return to main menu
+			public void actionPerformed(ActionEvent e) {				
+				MonitorJFrame.returnButtonClick();
 			}
 		};
 	}
@@ -221,12 +224,8 @@ public class KeypadJFrame extends JFrame {
 				switch (mode) {
 				case STRING_MODE_PASSWORD:
 					System.out.println("[Enter] password mode");
-					try {
-						ATM.getATM().authenticateUser(
-								String.valueOf(((JPasswordField) textComponent).getPassword()));
-					} catch (AccountNotFoundException e1) {
-						ATM.popCardStatic();
-					}
+					ATM.getATM().authenticateUser(
+							String.valueOf(((JPasswordField) textComponent).getPassword()));
 					break;
 				}
 			}

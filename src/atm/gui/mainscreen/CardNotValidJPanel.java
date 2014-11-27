@@ -2,11 +2,14 @@ package atm.gui.mainscreen;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-
 import javax.swing.BoxLayout;
+
 import java.awt.Component;
 import java.awt.Font;
+
 import javax.swing.Box;
+
+import atm.gui.MyGUISettings;
 
 public class CardNotValidJPanel extends JPanel {
 
@@ -15,6 +18,7 @@ public class CardNotValidJPanel extends JPanel {
 	 */
 	public CardNotValidJPanel() {
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 
 		Component horizontalGlue_1 = Box.createHorizontalGlue();
 		add(horizontalGlue_1);

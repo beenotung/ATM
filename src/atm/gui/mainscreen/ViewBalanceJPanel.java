@@ -1,23 +1,34 @@
 package atm.gui.mainscreen;
 
+import javax.security.auth.login.AccountNotFoundException;
 import javax.swing.JPanel;
 
+import atm.core.ATM;
+import atm.exception.CardOutException;
+import atm.exception.WrongInputException;
+import atm.gui.GUIPrinter;
 import atm.gui.MonitorJFrame;
 import atm.gui.MyGUISettings;
 import atm.gui.sidebuttons.SideButtons;
+import atm.gui.virtualslots.CardSlotCardJPanel;
 import atm.utils.MyImages;
+import bank.operation.Transaction;
 
 import java.awt.GridLayout;
-
 import java.awt.Button;
 import java.awt.Font;
+
 import javax.swing.ImageIcon;
+
 import java.awt.Component;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-
 import javax.swing.JLabel;
+import javax.swing.JTextPane;
+
+import java.awt.BorderLayout;
+import java.util.Vector;
 
 public class ViewBalanceJPanel extends JPanel {
 	public static final String STRING_MAIN_MENU = "Main Menu";
@@ -50,6 +61,12 @@ public class ViewBalanceJPanel extends JPanel {
 		JPanel infoPanel1 = new JPanel();
 		contentPanel.add(infoPanel1);
 		infoPanel1.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		infoPanel1.setLayout(new BorderLayout(0, 0));
+
+		JTextPane textPane = new JTextPane();
+		infoPanel1.add(textPane);
+		textPane.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		textPane.setFont(MyGUISettings.getFont(24));
 
 		JPanel strucPanel = new JPanel();
 		contentPanel.add(strucPanel);
@@ -76,6 +93,28 @@ public class ViewBalanceJPanel extends JPanel {
 		Component verticalStrut_1 = Box.createVerticalStrut(25);
 		add(verticalStrut_1);
 
+	}
+
+	public void loadinfo() {
+		// TODO view balance
+		GUIPrinter.start();
+		try {
+			Vector<Transaction> currentTransactions;
+			currentTransactions = ATM.getATM().createTransactions(ATM.BALANCE_INQUIRY);
+			if (currentTransactions == null) {
+				MainMenuJPanel.showMe();
+			}
+			// execute transaction
+			for (Transaction currentTransaction : currentTransactions)
+				currentTransaction.execute();
+		} catch (AccountNotFoundException e) {
+			CardNotValidJPanel.showMe();
+		} catch (CardOutException e) {
+			CardSlotCardJPanel.popCardStatic();
+		} catch (WrongInputException e) {
+			MaxWrongTryJPanel.showMe();
+		}
+		GUIPrinter.stop();
 	}
 
 	public static void showMe() {

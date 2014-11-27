@@ -71,4 +71,15 @@ public class MonitorJFrame extends JFrame {
 			break;
 		}
 	}
+
+	public static void returnButtonClick() {
+		switch (STATE) {
+		case MainScreenCardJPanel.STRING_MAIN_MENU:
+			CardSlotCardJPanel.popCardStatic();
+			break;		
+		default:
+			MainMenuJPanel.showMe();
+			break;
+		}
+	}
 }

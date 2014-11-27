@@ -32,7 +32,7 @@ public class WelcomeJPanel extends JPanel {
 
 	public void showMe() {
 		availableCashNotesJPanel.myUpdate();
-		ATM.getATM().init();
+		ATM.initStatic();
 	}
 
 	public static void showMeStatic() {
