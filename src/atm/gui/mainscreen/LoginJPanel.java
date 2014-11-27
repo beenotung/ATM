@@ -73,7 +73,7 @@ public class LoginJPanel extends JPanel {
 
 	/** static connectors to instance methods **/
 	public static void showMeStatic() {
-		ATM.initStatic();
+		ATM.getATM().init();
 		for (LoginJPanel loginJPanel : contents) {
 			loginJPanel.showMe();
 		}

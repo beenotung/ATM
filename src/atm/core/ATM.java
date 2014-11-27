@@ -60,6 +60,7 @@ public class ATM {
 		userAuthenticated = false;
 		// no current account number to start/restart
 		currentAccountNumber = "0";
+		wrongCount = 0;
 	}
 
 	/** getters **/
