@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
+import javax.security.auth.login.AccountNotFoundException;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -220,7 +221,12 @@ public class KeypadJFrame extends JFrame {
 				switch (mode) {
 				case STRING_MODE_PASSWORD:
 					System.out.println("[Enter] password mode");
-					ATM.getATM().authenticateUser(String.valueOf(((JPasswordField) textComponent).getPassword()));
+					try {
+						ATM.getATM().authenticateUser(
+								String.valueOf(((JPasswordField) textComponent).getPassword()));
+					} catch (AccountNotFoundException e1) {
+						ATM.popCardStatic();
+					}
 					break;
 				}
 			}

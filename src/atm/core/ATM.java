@@ -12,9 +12,11 @@ import bank.operation.Transfer;
 import bank.operation.Withdrawal;
 import atm.exception.CardOutException;
 import atm.exception.WrongInputException;
+import atm.gui.mainscreen.CardNotValidJPanel;
 import atm.gui.mainscreen.LoginJPanel;
 import atm.gui.mainscreen.MainMenuJPanel;
 import atm.gui.mainscreen.MainScreenCardJPanel;
+import atm.gui.mainscreen.MaxWrongTryJPanel;
 import atm.gui.virtualslots.Card;
 import atm.gui.virtualslots.CardSlotCardJPanel;
 import atm.utils.CashCount;
@@ -38,10 +40,10 @@ public class ATM {
 	private int wrongCount;
 
 	// constants corresponding to main menu options
-	private static final int BALANCE_INQUIRY = 1;
-	private static final int WITHDRAWAL = 2;
-	private static final int TRANSFER = 3;
-	private static final int EXIT = 4;
+	public static final int BALANCE_INQUIRY = 1;
+	public static final int WITHDRAWAL = 2;
+	public static final int TRANSFER = 3;
+	public static final int EXIT = 4;
 
 	// no-argument ATM constructor initializes instance variables
 	private ATM() {
@@ -162,7 +164,11 @@ public class ATM {
 			return;
 		}
 		// set userAuthenticated to boolean value returned by database
-		userAuthenticated = BankDatabase.authenticateUser(accountNumber, pin);
+		try {
+			userAuthenticated = BankDatabase.authenticateUser(accountNumber, pin);
+		} catch (AccountNotFoundException e) {
+			System.out.println("Account not Found");
+		}
 
 		// check whether authentication succeeded
 		if (userAuthenticated) {
@@ -174,7 +180,7 @@ public class ATM {
 		}
 	} // end method authenticateUser
 
-	public void authenticateUser(String pin) {
+	public void authenticateUser(String pin) throws AccountNotFoundException {
 		System.out.println("attend to login");
 		userAuthenticated = BankDatabase.authenticateUser(currentAccountNumber, pin);
 		if (!userAuthenticated) {
@@ -182,12 +188,15 @@ public class ATM {
 			System.out.println("wrong pin");
 			if (wrongCount <= MyInputHandler.MAX_WRONG_INPUT)
 				LoginJPanel.showMeWrongStatic(wrongCount);
-			else
-				CardSlotCardJPanel.popCardStatic();
+			else {
+				MaxWrongTryJPanel.showMe();
+				(new WaitPopCard()).start();
+			}
 		} else {
 			System.out.println("logged in");
 			MainMenuJPanel.showMe();
 		}
+
 	}
 
 	// display the main menu and perform transactions
@@ -307,11 +316,14 @@ public class ATM {
 			System.out.println("the card is valid");
 			LoginJPanel.showMeStatic();
 		} catch (NumberFormatException e) {
-			currentAccountNumber = "0";
-			System.out.println(MyStrings.CARD_NOT_VALID);
-			MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_CARD_NOT_VALID);
-			CardSlotCardJPanel.popCardStatic();
+			CardNotValidJPanel.showMe();
+			(new WaitPopCard()).start();
 		}
+	}
+
+	public static void popCardStatic() {
+		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_CARD_NOT_VALID);
+		CardSlotCardJPanel.popCardStatic();
 	}
 
 	/** private class **/
@@ -329,6 +341,17 @@ public class ATM {
 			} catch (InterruptedException e) {
 			}
 			ATM.checkCard(card);
+		}
+	}
+
+	private static class WaitPopCard extends Thread {
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+			}
+			CardSlotCardJPanel.popCardStatic();
 		}
 	}
 

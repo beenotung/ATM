@@ -25,6 +25,7 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 	public static final String STRING_VIEW_BALANCE = "View Balance";
 	public static final String STRING_TAKE_CARD = "Take Card";
 	public static final String STRING_BYE = "Bye";
+	public static final String STRING_MAX_WRONG_TRY = "Max Wrong Try";
 
 	public MainScreenCardJPanel() {
 		super();
@@ -43,6 +44,7 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 				setOpaque(false);
 			}
 		}, STRING_VIEW_BALANCE);
+		addToCards(new MaxWrongTryJPanel(), STRING_MAX_WRONG_TRY);
 		addToCards(new TakeCardJPanel(), STRING_TAKE_CARD);
 		addToCards(new ByeJPanel(), STRING_BYE);
 

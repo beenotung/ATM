@@ -2,19 +2,23 @@ package atm.gui.mainscreen;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-
 import javax.swing.BoxLayout;
+
 import java.awt.Component;
 import java.awt.Font;
+
 import javax.swing.Box;
 
-public class CardNotValidJPanel extends JPanel {
+import atm.gui.MyGUISettings;
+
+public class MaxWrongTryJPanel extends JPanel {
 
 	/**
 	 * Create the panel.
 	 */
-	public CardNotValidJPanel() {
+	public MaxWrongTryJPanel() {
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 
 		Component horizontalGlue_1 = Box.createHorizontalGlue();
 		add(horizontalGlue_1);
@@ -23,7 +27,7 @@ public class CardNotValidJPanel extends JPanel {
 		verticalBox.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(verticalBox);
 
-		JLabel label = new JLabel("Your card is not identified");
+		JLabel label = new JLabel("Too many wrong try");
 		label.setFont(new Font("Arial", Font.PLAIN, 26));
 		label.setAlignmentX(0.5f);
 		verticalBox.add(label);
@@ -38,6 +42,6 @@ public class CardNotValidJPanel extends JPanel {
 	}
 
 	public static void showMe() {
-		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_CARD_NOT_VALID);
+		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_MAX_WRONG_TRY);
 	}
 }
