@@ -7,9 +7,11 @@ import javax.swing.JPasswordField;
 import java.awt.Component;
 
 import javax.swing.Box;
+
 import java.awt.BorderLayout;
 import java.util.Vector;
 
+import atm.core.ATM;
 import atm.gui.MyGUISettings;
 import atm.gui.keypad.KeypadJFrame;
 
@@ -71,6 +73,7 @@ public class LoginJPanel extends JPanel {
 
 	/** static connectors to instance methods **/
 	public static void showMeStatic() {
+		ATM.initStatic();
 		for (LoginJPanel loginJPanel : contents) {
 			loginJPanel.showMe();
 		}
