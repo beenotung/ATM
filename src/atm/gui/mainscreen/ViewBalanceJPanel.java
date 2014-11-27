@@ -15,6 +15,7 @@ import atm.gui.virtualslots.CardSlotCardJPanel;
 import atm.utils.MyImages;
 import bank.operation.Transaction;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Button;
 import java.awt.Font;
@@ -39,7 +40,7 @@ public class ViewBalanceJPanel extends JPanel {
 	public static final String STRING_MAIN_MENU = "Main Menu";
 	public static final String STRING_TAKE_CARD = "Take Card";
 
-	public static final String[] commands = { "", "", "", "", "", "", STRING_MAIN_MENU, STRING_TAKE_CARD };
+	public static final String[] commands = { "", "", "", "", STRING_MAIN_MENU, STRING_TAKE_CARD, "", "" };
 
 	GUIPrinter guiPrinter;
 	private JTextArea text;
@@ -76,15 +77,15 @@ public class ViewBalanceJPanel extends JPanel {
 		infoPanel1.add(text);
 		text.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		text.setFont(MyGUISettings.getFont(24));
+		text.setSize(400, 150);
+		infoPanel1.setSize(400, 150);
+		text.setPreferredSize(new Dimension(400, 150));
+		infoPanel1.setPreferredSize(new Dimension(40, 150));
 
 		JPanel strucPanel = new JPanel();
 		contentPanel.add(strucPanel);
 		strucPanel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		strucPanel.setLayout(new GridLayout(2, 1, 0, 0));
-
-		JPanel infoPanel2 = new JPanel();
-		strucPanel.add(infoPanel2);
-		infoPanel2.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 
 		JPanel menuPanel = new JPanel();
 		strucPanel.add(menuPanel);

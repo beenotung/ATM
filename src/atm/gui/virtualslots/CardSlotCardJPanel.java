@@ -69,6 +69,8 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 	}
 
 	public static void popCardStatic() {
+		if (!CardInsideJPanel.hasCard())
+			return;
 		TakeCardJPanel.showMe();
 		for (CardSlotCardJPanel cardSlotCardJPanel : contents) {
 			cardSlotCardJPanel.popCard();
