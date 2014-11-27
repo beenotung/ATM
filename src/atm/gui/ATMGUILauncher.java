@@ -11,6 +11,7 @@ import atm.gui.notes.CashNote1000;
 import atm.gui.notes.CashNote500;
 import atm.gui.sidebuttons.SideButtons;
 import atm.gui.virtualslots.Card;
+import atm.utils.MyImages;
 
 public class ATMGUILauncher {
 	JFrameManager frameManager;
@@ -64,12 +65,14 @@ public class ATMGUILauncher {
 	public void fetchImages() throws MalformedURLException {
 		System.out.println("fetching images of cards");
 		Card.init();
-		System.out.println("fetching images of cash notes");
+		System.out.println("fetching images of cash notes");		
 		CashNote100.init();
 		CashNote500.init();
 		CashNote1000.init();
 		System.out.println("fetching images of keypads");
 		KeyPadButtonIcons.init();
 		SideButtons.init();		
+		System.out.println("fetching images for layout");
+		MyImages.init();
 	}
 }

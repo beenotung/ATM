@@ -41,8 +41,11 @@ public class MyURLs {
 	"http://xtupload.com/image.php?id=D2B1_54755BB3&gif";
 	public static final String IMAGE_WITHDRAW_MENU = //
 	"http://xtupload.com/image.php?id=93F0_54755BB3&gif";
+	@Deprecated
 	public static final String IMAGE_PIX = //
 	"http://xtupload.com/image.php?id=A5EC_54755C00";
+	public static final String IMAGE_VIEW_BALANCE = //
+	"http://xtupload.com/image.php?id=A473_5476963C";
 }
 
 class MyURLs_OLD {

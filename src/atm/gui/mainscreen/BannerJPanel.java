@@ -9,10 +9,14 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 
 import atm.gui.MyGUISettings;
+import atm.utils.MyImages;
 import atm.utils.MyStrings;
 import atm.utils.MyURLs;
 
 import javax.swing.BoxLayout;
+
+import com.mortennobel.imagescaling.ImageUtils;
+import com.sun.imageio.plugins.common.ImageUtil;
 
 import java.awt.Component;
 
@@ -24,18 +28,11 @@ public class BannerJPanel extends JPanel {
 
 	public BannerJPanel() {
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
-		try {
-			JLabel lblBanner;
-			setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-			lblBanner = new JLabel(new ImageIcon(new URL(MyURLs.IMAGE_BANNER)));
-			lblBanner.setAlignmentY(Component.TOP_ALIGNMENT);
-			lblBanner.setAlignmentX(Component.CENTER_ALIGNMENT);
-			add(lblBanner);
-		} catch (MalformedURLException e) {
-			System.out.println(MyStrings.INTERNET_ERROR);
-			JOptionPane.showMessageDialog(getParent(), MyStrings.INTERNET_ERROR, "Internet Error",
-					JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
-		}
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+		JLabel lblBanner = new JLabel(MyImages.banner);
+		lblBanner.setAlignmentY(Component.TOP_ALIGNMENT);
+		lblBanner.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(lblBanner);
 	}
 }
