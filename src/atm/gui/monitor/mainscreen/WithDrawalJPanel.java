@@ -20,6 +20,10 @@ import atm.utils.MyStaticStuff;
 import atm.utils.MyStrings;
 
 import java.awt.Font;
+import javax.swing.JTextField;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.BorderLayout;
 
 public class WithDrawalJPanel extends JPanel {
 	private static Vector<WithDrawalJPanel> contents = new Vector<WithDrawalJPanel>();
@@ -30,20 +34,32 @@ public class WithDrawalJPanel extends JPanel {
 	public static final String[] commands = { String.valueOf(MyStaticStuff.MenuCashValue[0]),
 			String.valueOf(MyStaticStuff.MenuCashValue[1]), String.valueOf(MyStaticStuff.MenuCashValue[2]),
 			String.valueOf(MyStaticStuff.MenuCashValue[3]), STRING_MAIN_MENU, STRING_TAKE_CARD, "", "" };
+	private JTextField textField;
 
 	/** constructor **/
 	public WithDrawalJPanel() {
 		contents.add(this);
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		setLayout(new BorderLayout(0, 0));
+		
+		JPanel panel_1 = new JPanel();
+		add(panel_1);
+		panel_1.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.Y_AXIS));
 
 		Component verticalStrut_1 = Box.createVerticalStrut(75);
-		add(verticalStrut_1);
+		panel_1.add(verticalStrut_1);
 
 		JPanel panel = new JPanel();
-		add(panel);
+		panel_1.add(panel);
 		panel.setLayout(new GridLayout(4, 2, 0, 0));
 		panel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		
+		textField = new JTextField("HKD $ ");
+		textField.setPreferredSize(new Dimension(400, 25));
+		textField.setColumns(10);
+		textField.setBackground(new Color(135, 206, 250));
+		add(textField, BorderLayout.SOUTH);
 
 		for (int i = 0; i < 4; i++) {
 			Button button = new Button(MyStrings.DOLLAR_SIGN + " " + commands[i]);
@@ -55,9 +71,6 @@ public class WithDrawalJPanel extends JPanel {
 			button.setFont(new Font("Arial", Font.PLAIN, 26));
 			panel.add(button);
 		}
-
-		Component verticalStrut = Box.createVerticalStrut(25);
-		add(verticalStrut);
 	}
 
 	/** instance methods **/
