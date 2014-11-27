@@ -31,7 +31,7 @@ import atm.utils.MyStrings;
 public class ATM {
 	private static ATM atm = null;
 
-	private boolean userAuthenticated; // whether user is authenticated
+	public static boolean userAuthenticated; // whether user is authenticated
 	public static String currentAccountNumber; // current user's account number
 
 	private static Card card;
@@ -82,7 +82,7 @@ public class ATM {
 	}
 
 	public String getCurrentAccountNumber() {
-		return ATM.currentAccountNumber;
+		return CardInsideJPanel.getCard().accountNumber;
 	}
 
 	/** setters **/
@@ -192,7 +192,7 @@ public class ATM {
 		}
 		if (!userAuthenticated) {
 			wrongCount++;
-			if (wrongCount < MyInputHandler.MAX_WRONG_INPUT) {
+			if (wrongCount <= MyInputHandler.MAX_WRONG_INPUT) {
 				System.out.println("wrong pin");
 				LoginJPanel.showMeWrongStatic(wrongCount);
 			} else {
@@ -312,7 +312,7 @@ public class ATM {
 	}
 
 	public static void readCard(Card card) {
-ATM.card=card;
+		ATM.card = card;
 		System.out.println("reading inserted card:" + card.accountNumber);
 		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_READCARD);
 		(new WaitReadCard(card)).start();
@@ -367,9 +367,11 @@ ATM.card=card;
 	public static void initStatic() {
 		ATM.atm = new ATM();
 		// user is not authenticated to start/restart
-		atm.userAuthenticated = false;
+		ATM.userAuthenticated = false;
 		// no current account number to start/restart
 		ATM.currentAccountNumber = "0";
+		if (CardInsideJPanel.getCard() != null)
+			currentAccountNumber = CardInsideJPanel.getCard().accountNumber;
 		atm.init();
 	}
 

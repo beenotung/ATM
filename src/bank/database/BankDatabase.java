@@ -28,9 +28,7 @@ public class BankDatabase {
 	public static Account getAccount(String accountNumber) throws AccountNotFoundException {
 		// loop through accounts searching for matching account number
 		for (Account account : accounts) {
-			// return current account if match found
-			System.out.println("BackDatabase: comapring user [" + accountNumber + "]--["
-					+ account.getAccountNumber() + "]");
+			// return current account if match found							
 			if (account.getAccountNumber().equals(accountNumber))
 				return account;
 		} // end for

@@ -7,6 +7,8 @@ import atm.gui.mainscreen.MainScreenCardJPanel;
 import atm.gui.mainscreen.ViewBalanceJPanel;
 import atm.gui.sidebuttons.LeftSideButtonsJPanel;
 import atm.gui.sidebuttons.RightSideButtonsJPanel;
+import atm.gui.virtualslots.Card;
+import atm.gui.virtualslots.CardInsideJPanel;
 import atm.gui.virtualslots.CardSlotCardJPanel;
 
 import java.awt.BorderLayout;
@@ -73,10 +75,12 @@ public class MonitorJFrame extends JFrame {
 	}
 
 	public static void returnButtonClick() {
+		if (!CardInsideJPanel.hasCard())
+			return;
 		switch (STATE) {
 		case MainScreenCardJPanel.STRING_MAIN_MENU:
 			CardSlotCardJPanel.popCardStatic();
-			break;		
+			break;
 		default:
 			MainMenuJPanel.showMe();
 			break;

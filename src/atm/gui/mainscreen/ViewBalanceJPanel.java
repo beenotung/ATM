@@ -26,6 +26,7 @@ import java.awt.Component;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 
 import org.w3c.dom.css.ViewCSS;
@@ -39,6 +40,9 @@ public class ViewBalanceJPanel extends JPanel {
 	public static final String STRING_TAKE_CARD = "Take Card";
 
 	public static final String[] commands = { "", "", "", "", "", "", STRING_MAIN_MENU, STRING_TAKE_CARD };
+
+	GUIPrinter guiPrinter;
+	private JTextArea text;
 
 	public ViewBalanceJPanel() {
 		contents.add(this);
@@ -68,10 +72,10 @@ public class ViewBalanceJPanel extends JPanel {
 		infoPanel1.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		infoPanel1.setLayout(new BorderLayout(0, 0));
 
-		JTextPane textPane = new JTextPane();
-		infoPanel1.add(textPane);
-		textPane.setBackground(MyGUISettings.getATMScreenBackGroundColor());
-		textPane.setFont(MyGUISettings.getFont(24));
+		text = new JTextArea();
+		infoPanel1.add(text);
+		text.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		text.setFont(MyGUISettings.getFont(24));
 
 		JPanel strucPanel = new JPanel();
 		contentPanel.add(strucPanel);
@@ -97,11 +101,13 @@ public class ViewBalanceJPanel extends JPanel {
 
 		Component verticalStrut_1 = Box.createVerticalStrut(25);
 		add(verticalStrut_1);
+
+		guiPrinter = new GUIPrinter(text);
 	}
 
 	public void loadinfo() {
 		// TODO view balance
-		GUIPrinter.start();
+		guiPrinter.start();
 		try {
 			Vector<Transaction> currentTransactions;
 			currentTransactions = ATM.getATM().createTransactions(ATM.BALANCE_INQUIRY);
@@ -118,7 +124,7 @@ public class ViewBalanceJPanel extends JPanel {
 		} catch (WrongInputException e) {
 			MaxWrongTryJPanel.showMe();
 		}
-		GUIPrinter.stop();
+		guiPrinter.stop();
 	}
 
 	public void showMe() {
