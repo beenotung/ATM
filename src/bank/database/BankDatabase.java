@@ -6,6 +6,7 @@ import javax.security.auth.login.AccountNotFoundException;
 
 import atm.core.ATM;
 import atm.exception.OverdrawnException;
+import atm.gui.virtualslots.CardInsideJPanel;
 import bank.account.Account;
 import bank.account.CurrentAccount;
 import bank.account.SavingAccount;
@@ -85,19 +86,19 @@ public class BankDatabase {
 	@Deprecated
 	public static boolean authenticateUser_old(String userAccountNumber, String userPIN)
 			throws AccountNotFoundException {
+		System.out.println("authenticateUser_old");
 		// attempt to retrieve the account with the account number
 		Account userAccount;
 		userAccount = getAccount(userAccountNumber);
 		// if account exists, return result of Account method validateIN
 		return userAccount.validatePIN(userPIN);
 	} // end method authenticateUser
-	
-	
-	public static boolean authenticateUser(String userPIN)
-			throws AccountNotFoundException {
+
+	public static boolean authenticateUser(String userPIN) throws AccountNotFoundException {
+		System.out.println("authenticating User: " + CardInsideJPanel.getCard().accountNumber);
 		// attempt to retrieve the account with the account number
 		Account userAccount;
-		userAccount = getAccount(ATM.currentAccountNumber);
+		userAccount = getAccount(CardInsideJPanel.getCard().accountNumber);
 		// if account exists, return result of Account method validateIN
 		return userAccount.validatePIN(userPIN);
 	} // end method authenticateUser

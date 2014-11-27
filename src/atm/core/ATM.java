@@ -18,6 +18,7 @@ import atm.gui.mainscreen.MainMenuJPanel;
 import atm.gui.mainscreen.MainScreenCardJPanel;
 import atm.gui.mainscreen.MaxWrongTryJPanel;
 import atm.gui.virtualslots.Card;
+import atm.gui.virtualslots.CardInsideJPanel;
 import atm.gui.virtualslots.CardSlotCardJPanel;
 import atm.utils.CashCount;
 import atm.utils.MyInputHandler;
@@ -32,6 +33,8 @@ public class ATM {
 
 	private boolean userAuthenticated; // whether user is authenticated
 	public static String currentAccountNumber; // current user's account number
+
+	private static Card card;
 	private Screen screen; // ATM's screen
 	private Keypad keypad; // ATM's keypad
 	private CashDispenser cashDispenser; // ATM's cash dispenser
@@ -180,7 +183,9 @@ public class ATM {
 	public void authenticateUser(String pin) {
 		System.out.println("attend to login");
 		try {
-			userAuthenticated = BankDatabase.authenticateUser_old(ATM.currentAccountNumber, pin);
+			// userAuthenticated =
+			// BankDatabase.authenticateUser_old(ATM.currentAccountNumber, pin);
+			userAuthenticated = BankDatabase.authenticateUser(pin);
 		} catch (AccountNotFoundException e) {
 			CardNotValidJPanel.showMe();
 			(new WaitPopCard()).start();
@@ -307,6 +312,7 @@ public class ATM {
 	}
 
 	public static void readCard(Card card) {
+ATM.card=card;
 		System.out.println("reading inserted card:" + card.accountNumber);
 		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_READCARD);
 		(new WaitReadCard(card)).start();

@@ -38,7 +38,6 @@ public class CardInsideJPanel extends JPanel {
 		card.buttonTake.setVisible(true);
 	}
 
-
 	public static void insertCardStatic(Card card) {
 		for (CardInsideJPanel cardInsideJPanel : contents)
 			cardInsideJPanel.insertCard(card);
@@ -51,6 +50,10 @@ public class CardInsideJPanel extends JPanel {
 
 	public static void removeCard() {
 		CardInsideJPanel.card = null;
+	}
+
+	public static Card getCard() {
+		return card;
 	}
 
 }

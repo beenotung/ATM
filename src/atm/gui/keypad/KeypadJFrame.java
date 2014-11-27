@@ -202,7 +202,7 @@ public class KeypadJFrame extends JFrame {
 	private ActionListener getCancelActionListener() {
 		return new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {				
+			public void actionPerformed(ActionEvent e) {
 				MonitorJFrame.returnButtonClick();
 			}
 		};
