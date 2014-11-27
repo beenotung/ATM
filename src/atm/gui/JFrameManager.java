@@ -3,6 +3,7 @@ package atm.gui;
 import java.net.MalformedURLException;
 
 import atm.gui.keypad.KeypadJFrame;
+import atm.gui.monitor.MonitorJFrame;
 import atm.gui.virtualslots.VirtualSlotsJFrame;
 
 public class JFrameManager {

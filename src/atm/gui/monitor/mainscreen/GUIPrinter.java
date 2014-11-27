@@ -1,4 +1,4 @@
-package atm.gui;
+package atm.gui.monitor.mainscreen;
 
 import java.io.IOException;
 import java.io.OutputStream;

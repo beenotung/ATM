@@ -6,8 +6,8 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-import atm.gui.MonitorJFrame;
 import atm.gui.MyGUISettings;
+import atm.gui.monitor.MonitorJFrame;
 import atm.utils.MyURLs;
 
 public class SideButtons {

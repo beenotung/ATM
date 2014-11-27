@@ -1,7 +1,8 @@
-package atm.gui;
+package atm.gui.monitor;
 
 import javax.swing.JFrame;
 
+import atm.gui.MyGUISettings;
 import atm.gui.monitor.mainscreen.MainMenuJPanel;
 import atm.gui.monitor.mainscreen.MainScreenCardJPanel;
 import atm.gui.monitor.mainscreen.ViewBalanceJPanel;

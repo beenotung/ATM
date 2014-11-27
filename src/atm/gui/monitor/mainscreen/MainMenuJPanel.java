@@ -13,8 +13,8 @@ import java.awt.Component;
 import javax.swing.Box;
 
 import atm.core.ATM;
-import atm.gui.MonitorJFrame;
 import atm.gui.MyGUISettings;
+import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
 
 import java.awt.Font;

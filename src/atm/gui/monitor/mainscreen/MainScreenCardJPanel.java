@@ -6,8 +6,8 @@ import myutils.gui.cardlayout.AbstractCardJPanel;
 
 import java.awt.Component;
 
-import atm.gui.MonitorJFrame;
 import atm.gui.MyGUISettings;
+import atm.gui.monitor.MonitorJFrame;
 
 public class MainScreenCardJPanel extends AbstractCardJPanel {
 	/**

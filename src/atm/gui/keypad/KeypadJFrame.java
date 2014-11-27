@@ -17,7 +17,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 
 import atm.core.ATM;
-import atm.gui.MonitorJFrame;
+import atm.gui.monitor.MonitorJFrame;
 
 public class KeypadJFrame extends JFrame {
 	private static Vector<KeypadJFrame> contents = new Vector<KeypadJFrame>();

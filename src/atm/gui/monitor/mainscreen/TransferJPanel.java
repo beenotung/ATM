@@ -9,8 +9,8 @@ import javax.swing.BoxLayout;
 import java.awt.Component;
 
 import atm.core.ATM;
-import atm.gui.MonitorJFrame;
 import atm.gui.MyGUISettings;
+import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
 
 import javax.swing.JLabel;
