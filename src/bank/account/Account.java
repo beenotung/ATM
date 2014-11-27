@@ -1,6 +1,5 @@
 package bank.account;
 
-import java.util.Arrays;
 import java.util.Vector;
 
 import javax.security.auth.login.AccountNotFoundException;

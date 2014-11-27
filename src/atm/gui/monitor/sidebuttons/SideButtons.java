@@ -1,4 +1,4 @@
-package atm.gui.sidebuttons;
+package atm.gui.monitor.sidebuttons;
 
 import java.awt.Image;
 import java.net.MalformedURLException;

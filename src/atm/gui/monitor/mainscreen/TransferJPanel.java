@@ -1,25 +1,20 @@
-package atm.gui.mainscreen;
+package atm.gui.monitor.mainscreen;
 
 import javax.swing.JPanel;
-import java.awt.GridLayout;
+
 import java.util.Vector;
-import java.awt.Button;
 
 import javax.swing.BoxLayout;
 
 import java.awt.Component;
 
-import javax.swing.Box;
-
 import atm.core.ATM;
 import atm.gui.MonitorJFrame;
 import atm.gui.MyGUISettings;
-import atm.gui.sidebuttons.SideButtons;
+import atm.gui.monitor.sidebuttons.SideButtons;
 
-import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
 public class TransferJPanel extends JPanel {
 	private static Vector<TransferJPanel> contents = new Vector<TransferJPanel>();

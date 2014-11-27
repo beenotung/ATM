@@ -1,14 +1,15 @@
 package atm.gui;
 
 import java.io.IOException;
+
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import atm.gui.keypad.KeyPadButtonIcons;
+import atm.gui.monitor.sidebuttons.SideButtons;
 import atm.gui.notes.CashNote100;
 import atm.gui.notes.CashNote1000;
 import atm.gui.notes.CashNote500;
-import atm.gui.sidebuttons.SideButtons;
 import atm.gui.virtualslots.Card;
 import atm.utils.MyImages;
 

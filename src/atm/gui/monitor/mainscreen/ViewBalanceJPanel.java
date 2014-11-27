@@ -1,4 +1,4 @@
-package atm.gui.mainscreen;
+package atm.gui.monitor.mainscreen;
 
 import javax.security.auth.login.AccountNotFoundException;
 import javax.swing.JPanel;
@@ -9,8 +9,7 @@ import atm.exception.WrongInputException;
 import atm.gui.GUIPrinter;
 import atm.gui.MonitorJFrame;
 import atm.gui.MyGUISettings;
-import atm.gui.sidebuttons.SideButtons;
-import atm.gui.virtualslots.CardInsideJPanel;
+import atm.gui.monitor.sidebuttons.SideButtons;
 import atm.gui.virtualslots.CardSlotCardJPanel;
 import atm.utils.MyImages;
 import bank.operation.Transaction;
@@ -19,18 +18,12 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Button;
 import java.awt.Font;
-
-import javax.swing.ImageIcon;
-
 import java.awt.Component;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
-
-import org.w3c.dom.css.ViewCSS;
 
 import java.awt.BorderLayout;
 import java.util.Vector;
@@ -108,6 +101,7 @@ public class ViewBalanceJPanel extends JPanel {
 
 	public void loadinfo() {
 		// TODO view balance
+		text.setText("");
 		guiPrinter.start();
 		try {
 			Vector<Transaction> currentTransactions;

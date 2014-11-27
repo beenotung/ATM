@@ -1,13 +1,9 @@
-package atm.gui.mainscreen;
+package atm.gui.monitor.mainscreen;
 
 import javax.swing.JPanel;
-
-import sun.applet.Main;
-
 import javax.swing.JLabel;
 
 import java.awt.Font;
-import java.awt.BorderLayout;
 
 import javax.swing.BoxLayout;
 

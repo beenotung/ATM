@@ -7,8 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
-import javax.management.monitor.Monitor;
-import javax.security.auth.login.AccountNotFoundException;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -20,7 +18,6 @@ import javax.swing.text.JTextComponent;
 
 import atm.core.ATM;
 import atm.gui.MonitorJFrame;
-import atm.gui.mainscreen.MainScreenCardJPanel;
 
 public class KeypadJFrame extends JFrame {
 	private static Vector<KeypadJFrame> contents = new Vector<KeypadJFrame>();

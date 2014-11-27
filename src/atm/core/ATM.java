@@ -12,11 +12,11 @@ import bank.operation.Transfer;
 import bank.operation.Withdrawal;
 import atm.exception.CardOutException;
 import atm.exception.WrongInputException;
-import atm.gui.mainscreen.CardNotValidJPanel;
-import atm.gui.mainscreen.LoginJPanel;
-import atm.gui.mainscreen.MainMenuJPanel;
-import atm.gui.mainscreen.MainScreenCardJPanel;
-import atm.gui.mainscreen.MaxWrongTryJPanel;
+import atm.gui.monitor.mainscreen.CardNotValidJPanel;
+import atm.gui.monitor.mainscreen.LoginJPanel;
+import atm.gui.monitor.mainscreen.MainMenuJPanel;
+import atm.gui.monitor.mainscreen.MainScreenCardJPanel;
+import atm.gui.monitor.mainscreen.MaxWrongTryJPanel;
 import atm.gui.virtualslots.Card;
 import atm.gui.virtualslots.CardInsideJPanel;
 import atm.gui.virtualslots.CardSlotCardJPanel;
@@ -34,7 +34,6 @@ public class ATM {
 	public static boolean userAuthenticated; // whether user is authenticated
 	public static String currentAccountNumber; // current user's account number
 
-	private static Card card;
 	private Screen screen; // ATM's screen
 	private Keypad keypad; // ATM's keypad
 	private CashDispenser cashDispenser; // ATM's cash dispenser
@@ -312,7 +311,6 @@ public class ATM {
 	}
 
 	public static void readCard(Card card) {
-		ATM.card = card;
 		System.out.println("reading inserted card:" + card.accountNumber);
 		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_READCARD);
 		(new WaitReadCard(card)).start();

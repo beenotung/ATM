@@ -34,13 +34,13 @@ public class GUIPrinter extends OutputStream {
 		write(new byte[] { (byte) b }, 0, 1);
 	}
 
-	public static void start() {
+	public void start() {
 		for (GUIPrinter guiPrinter : contents) {
 			System.setOut(new PrintStream(guiPrinter));
 		}
 	}
 
-	public static void stop() {
+	public void stop() {
 		System.setOut(systemPrintStream);
 	}
 }

@@ -3,8 +3,8 @@ package atm.gui.virtualslots;
 import java.util.Vector;
 
 import atm.core.ATM;
-import atm.gui.mainscreen.MainScreenCardJPanel;
-import atm.gui.mainscreen.TakeCardJPanel;
+import atm.gui.monitor.mainscreen.MainScreenCardJPanel;
+import atm.gui.monitor.mainscreen.TakeCardJPanel;
 import myutils.gui.cardlayout.AbstractCardJPanel;
 
 public class CardSlotCardJPanel extends AbstractCardJPanel {

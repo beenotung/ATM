@@ -1,12 +1,10 @@
-package atm.gui.mainscreen;
+package atm.gui.monitor.mainscreen;
 
 import java.util.Vector;
 
 import myutils.gui.cardlayout.AbstractCardJPanel;
 
 import java.awt.Component;
-
-import com.sun.corba.se.spi.orbutil.fsm.State;
 
 import atm.gui.MonitorJFrame;
 import atm.gui.MyGUISettings;
@@ -24,12 +22,12 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 	public static final String STRING_CARD_NOT_VALID = "Card Not Valid";
 	public static final String STRING_LOGIN = "Login";
 	public static final String STRING_MAIN_MENU = "Main Menu";
-	public static final String STRING_VIEW_BALANCE = "View Balance";
+	public static final String STRING_VIEW_BALANCE = MainMenuJPanel.STRING_VIEW_BALANCE;
 	public static final String STRING_TAKE_CARD = "Take Card";
 	public static final String STRING_BYE = "Bye";
 	public static final String STRING_MAX_WRONG_TRY = "Max Wrong Try";
-	public static final String STRING_WITHDRAWAL = "Withdrawal";
-	public static final String STRING_TRANSFER = "Transfer";
+	public static final String STRING_WITHDRAWAL = MainMenuJPanel.STRING_WITHDRAW_CASH;
+	public static final String STRING_TRANSFER = MainMenuJPanel.STRING_TRANSFER_FUNDS;
 
 	public MainScreenCardJPanel() {
 		super();

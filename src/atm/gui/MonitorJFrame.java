@@ -2,12 +2,12 @@ package atm.gui;
 
 import javax.swing.JFrame;
 
-import atm.gui.mainscreen.MainMenuJPanel;
-import atm.gui.mainscreen.MainScreenCardJPanel;
-import atm.gui.mainscreen.ViewBalanceJPanel;
-import atm.gui.sidebuttons.LeftSideButtonsJPanel;
-import atm.gui.sidebuttons.RightSideButtonsJPanel;
-import atm.gui.virtualslots.Card;
+import atm.gui.monitor.mainscreen.MainMenuJPanel;
+import atm.gui.monitor.mainscreen.MainScreenCardJPanel;
+import atm.gui.monitor.mainscreen.ViewBalanceJPanel;
+import atm.gui.monitor.mainscreen.WithDrawalJPanel;
+import atm.gui.monitor.sidebuttons.LeftSideButtonsJPanel;
+import atm.gui.monitor.sidebuttons.RightSideButtonsJPanel;
 import atm.gui.virtualslots.CardInsideJPanel;
 import atm.gui.virtualslots.CardSlotCardJPanel;
 
@@ -50,25 +50,40 @@ public class MonitorJFrame extends JFrame {
 	}
 
 	public static void sideButtonClick(String command) {
+		System.out.println("Side button clicked: "+command);		
 		switch (STATE) {
 		case MainScreenCardJPanel.STRING_MAIN_MENU:
 			switch (command) {
-			case MainMenuJPanel.STRING_VIEW_BALANCE:
+			case MainScreenCardJPanel.STRING_VIEW_BALANCE:
 				ViewBalanceJPanel.showMeStatic();
 				break;
-			case MainMenuJPanel.STRING_TAKE_CARD:
+			case MainScreenCardJPanel.STRING_TAKE_CARD:
 				CardSlotCardJPanel.popCardStatic();
+				break;
+			case MainScreenCardJPanel.STRING_WITHDRAWAL:
+				WithDrawalJPanel.showMe();
 				break;
 			}
 			break;
-		case MainScreenCardJPanel.STRING_VIEW_BALANCE: {
+		case MainScreenCardJPanel.STRING_VIEW_BALANCE:
 			switch (command) {
+			case ViewBalanceJPanel.STRING_MAIN_MENU:
+				MainMenuJPanel.showMe();
+				break;
 			case ViewBalanceJPanel.STRING_TAKE_CARD:
 				CardSlotCardJPanel.popCardStatic();
 				break;
 			}
 			break;
-		}
+		case MainScreenCardJPanel.STRING_WITHDRAWAL:
+			switch (command) {
+			case WithDrawalJPanel.STRING_MAIN_MENU:
+				MainMenuJPanel.showMe();
+				break;
+			case WithDrawalJPanel.STRING_TAKE_CARD:
+				CardSlotCardJPanel.popCardStatic();
+				break;
+			}
 		default:
 			break;
 		}

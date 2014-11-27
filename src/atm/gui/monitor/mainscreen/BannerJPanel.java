@@ -1,6 +1,5 @@
-package atm.gui.mainscreen;
+package atm.gui.monitor.mainscreen;
 
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 

@@ -4,7 +4,6 @@ import java.util.Vector;
 
 import javax.security.auth.login.AccountNotFoundException;
 
-import atm.core.ATM;
 import atm.exception.OverdrawnException;
 import atm.gui.virtualslots.CardInsideJPanel;
 import bank.account.Account;

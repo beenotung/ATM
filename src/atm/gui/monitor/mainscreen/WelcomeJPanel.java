@@ -1,4 +1,4 @@
-package atm.gui.mainscreen;
+package atm.gui.monitor.mainscreen;
 
 import java.util.Vector;
 

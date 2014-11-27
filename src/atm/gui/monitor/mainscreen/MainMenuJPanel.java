@@ -1,4 +1,4 @@
-package atm.gui.mainscreen;
+package atm.gui.monitor.mainscreen;
 
 import javax.swing.JPanel;
 
@@ -15,12 +15,12 @@ import javax.swing.Box;
 import atm.core.ATM;
 import atm.gui.MonitorJFrame;
 import atm.gui.MyGUISettings;
-import atm.gui.sidebuttons.SideButtons;
+import atm.gui.monitor.sidebuttons.SideButtons;
 
 import java.awt.Font;
 
-public class WithDrawalJPanel extends JPanel {
-	private static Vector<WithDrawalJPanel> contents = new Vector<WithDrawalJPanel>();
+public class MainMenuJPanel extends JPanel {
+	private static Vector<MainMenuJPanel> contents = new Vector<MainMenuJPanel>();
 
 	public static final String STRING_VIEW_BALANCE = "View Balance";
 	public static final String STRING_WITHDRAW_CASH = "Withdraw Cash";
@@ -30,7 +30,7 @@ public class WithDrawalJPanel extends JPanel {
 	public static final String[] commands = { "", "", STRING_VIEW_BALANCE, STRING_WITHDRAW_CASH,
 			STRING_TRANSFER_FUNDS, STRING_TAKE_CARD, "", "" };
 
-	public WithDrawalJPanel() {
+	public MainMenuJPanel() {
 		contents.add(this);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
@@ -56,7 +56,7 @@ public class WithDrawalJPanel extends JPanel {
 	public static void showMe() {
 		ATM.getATM().init();
 		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_MAIN_MENU;
-		SideButtons.commands = WithDrawalJPanel.commands;
+		SideButtons.commands = MainMenuJPanel.commands;
 		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_MAIN_MENU);
 	}
 }
