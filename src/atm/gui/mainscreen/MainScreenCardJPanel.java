@@ -23,6 +23,8 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 	public static final String STRING_LOGIN = "Login";
 	public static final String STRING_MAIN_MENU = "Main Menu";
 	public static final String STRING_VIEW_BALANCE = "View Balance";
+	public static final String STRING_TAKE_CARD = "Take Card";
+	public static final String STRING_BYE = "Bye";
 
 	public MainScreenCardJPanel() {
 		super();
@@ -36,7 +38,13 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 		addToCards(new CardNotValidJPanel(), STRING_CARD_NOT_VALID);
 		addToCards(new LoginJPanel(), STRING_LOGIN);
 		addToCards(new MainMenuJPanel(), STRING_MAIN_MENU);
-		addToCards(new ViewBalanceJPanel(), STRING_VIEW_BALANCE);
+		addToCards(new ViewBalanceJPanel() {
+			{
+				setOpaque(false);
+			}
+		}, STRING_VIEW_BALANCE);
+		addToCards(new TakeCardJPanel(), STRING_TAKE_CARD);
+		addToCards(new ByeJPanel(), STRING_BYE);
 
 		// switchToCard(STRING_WELCOME);
 		WelcomeJPanel.showMeStatic();

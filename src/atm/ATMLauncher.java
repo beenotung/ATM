@@ -1,7 +1,6 @@
 package atm;
 
-import java.net.MalformedURLException;
-
+import java.io.IOException;
 import javax.swing.JOptionPane;
 
 import bank.database.BankDatabase;
@@ -20,7 +19,7 @@ public class ATMLauncher {
 		ATM.initStatic();
 		try {
 			atmguiLauncher = new ATMGUILauncher();
-		} catch (MalformedURLException e) {
+		} catch (IOException e) {
 			System.out.println(MyStrings.INTERNET_ERROR);
 			JOptionPane.showMessageDialog(null, MyStrings.INTERNET_ERROR, "Internet Error",
 					JOptionPane.ERROR_MESSAGE);

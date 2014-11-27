@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import atm.core.ATM;
 import atm.gui.mainscreen.MainScreenCardJPanel;
+import atm.gui.mainscreen.TakeCardJPanel;
 import myutils.gui.cardlayout.AbstractCardJPanel;
 
 public class CardSlotCardJPanel extends AbstractCardJPanel {
@@ -68,6 +69,7 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 	}
 
 	public static void popCardStatic() {
+		TakeCardJPanel.showMe();
 		for (CardSlotCardJPanel cardSlotCardJPanel : contents) {
 			cardSlotCardJPanel.popCard();
 		}

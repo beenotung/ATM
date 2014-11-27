@@ -36,5 +36,10 @@ public class ByeJPanel extends JPanel {
 
 		Component horizontalGlue_1 = Box.createHorizontalGlue();
 		add(horizontalGlue_1);
+	}	
+	
+	public static void showMe() {
+		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CARD);
 	}
+
 }

@@ -1,22 +1,28 @@
 package atm.utils;
 
-import java.net.MalformedURLException;
+import java.awt.Image;
+import java.io.IOException;
 import java.net.URL;
 
-import javax.swing.ImageIcon;
-
+import javax.imageio.ImageIO;
 import atm.gui.MyGUISettings;
 import myutils.gui.MyImageUtils;
 
 public class MyImages {
-	public static ImageIcon banner;
-	public static ImageIcon viewBalance;
+	public static Image banner;
+	public static Image viewBalance;
 
-	public static void init() throws MalformedURLException {
-		banner = MyImageUtils.scaleImageIconByHeight(new ImageIcon(new URL(MyURLs.IMAGE_BANNER)),
+	private static boolean inited = false;
+
+	public static void init() throws IOException {
+		if (inited)
+			return;
+		banner = MyImageUtils.scaleImageByHeight(ImageIO.read(new URL(MyURLs.IMAGE_BANNER)),
 				MyGUISettings.TOP_MARGIN);
-		viewBalance = MyImageUtils.scaleImageIconByHeight(new ImageIcon(new URL(MyURLs.IMAGE_VIEW_BALANCE)),
+		viewBalance = MyImageUtils.scaleImageByHeight(ImageIO.read(new URL(MyURLs.IMAGE_VIEW_BALANCE)),
 				MyGUISettings.TOP_MARGIN);
+
+		inited = true;
 	}
 
 }

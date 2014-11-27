@@ -1,7 +1,6 @@
 package atm.gui;
 
-import java.net.MalformedURLException;
-
+import java.io.IOException;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -16,7 +15,7 @@ import atm.utils.MyImages;
 public class ATMGUILauncher {
 	JFrameManager frameManager;
 
-	public ATMGUILauncher() throws MalformedURLException {
+	public ATMGUILauncher() throws IOException {
 		System.out.println("fetching images");
 		fetchImages();
 		System.out.println("initializing GUI");
@@ -62,7 +61,7 @@ public class ATMGUILauncher {
 		frameManager.start();
 	}
 
-	public void fetchImages() throws MalformedURLException {
+	public void fetchImages() throws IOException {
 		System.out.println("fetching images of cards");
 		Card.init();
 		System.out.println("fetching images of cash notes");		

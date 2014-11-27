@@ -184,9 +184,10 @@ public class ATM {
 				LoginJPanel.showMeWrongStatic(wrongCount);
 			else
 				CardSlotCardJPanel.popCardStatic();
+		} else {
+			System.out.println("logged in");
+			MainMenuJPanel.showMe();
 		}
-		System.out.println("logged in");
-		MainMenuJPanel.showMe();
 	}
 
 	// display the main menu and perform transactions

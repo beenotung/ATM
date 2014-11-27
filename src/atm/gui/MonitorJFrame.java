@@ -7,6 +7,7 @@ import atm.gui.mainscreen.MainScreenCardJPanel;
 import atm.gui.mainscreen.ViewBalanceJPanel;
 import atm.gui.sidebuttons.LeftSideButtonsJPanel;
 import atm.gui.sidebuttons.RightSideButtonsJPanel;
+import atm.gui.virtualslots.CardSlotCardJPanel;
 
 import java.awt.BorderLayout;
 import java.net.MalformedURLException;
@@ -46,14 +47,27 @@ public class MonitorJFrame extends JFrame {
 		super.dispose();
 	}
 
-	public static void sideButtonClick(String label) {
+	public static void sideButtonClick(String command) {
 		switch (STATE) {
 		case MainScreenCardJPanel.STRING_MAIN_MENU:
-			switch (label) {
+			switch (command) {
 			case MainMenuJPanel.STRING_VIEW_BALANCE:
 				ViewBalanceJPanel.showMe();
 				break;
+			case MainMenuJPanel.STRING_TAKE_CARD:
+				CardSlotCardJPanel.popCardStatic();
+				break;
 			}
+			break;
+		case MainScreenCardJPanel.STRING_VIEW_BALANCE: {
+			switch (command) {
+			case ViewBalanceJPanel.STRING_TAKE_CARD:
+				CardSlotCardJPanel.popCardStatic();
+				break;
+			}
+			break;
+		}
+		default:
 			break;
 		}
 	}
