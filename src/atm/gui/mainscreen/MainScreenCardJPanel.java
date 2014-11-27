@@ -28,6 +28,8 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 	public static final String STRING_TAKE_CARD = "Take Card";
 	public static final String STRING_BYE = "Bye";
 	public static final String STRING_MAX_WRONG_TRY = "Max Wrong Try";
+	public static final String STRING_WITHDRAWAL = "Withdrawal";
+	public static final String STRING_TRANSFER = "Transfer";
 
 	public MainScreenCardJPanel() {
 		super();
@@ -49,6 +51,8 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 		addToCards(new MaxWrongTryJPanel(), STRING_MAX_WRONG_TRY);
 		addToCards(new TakeCardJPanel(), STRING_TAKE_CARD);
 		addToCards(new ByeJPanel(), STRING_BYE);
+		addToCards(new WithDrawalJPanel(), STRING_WITHDRAWAL);
+		addToCards(new TransferJPanel(), STRING_TRANSFER);
 
 		// switchToCard(STRING_WELCOME);
 		WelcomeJPanel.showMeStatic();
