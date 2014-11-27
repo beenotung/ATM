@@ -27,12 +27,9 @@ public class WithDrawalJPanel extends JPanel {
 	public static final String STRING_MAIN_MENU = "Main Menu";
 	public static final String STRING_TAKE_CARD = "Take Card";
 
-	public static final String[] commands = {
-			MyStrings.DOLLAR_SIGN + " " + String.valueOf(MyStaticStuff.MenuCashValue[0]),
-			MyStrings.DOLLAR_SIGN + " " + String.valueOf(MyStaticStuff.MenuCashValue[1]),
-			MyStrings.DOLLAR_SIGN + " " + String.valueOf(MyStaticStuff.MenuCashValue[2]),
-			MyStrings.DOLLAR_SIGN + " " + String.valueOf(MyStaticStuff.MenuCashValue[3]), STRING_MAIN_MENU,
-			STRING_TAKE_CARD };
+	public static final String[] commands = { String.valueOf(MyStaticStuff.MenuCashValue[0]),
+			String.valueOf(MyStaticStuff.MenuCashValue[1]), String.valueOf(MyStaticStuff.MenuCashValue[2]),
+			String.valueOf(MyStaticStuff.MenuCashValue[3]), STRING_MAIN_MENU, STRING_TAKE_CARD, "", "" };
 
 	/** constructor **/
 	public WithDrawalJPanel() {
@@ -48,8 +45,13 @@ public class WithDrawalJPanel extends JPanel {
 		panel.setLayout(new GridLayout(4, 2, 0, 0));
 		panel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 
-		for (String string : commands) {
-			Button button = new Button(string);
+		for (int i = 0; i < 4; i++) {
+			Button button = new Button(MyStrings.DOLLAR_SIGN + " " + commands[i]);
+			button.setFont(new Font("Arial", Font.PLAIN, 26));
+			panel.add(button);
+		}
+		for (int i = 4; i < 8; i++) {
+			Button button = new Button(commands[i]);
 			button.setFont(new Font("Arial", Font.PLAIN, 26));
 			panel.add(button);
 		}

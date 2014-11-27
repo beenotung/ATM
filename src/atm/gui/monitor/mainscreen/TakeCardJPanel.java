@@ -12,11 +12,13 @@ import java.awt.Component;
 import javax.swing.Box;
 
 import atm.gui.MyGUISettings;
+import atm.gui.monitor.sidebuttons.SideButtons;
 import myutils.Utils;
 
 public class TakeCardJPanel extends JPanel {
 
 	private static JLabel codeLabel;
+	public static final String[] commands = { "", "", "", "", "", "", "", "" };
 
 	/**
 	 * Create the panel.
@@ -54,6 +56,7 @@ public class TakeCardJPanel extends JPanel {
 	}
 
 	public static void showMe() {
+		SideButtons.commands = TakeCardJPanel.commands;
 		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CARD);
 	}
 }

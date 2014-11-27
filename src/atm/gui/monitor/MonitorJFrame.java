@@ -51,7 +51,7 @@ public class MonitorJFrame extends JFrame {
 	}
 
 	public static void sideButtonClick(String command) {
-		System.out.println("Side button clicked: "+command);		
+		System.out.println("Side button clicked: " + command);
 		switch (STATE) {
 		case MainScreenCardJPanel.STRING_MAIN_MENU:
 			switch (command) {
@@ -84,6 +84,8 @@ public class MonitorJFrame extends JFrame {
 			case WithDrawalJPanel.STRING_TAKE_CARD:
 				CardSlotCardJPanel.popCardStatic();
 				break;
+			default:
+				System.out.println(command + " " + "right");
 			}
 		default:
 			break;
