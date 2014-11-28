@@ -14,6 +14,7 @@ import javax.swing.Box;
 
 import atm.core.ATM;
 import atm.gui.MyGUISettings;
+import atm.gui.keypad.KeypadJFrame;
 import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
 
@@ -57,6 +58,7 @@ public class MainMenuJPanel extends JPanel {
 		ATM.getATM().init();
 		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_MAIN_MENU;
 		SideButtons.commands = MainMenuJPanel.commands;
+		KeypadJFrame.switchTargetStatic(KeypadJFrame.STRING_MODE_NULL);
 		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_MAIN_MENU);
 	}
 }

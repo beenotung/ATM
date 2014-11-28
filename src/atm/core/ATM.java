@@ -187,7 +187,6 @@ public class ATM {
 			userAuthenticated = BankDatabase.authenticateUser(pin);
 		} catch (AccountNotFoundException e) {
 			CardNotValidJPanel.showMe();
-			(new WaitPopCard()).start();
 		}
 		if (!userAuthenticated) {
 			wrongCount++;
@@ -197,7 +196,6 @@ public class ATM {
 			} else {
 				System.out.println("too many wrong try");
 				MaxWrongTryJPanel.showMe();
-				(new WaitPopCard()).start();
 			}
 		} else {
 			System.out.println("logged in");
@@ -323,7 +321,6 @@ public class ATM {
 			LoginJPanel.showMeStatic();
 		} catch (NumberFormatException e) {
 			CardNotValidJPanel.showMe();
-			(new WaitPopCard()).start();
 		}
 	}
 
@@ -347,17 +344,6 @@ public class ATM {
 			} catch (InterruptedException e) {
 			}
 			ATM.checkCard(card);
-		}
-	}
-
-	private static class WaitPopCard extends Thread {
-		@Override
-		public void run() {
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-			}
-			CardSlotCardJPanel.popCardStatic();
 		}
 	}
 

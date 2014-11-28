@@ -55,6 +55,22 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 		super.switchToCard(label);
 	}
 
+	public void waitPopCard() {
+		(new WaitPopCard()).start();
+	}
+
+	/** private class **/
+	private static class WaitPopCard extends Thread {
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+			}
+			CardSlotCardJPanel.popCardStatic();
+		}
+	}
+
 	/** static-instance connector **/
 	public static void switchToCardStatic(String label) {
 		for (CardSlotCardJPanel cardSlotCardJPanel : contents) {
@@ -84,4 +100,9 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_WELCOME);
 	}
 
+	public static void waitPopCardStatic() {
+		for (CardSlotCardJPanel cardSlotCardJPanel : contents) {
+			cardSlotCardJPanel.waitPopCard();
+		}
+	}
 }

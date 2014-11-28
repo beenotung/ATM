@@ -62,7 +62,7 @@ public class MonitorJFrame extends JFrame {
 				CardSlotCardJPanel.popCardStatic();
 				break;
 			case MainScreenCardJPanel.STRING_WITHDRAWAL:
-				WithDrawalJPanel.showMe();
+				WithDrawalJPanel.showMeStatic();
 				break;
 			}
 			break;
@@ -85,7 +85,8 @@ public class MonitorJFrame extends JFrame {
 				CardSlotCardJPanel.popCardStatic();
 				break;
 			default:
-				System.out.println(command + " " + "right");
+				WithDrawalJPanel.sideButtonClickStatic(command);
+				break;
 			}
 		default:
 			break;

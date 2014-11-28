@@ -1,5 +1,6 @@
 package atm.gui.monitor.mainscreen;
 
+import javax.security.auth.login.AccountNotFoundException;
 import javax.swing.JPanel;
 
 import java.awt.GridLayout;
@@ -13,17 +14,26 @@ import java.awt.Component;
 import javax.swing.Box;
 
 import atm.core.ATM;
+import atm.exception.CardOutException;
+import atm.exception.WrongInputException;
 import atm.gui.MyGUISettings;
+import atm.gui.keypad.KeypadJFrame;
 import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
 import atm.utils.MyStaticStuff;
 import atm.utils.MyStrings;
+import bank.operation.WithdrawalNew;
 
 import java.awt.Font;
+
 import javax.swing.JTextField;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
+import java.awt.TextField;
+
+import javax.swing.JLabel;
 
 public class WithDrawalJPanel extends JPanel {
 	private static Vector<WithDrawalJPanel> contents = new Vector<WithDrawalJPanel>();
@@ -41,7 +51,7 @@ public class WithDrawalJPanel extends JPanel {
 		contents.add(this);
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		setLayout(new BorderLayout(0, 0));
-		
+
 		JPanel panel_1 = new JPanel();
 		add(panel_1);
 		panel_1.setBackground(MyGUISettings.getATMScreenBackGroundColor());
@@ -54,12 +64,18 @@ public class WithDrawalJPanel extends JPanel {
 		panel_1.add(panel);
 		panel.setLayout(new GridLayout(4, 2, 0, 0));
 		panel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
-		
-		textField = new JTextField("HKD $ ");
+
+		Box horizontalBox = Box.createHorizontalBox();
+		add(horizontalBox, BorderLayout.SOUTH);
+
+		JLabel lblNewLabel = new JLabel("HKD $ ");
+		horizontalBox.add(lblNewLabel);
+
+		textField = new JTextField("");
+		horizontalBox.add(textField);
 		textField.setPreferredSize(new Dimension(400, 25));
 		textField.setColumns(10);
 		textField.setBackground(new Color(135, 206, 250));
-		add(textField, BorderLayout.SOUTH);
 
 		for (int i = 0; i < 4; i++) {
 			Button button = new Button(MyStrings.DOLLAR_SIGN + " " + commands[i]);
@@ -75,7 +91,41 @@ public class WithDrawalJPanel extends JPanel {
 
 	/** instance methods **/
 	public void sideButtonClick(String command) {
+		textField.setText(command);
+		tryWithDrawal();
+	}
 
+	public void enterButtonClick() {
+		tryWithDrawal();
+	}
+
+	public void showMe() {
+		ATM.getATM().init();
+		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_WITHDRAWAL;
+		SideButtons.commands = WithDrawalJPanel.commands;
+		KeypadJFrame.switchTargetStatic(textField, KeypadJFrame.STRING_MODE_CASH_AMOUNT);
+		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_WITHDRAWAL);
+	}
+
+	public void tryWithDrawal() {
+		// TODO tryWithDrawal
+		try {
+			WithdrawalNew withdrawalIntent = new WithdrawalNew(textField.getText());
+			withdrawalIntent.execute();
+		} catch (NumberFormatException e) {
+			System.out.println("Error! cash amount is not int?");
+			textField.setText("");
+		} catch (AccountNotFoundException e) {
+			CardNotValidJPanel.showMe();
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (WrongInputException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CardOutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/** static methods **/
@@ -85,10 +135,15 @@ public class WithDrawalJPanel extends JPanel {
 		}
 	}
 
-	public static void showMe() {
-		ATM.getATM().init();
-		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_WITHDRAWAL;
-		SideButtons.commands = WithDrawalJPanel.commands;
-		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_WITHDRAWAL);
+	public static void showMeStatic() {
+		for (WithDrawalJPanel withDrawalJPanel : contents) {
+			withDrawalJPanel.showMe();
+		}
+	}
+
+	public static void enterButtonClickStatic() {
+		for (WithDrawalJPanel withDrawalJPanel : contents) {
+			withDrawalJPanel.enterButtonClick();
+		}
 	}
 }

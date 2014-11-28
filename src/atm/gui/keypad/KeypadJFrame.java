@@ -18,6 +18,7 @@ import javax.swing.text.JTextComponent;
 
 import atm.core.ATM;
 import atm.gui.monitor.MonitorJFrame;
+import atm.gui.monitor.mainscreen.WithDrawalJPanel;
 
 public class KeypadJFrame extends JFrame {
 	private static Vector<KeypadJFrame> contents = new Vector<KeypadJFrame>();
@@ -25,6 +26,7 @@ public class KeypadJFrame extends JFrame {
 	public static final String STRING_MODE_PASSWORD = "Password";
 	public static final String STRING_MODE_ACCOUNTNUMBER = "AccountNumber";
 	public static final String STRING_MODE_AMOUNT = "Amount";
+	public static final String STRING_MODE_CASH_AMOUNT = "Cash Amount";
 	public static final String STRING_MODE_NULL = "Null";
 	private String mode;
 	private boolean dotEnable;
@@ -123,6 +125,10 @@ public class KeypadJFrame extends JFrame {
 			dotEnable = false;
 			maxLength = 13;
 			break;
+		case STRING_MODE_CASH_AMOUNT:
+			dotEnable = false;
+			maxLength = 4;
+			break;
 		case STRING_MODE_NULL:
 			dotEnable = false;
 			maxLength = 0;
@@ -168,7 +174,8 @@ public class KeypadJFrame extends JFrame {
 				try {
 					if (textComponent.getDocument().getLength() >= maxLength)
 						return;
-					if (getDecimalPlace(textComponent.getText()) < 2)
+					if ((getDecimalPlace(textComponent.getText()) < 2)
+							&& !((textComponent.getDocument().getLength() == 0) && (content == "00")))
 						insertText(content);
 				} catch (BadLocationException e1) {
 					insertTextAlternative(content);
@@ -199,8 +206,8 @@ public class KeypadJFrame extends JFrame {
 	private ActionListener getCancelActionListener() {
 		return new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {				
-					MonitorJFrame.returnButtonClick();
+			public void actionPerformed(ActionEvent e) {
+				MonitorJFrame.returnButtonClick();
 			}
 		};
 	}
@@ -209,7 +216,10 @@ public class KeypadJFrame extends JFrame {
 		return new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				textComponent.setText("");
+				try {
+					textComponent.setText("");
+				} catch (NullPointerException e2) {
+				}
 			}
 		};
 	}
@@ -223,6 +233,9 @@ public class KeypadJFrame extends JFrame {
 					System.out.println("[Enter] password mode");
 					ATM.getATM().authenticateUser(
 							String.valueOf(((JPasswordField) textComponent).getPassword()));
+					break;
+				case STRING_MODE_CASH_AMOUNT:
+					WithDrawalJPanel.enterButtonClickStatic();
 					break;
 				}
 			}
@@ -248,6 +261,12 @@ public class KeypadJFrame extends JFrame {
 	public static void switchTargetStatic(JTextComponent textComponent, String mode) {
 		for (KeypadJFrame keypadJFrame : contents) {
 			keypadJFrame.switchTarget(textComponent);
+			keypadJFrame.switchMode(mode);
+		}
+	}
+
+	public static void switchTargetStatic(String mode) {
+		for (KeypadJFrame keypadJFrame : contents) {
 			keypadJFrame.switchMode(mode);
 		}
 	}

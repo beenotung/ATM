@@ -10,6 +10,7 @@ import java.awt.Font;
 import javax.swing.Box;
 
 import atm.gui.MyGUISettings;
+import atm.gui.virtualslots.CardSlotCardJPanel;
 
 public class CardNotValidJPanel extends JPanel {
 
@@ -43,5 +44,6 @@ public class CardNotValidJPanel extends JPanel {
 
 	public static void showMe() {
 		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_CARD_NOT_VALID);
+		CardSlotCardJPanel.waitPopCardStatic();
 	}
 }

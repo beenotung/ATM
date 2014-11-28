@@ -99,7 +99,6 @@ public class ViewBalanceJPanel extends JPanel {
 	}
 
 	public void loadinfo() {
-		// TODO view balance
 		text.setText("");
 		guiPrinter.start();
 		try {
