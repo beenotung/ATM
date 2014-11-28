@@ -12,6 +12,11 @@ import java.awt.Component;
 import javax.swing.Box;
 
 public class ByeJPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public ByeJPanel() {
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());

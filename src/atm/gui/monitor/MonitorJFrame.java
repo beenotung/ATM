@@ -16,6 +16,10 @@ import java.awt.BorderLayout;
 import java.net.MalformedURLException;
 
 public class MonitorJFrame extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private LeftSideButtonsJPanel leftSideButtonsJPanel;
 	private RightSideButtonsJPanel rightSideButtonsJPanel;
 	private MainScreenCardJPanel mainScreenJPanel;

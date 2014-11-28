@@ -32,7 +32,7 @@ public class WithdrawalNew extends Transaction {
 
 	// Withdrawal constructor
 	// get references to keypad and cash dispenser from atm
-	public WithdrawalNew(String amount) {
+	public WithdrawalNew(String amount) throws NumberFormatException{
 		super(atm);
 		this.amount=Integer.parseInt(amount);
 		// initialize superclass variables

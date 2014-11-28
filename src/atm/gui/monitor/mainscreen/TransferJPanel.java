@@ -17,6 +17,11 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 public class TransferJPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static Vector<TransferJPanel> contents = new Vector<TransferJPanel>();
 
 	public static final String STRING_VIEW_BALANCE = "View Balance";

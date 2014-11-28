@@ -8,6 +8,10 @@ import javax.swing.BoxLayout;
 
 public class VirtualSlotsJFrame extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private CardSlotCardJPanel cardSlotCardJPanel;
 	private CashDispenserJPanel cashDispenserJPanel;
 

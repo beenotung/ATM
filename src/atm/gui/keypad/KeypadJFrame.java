@@ -21,6 +21,11 @@ import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.mainscreen.WithDrawalJPanel;
 
 public class KeypadJFrame extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static Vector<KeypadJFrame> contents = new Vector<KeypadJFrame>();
 
 	public static final String STRING_MODE_PASSWORD = "Password";

@@ -42,6 +42,11 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 		addToCards(new LoginJPanel(), STRING_LOGIN);
 		addToCards(new MainMenuJPanel(), STRING_MAIN_MENU);
 		addToCards(new ViewBalanceJPanel() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			{
 				setOpaque(false);
 			}

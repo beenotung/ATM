@@ -15,6 +15,10 @@ import atm.utils.CashCount;
 import webs.layout.WrapLayout;
 
 public class AvailableCashNotesJPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static Vector<AvailableCashNotesJPanel> contents = new Vector<AvailableCashNotesJPanel>();
 	private JLabel label;
 	Vector<JLabel> cashNoteJLabels;

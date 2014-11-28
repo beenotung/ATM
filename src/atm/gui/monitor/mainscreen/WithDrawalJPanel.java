@@ -31,11 +31,14 @@ import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
-import java.awt.TextField;
-
 import javax.swing.JLabel;
 
 public class WithDrawalJPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static Vector<WithDrawalJPanel> contents = new Vector<WithDrawalJPanel>();
 
 	public static final String STRING_MAIN_MENU = "Main Menu";

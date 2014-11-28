@@ -17,6 +17,10 @@ import myutils.Utils;
 
 public class TakeCardJPanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static JLabel codeLabel;
 	public static final String[] commands = { "", "", "", "", "", "", "", "" };
 

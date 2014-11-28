@@ -28,6 +28,10 @@ import java.awt.BorderLayout;
 import java.util.Vector;
 
 public class ViewBalanceJPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static Vector<ViewBalanceJPanel> contents = new Vector<ViewBalanceJPanel>();
 	public static final String STRING_MAIN_MENU = "Main Menu";
 	public static final String STRING_TAKE_CARD = "Take Card";

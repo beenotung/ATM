@@ -21,6 +21,11 @@ import atm.gui.monitor.sidebuttons.SideButtons;
 import java.awt.Font;
 
 public class MainMenuJPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static Vector<MainMenuJPanel> contents = new Vector<MainMenuJPanel>();
 
 	public static final String STRING_VIEW_BALANCE = "View Balance";

@@ -5,8 +5,8 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-import atm.gui.MyGUISettings;
 import myutils.gui.MyImageUtils;
+import atm.gui.MyGUISettings;
 
 public class MyImages {
 	public static ImageIcon banner;
