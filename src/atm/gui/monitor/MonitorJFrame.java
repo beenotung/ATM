@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import atm.gui.MyGUISettings;
 import atm.gui.monitor.mainscreen.MainMenuJPanel;
 import atm.gui.monitor.mainscreen.MainScreenCardJPanel;
+import atm.gui.monitor.mainscreen.TransferJPanel;
 import atm.gui.monitor.mainscreen.ViewBalanceJPanel;
 import atm.gui.monitor.mainscreen.WithDrawalJPanel;
 import atm.gui.monitor.sidebuttons.LeftSideButtonsJPanel;
@@ -58,7 +59,8 @@ public class MonitorJFrame extends JFrame {
 		System.out.println("Side button clicked: " + command);
 		switch (STATE) {
 		case MainScreenCardJPanel.STRING_MAIN_MENU:
-			switch (command) {
+			System.out.println("MainScreenCardJPanel.STRING_MAIN_MENU:");
+			switch (command) {			
 			case MainScreenCardJPanel.STRING_VIEW_BALANCE:
 				ViewBalanceJPanel.showMeStatic();
 				break;
@@ -67,6 +69,9 @@ public class MonitorJFrame extends JFrame {
 				break;
 			case MainScreenCardJPanel.STRING_WITHDRAWAL:
 				WithDrawalJPanel.showMeStatic();
+				break;
+			case MainScreenCardJPanel.STRING_TRANSFER:
+				TransferJPanel.showMe();
 				break;
 			}
 			break;
@@ -92,6 +97,10 @@ public class MonitorJFrame extends JFrame {
 				WithDrawalJPanel.sideButtonClickStatic(command);
 				break;
 			}
+		case MainScreenCardJPanel.STRING_TRANSFER:
+		{
+			
+		}
 		default:
 			break;
 		}

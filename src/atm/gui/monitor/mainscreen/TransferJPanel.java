@@ -1,3 +1,4 @@
+//TODO TransferJPanel
 package atm.gui.monitor.mainscreen;
 
 import javax.swing.JPanel;
@@ -29,38 +30,44 @@ public class TransferJPanel extends JPanel {
 	public static final String STRING_TRANSFER_FUNDS = "Transfer Funds";
 	public static final String STRING_TAKE_CARD = "Take Card";
 
-	public static final String[] commands = { "", "", STRING_VIEW_BALANCE, STRING_WITHDRAW_CASH,
-			STRING_TRANSFER_FUNDS, STRING_TAKE_CARD, "", "" };
-	private JTextField textField;
-	private JTextField textField_1;
+	public static final String[] commands = { "", "", STRING_VIEW_BALANCE,
+			STRING_WITHDRAW_CASH, STRING_TRANSFER_FUNDS, STRING_TAKE_CARD, "",
+			"" };
+	private JTextField ReceiverAccountNumberTextField;
+	private JTextField amountTextField;
 
 	public TransferJPanel() {
 		contents.add(this);
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-		JLabel lblNewLabel = new JLabel("Receiver Ammo");
+		JLabel lblNewLabel = new JLabel("Receiver Account Number:");
 		lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(lblNewLabel);
 
-		textField = new JTextField();
-		add(textField);
-		textField.setColumns(10);
+		ReceiverAccountNumberTextField = new JTextField();
+		add(ReceiverAccountNumberTextField);
+		ReceiverAccountNumberTextField.setColumns(10);
+		ReceiverAccountNumberTextField.setBackground(MyGUISettings
+				.getATMScreenBackGroundColor());
 
-		JLabel lblNewLabel_1 = new JLabel("New label");
+		JLabel lblNewLabel_1 = new JLabel("Amount to transfer:");
 		lblNewLabel_1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(lblNewLabel_1);
 
-		textField_1 = new JTextField();
-		add(textField_1);
-		textField_1.setColumns(10);
-
+		amountTextField = new JTextField();
+		add(amountTextField);
+		amountTextField.setColumns(10);
+		amountTextField.setBackground(MyGUISettings
+				.getATMScreenBackGroundColor());
 	}
 
 	public static void showMe() {
+		System.out.println("show transfer jpanel");
 		ATM.getATM().init();
 		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_TRANSFER;
 		SideButtons.commands = TransferJPanel.commands;
-		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_TRANSFER);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_TRANSFER);
 	}
 }

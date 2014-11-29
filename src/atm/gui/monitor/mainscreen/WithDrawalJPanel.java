@@ -20,6 +20,8 @@ import atm.gui.MyGUISettings;
 import atm.gui.keypad.KeypadJFrame;
 import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
+import atm.gui.virtualslots.CardSlotCardJPanel;
+import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
 import atm.utils.MyStrings;
 import bank.operation.Withdrawal;
@@ -53,6 +55,7 @@ public class WithDrawalJPanel extends JPanel {
 			STRING_TAKE_CARD, "", "" };
 	private JTextField textField;
 	private Withdrawal withdrawalOperation;
+	private int wrongTry;
 
 	/** constructor **/
 	public WithDrawalJPanel() {
@@ -109,6 +112,7 @@ public class WithDrawalJPanel extends JPanel {
 	}
 
 	public void showMe() {
+		wrongTry = 0;
 		withdrawalOperation = new Withdrawal(ATM.getATM());
 		ATM.getATM().init();
 		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_WITHDRAWAL;
@@ -119,22 +123,21 @@ public class WithDrawalJPanel extends JPanel {
 				.switchToCardStatic(MainScreenCardJPanel.STRING_WITHDRAWAL);
 	}
 
-	public void tryWithDrawal() {
-		// TODO tryWithDrawal
+	public void tryWithDrawal() {		
 		try {
 			withdrawalOperation.setAmount(textField.getText());
 			withdrawalOperation.execute();
-		} catch (NumberFormatException e) {
+			TakeCashJPanel.showMe();
+		} catch (NumberFormatException | WrongInputException e) {
 			System.out.println("Error! cash amount is not int?");
 			textField.setText("");
+			wrongTry++;
+			if (wrongTry > MyInputHandler.MAX_WRONG_INPUT)
+				MaxWrongTryJPanel.showMe();
 		} catch (AccountNotFoundException e) {
 			CardNotValidJPanel.showMe();
-
-			e.printStackTrace();
-		} catch (WrongInputException e) {
-			e.printStackTrace();
 		} catch (CardOutException e) {
-			e.printStackTrace();
+			CardSlotCardJPanel.popCardStatic();
 		}
 	}
 
