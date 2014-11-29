@@ -81,7 +81,11 @@ public class ATM {
 	}
 
 	public String getCurrentAccountNumber() {
-		return CardInsideJPanel.getCard().accountNumber;
+		try {
+			return CardInsideJPanel.getCard().accountNumber;
+		} catch (NullPointerException e) {
+			return "0";
+		}
 	}
 
 	/** setters **/
@@ -134,7 +138,8 @@ public class ATM {
 		do {
 			ok = true;
 			try {
-				accountNumber = String.valueOf(keypad.getInputInt("\nPlease enter your account number: "));
+				accountNumber = String.valueOf(keypad
+						.getInputInt("\nPlease enter your account number: "));
 			} catch (WrongInputException e) {
 				ok = false;
 				wrongCount++;
@@ -164,7 +169,8 @@ public class ATM {
 		}
 		// set userAuthenticated to boolean value returned by database
 		try {
-			userAuthenticated = BankDatabase.authenticateUser_old(accountNumber, pin);
+			userAuthenticated = BankDatabase.authenticateUser_old(
+					accountNumber, pin);
 		} catch (AccountNotFoundException e) {
 			System.out.println("Account not Found");
 		}
@@ -205,7 +211,8 @@ public class ATM {
 	}
 
 	// display the main menu and perform transactions
-	private void performTransactions() throws CardOutException, WrongInputException, AccountNotFoundException {
+	private void performTransactions() throws CardOutException,
+			WrongInputException, AccountNotFoundException {
 		// local variable to store transaction currently being processed
 		Vector<Transaction> currentTransactions = null;
 
@@ -267,7 +274,8 @@ public class ATM {
 	} // end method displayMainMenu
 
 	// return object of specified Transaction subclass
-	public Vector<Transaction> createTransactions(int type) throws CardOutException, WrongInputException,
+	public Vector<Transaction> createTransactions(int type)
+			throws CardOutException, WrongInputException,
 			AccountNotFoundException {
 		// temporary Transaction variable
 		Vector<Transaction> result = new Vector<Transaction>();
@@ -297,7 +305,8 @@ public class ATM {
 
 	// instruct user to take cash
 	public void popCash(Vector<CashCount> cashPop) throws CardOutException {
-		screen.displayMessageLine(MyStrings.TAKE_CASH + " " + MyStaticStuff.getCashValuesStrings(cashPop));
+		screen.displayMessageLine(MyStrings.TAKE_CASH + " "
+				+ MyStaticStuff.getCashValuesStrings(cashPop));
 		MyStaticStuff.sleep();
 		throw new CardOutException();
 	}
@@ -310,14 +319,17 @@ public class ATM {
 
 	public static void readCard(Card card) {
 		System.out.println("reading inserted card:" + card.accountNumber);
-		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_READCARD);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_READCARD);
 		(new WaitReadCard(card)).start();
 	}
 
 	public static void checkCard(Card card) {
 		try {
-			ATM.currentAccountNumber = String.valueOf(Integer.parseInt(card.accountNumber));
-			System.out.println("the card [" + ATM.currentAccountNumber + "] is valid");
+			ATM.currentAccountNumber = String.valueOf(Integer
+					.parseInt(card.accountNumber));
+			System.out.println("the card [" + ATM.currentAccountNumber
+					+ "] is valid");
 			LoginJPanel.showMeStatic();
 		} catch (NumberFormatException e) {
 			CardNotValidJPanel.showMe();
@@ -325,7 +337,8 @@ public class ATM {
 	}
 
 	public static void popCardStatic() {
-		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_CARD_NOT_VALID);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_CARD_NOT_VALID);
 		CardSlotCardJPanel.popCardStatic();
 	}
 
@@ -354,7 +367,7 @@ public class ATM {
 		ATM.userAuthenticated = false;
 		// no current account number to start/restart
 		ATM.currentAccountNumber = "0";
-		if (CardInsideJPanel.getCard() != null)
+		if (CardSlotCardJPanel.hasCard())
 			currentAccountNumber = CardInsideJPanel.getCard().accountNumber;
 		atm.init();
 	}

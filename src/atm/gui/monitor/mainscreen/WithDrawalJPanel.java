@@ -22,7 +22,7 @@ import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
 import atm.utils.MyStaticStuff;
 import atm.utils.MyStrings;
-import bank.operation.WithdrawalNew;
+import bank.operation.Withdrawal;
 
 import java.awt.Font;
 
@@ -31,6 +31,7 @@ import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
+
 import javax.swing.JLabel;
 
 public class WithDrawalJPanel extends JPanel {
@@ -44,10 +45,14 @@ public class WithDrawalJPanel extends JPanel {
 	public static final String STRING_MAIN_MENU = "Main Menu";
 	public static final String STRING_TAKE_CARD = "Take Card";
 
-	public static final String[] commands = { String.valueOf(MyStaticStuff.MenuCashValue[0]),
-			String.valueOf(MyStaticStuff.MenuCashValue[1]), String.valueOf(MyStaticStuff.MenuCashValue[2]),
-			String.valueOf(MyStaticStuff.MenuCashValue[3]), STRING_MAIN_MENU, STRING_TAKE_CARD, "", "" };
+	public static final String[] commands = {
+			String.valueOf(MyStaticStuff.MenuCashValue[0]),
+			String.valueOf(MyStaticStuff.MenuCashValue[1]),
+			String.valueOf(MyStaticStuff.MenuCashValue[2]),
+			String.valueOf(MyStaticStuff.MenuCashValue[3]), STRING_MAIN_MENU,
+			STRING_TAKE_CARD, "", "" };
 	private JTextField textField;
+	private Withdrawal withdrawalOperation;
 
 	/** constructor **/
 	public WithDrawalJPanel() {
@@ -81,7 +86,8 @@ public class WithDrawalJPanel extends JPanel {
 		textField.setBackground(new Color(135, 206, 250));
 
 		for (int i = 0; i < 4; i++) {
-			Button button = new Button(MyStrings.DOLLAR_SIGN + " " + commands[i]);
+			Button button = new Button(MyStrings.DOLLAR_SIGN + " "
+					+ commands[i]);
 			button.setFont(new Font("Arial", Font.PLAIN, 26));
 			panel.add(button);
 		}
@@ -103,30 +109,31 @@ public class WithDrawalJPanel extends JPanel {
 	}
 
 	public void showMe() {
+		withdrawalOperation = new Withdrawal(ATM.getATM());
 		ATM.getATM().init();
 		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_WITHDRAWAL;
 		SideButtons.commands = WithDrawalJPanel.commands;
-		KeypadJFrame.switchTargetStatic(textField, KeypadJFrame.STRING_MODE_CASH_AMOUNT);
-		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_WITHDRAWAL);
+		KeypadJFrame.switchTargetStatic(textField,
+				KeypadJFrame.STRING_MODE_CASH_AMOUNT);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_WITHDRAWAL);
 	}
 
 	public void tryWithDrawal() {
 		// TODO tryWithDrawal
 		try {
-			WithdrawalNew withdrawalIntent = new WithdrawalNew(textField.getText());
-			withdrawalIntent.execute();
+			withdrawalOperation.setAmount(textField.getText());
+			withdrawalOperation.execute();
 		} catch (NumberFormatException e) {
 			System.out.println("Error! cash amount is not int?");
 			textField.setText("");
 		} catch (AccountNotFoundException e) {
 			CardNotValidJPanel.showMe();
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		} catch (WrongInputException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (CardOutException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

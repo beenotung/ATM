@@ -28,6 +28,7 @@ public class Withdrawal extends Transaction {
 
 	// constant corresponding to menu option to cancel
 	private static int CANCELED;
+	private boolean commandMode = true;
 
 	// Withdrawal constructor
 	// get references to keypad and cash dispenser from atm
@@ -38,9 +39,19 @@ public class Withdrawal extends Transaction {
 		CANCELED = MyStaticStuff.MenuCashValue.length + 2;
 	} // end Withdrawal constructor
 
+	public void setAmount(String amountStr) throws NumberFormatException{
+		commandMode = false;
+		this.amount = Integer.parseInt(amountStr);	
+	}
+
 	@Override
 	// perform transaction
-	public void execute() throws WrongInputException, AccountNotFoundException, CardOutException {
+	public void execute() throws WrongInputException, AccountNotFoundException,
+			CardOutException {
+		if (!commandMode) {
+			executeGUI();
+			return;
+		}
 		boolean cashDispensed = false; // cash was not dispensed yet
 		int tryCount = 0;
 		// loop until cash is dispensed or the user cancels
@@ -58,29 +69,41 @@ public class Withdrawal extends Transaction {
 			try {
 				try {
 					if (!Account.isMyBankAccount(getAccountNumber()))
-						if (!BankDatabase.getAccount(getAccountNumber()).isEnough(amount))
+						if (!BankDatabase.getAccount(getAccountNumber())
+								.isEnough(amount))
 							throw new OverdrawnException();
-					Vector<CashCount> cashPop = CashDispenser.dispenseCash(amount);
+					Vector<CashCount> cashPop = CashDispenser
+							.dispenseCash(amount);
 					if (!Account.isMyBankAccount(getAccountNumber()))
-						BankDatabase.debit(getAccountNumber(), MyStaticStuff.EXTRA_CHARGE);
+						BankDatabase.debit(getAccountNumber(),
+								MyStaticStuff.EXTRA_CHARGE);
 					BankDatabase.debit(getAccountNumber(), amount);
 					cashDispensed = true; // cash was dispensed
 					atm.popCash(cashPop);
 				} catch (OverdrawnException e) {
 					getScreen().displayMessageLine(
-							MyStrings.getOverDrawnMessage(BankDatabase.getAccount(getAccountNumber())
+							MyStrings.getOverDrawnMessage(BankDatabase
+									.getAccount(getAccountNumber())
 									.getOverdrawnLimit()));
 					MyStaticStuff.sleep();
 				}
 			} catch (CashNotEnoughException e) {
 				// cash dispenser does not have enough cash
 				getScreen().displayMessageLine(
-						"\nInsufficient cash available in the ATM." + "\n Avaliabe cash:"
-								+ CashDispenser.getAmount() + "\n\nPlease choose a smaller amount.");
+						"\nInsufficient cash available in the ATM."
+								+ "\n Avaliabe cash:"
+								+ CashDispenser.getAmount()
+								+ "\n\nPlease choose a smaller amount.");
 				MyStaticStuff.sleep();
 			} // dispense cash
-		} while ((!cashDispensed) && (tryCount < MyInputHandler.MAX_WRONG_INPUT));
+		} while ((!cashDispensed)
+				&& (tryCount < MyInputHandler.MAX_WRONG_INPUT));
 	} // end method execute
+
+	private void executeGUI() {
+		// TODO Auto-generated method stub
+
+	}
 
 	// display a menu of withdrawal amounts and the option to cancel;
 	// return the chosen amount or 0 if the user chooses to cancel
@@ -105,7 +128,8 @@ public class Withdrawal extends Transaction {
 				userChoice = CANCELED;
 			else if (input == CANCELED - 1)
 				userChoice = manualInputAmount(ui);
-			else if ((input >= 1) && (input <= MyStaticStuff.MenuCashValue.length))
+			else if ((input >= 1)
+					&& (input <= MyStaticStuff.MenuCashValue.length))
 				userChoice = MyStaticStuff.MenuCashValue[input - 1];
 			else
 				ui.screen.displayMessageLine("\nIvalid selection. Try again.");
@@ -119,8 +143,10 @@ public class Withdrawal extends Transaction {
 		boolean ok;
 		do {
 			ok = true;
-			String msg = "We provide " + MyStaticStuff.getCashValuesStrings() + " note"
-					+ (MyStaticStuff.CashValues.length > 1 ? "s" : "") + " only";
+			String msg = "We provide " + MyStaticStuff.getCashValuesStrings()
+					+ " note"
+					+ (MyStaticStuff.CashValues.length > 1 ? "s" : "")
+					+ " only";
 			msg += "\nInput the amount to withdraw (input 0 to cancel): ";
 			try {
 				amount = ui.keypad.getInputInt(msg);

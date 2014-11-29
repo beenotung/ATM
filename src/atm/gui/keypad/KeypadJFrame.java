@@ -48,7 +48,8 @@ public class KeypadJFrame extends JFrame {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
 		setTitle("Keypad");
-		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
+		getContentPane().setLayout(
+				new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
 
 		numberKeysJPanel = new JPanel(new GridLayout(4, 3));
 		getContentPane().add(numberKeysJPanel);
@@ -157,7 +158,8 @@ public class KeypadJFrame extends JFrame {
 	}
 
 	public void insertText(String str) throws BadLocationException {
-		textComponent.getDocument().insertString(textComponent.getCaretPosition(), str, null);
+		textComponent.getDocument().insertString(
+				textComponent.getCaretPosition(), str, null);
 	}
 
 	public int getDecimalPlace(String text) {
@@ -237,7 +239,8 @@ public class KeypadJFrame extends JFrame {
 				case STRING_MODE_PASSWORD:
 					System.out.println("[Enter] password mode");
 					ATM.getATM().authenticateUser(
-							String.valueOf(((JPasswordField) textComponent).getPassword()));
+							String.valueOf(((JPasswordField) textComponent)
+									.getPassword()));
 					break;
 				case STRING_MODE_CASH_AMOUNT:
 					WithDrawalJPanel.enterButtonClickStatic();
@@ -255,15 +258,16 @@ public class KeypadJFrame extends JFrame {
 		setVisible(true);
 		pack();
 		Rectangle client = getBounds();
-		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds()
-				.getBounds();
+		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getMaximumWindowBounds().getBounds();
 		int x = screen.width - client.width - 10;
 		int y = screen.height - client.height - 10;
 		setLocation(x, y);
 	}
 
 	/** static connector to instance methods **/
-	public static void switchTargetStatic(JTextComponent textComponent, String mode) {
+	public static void switchTargetStatic(JTextComponent textComponent,
+			String mode) {
 		for (KeypadJFrame keypadJFrame : contents) {
 			keypadJFrame.switchTarget(textComponent);
 			keypadJFrame.switchMode(mode);
