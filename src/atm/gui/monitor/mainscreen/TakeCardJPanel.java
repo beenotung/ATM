@@ -11,6 +11,7 @@ import java.awt.Component;
 
 import javax.swing.Box;
 
+import atm.core.CashDispenser;
 import atm.gui.MyGUISettings;
 import atm.gui.monitor.sidebuttons.SideButtons;
 import myutils.Utils;
@@ -56,11 +57,14 @@ public class TakeCardJPanel extends JPanel {
 	}
 
 	public static void genCode() {
-		codeLabel.setText("Reference Code: " + (1000 + Utils.random.nextInt(8000)));
+		codeLabel.setText("Reference Code: "
+				+ (1000 + Utils.random.nextInt(8000)));
 	}
 
 	public static void showMe() {
+		CashDispenser.commit();
 		SideButtons.commands = TakeCardJPanel.commands;
-		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CARD);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CARD);
 	}
 }

@@ -11,6 +11,7 @@ import atm.utils.CashCount;
 public class CashDispenser {
 	// number of cash bills remaining
 	public static Vector<CashCount> cashCounts = new Vector<CashCount>();
+	public static Vector<CashCount> lastTransaction = null;
 
 	// no-argument CashDispenser constructor initializes count to default
 	public static void init() {
@@ -21,23 +22,45 @@ public class CashDispenser {
 		cashCounts.add(new CashCount(1000, 2));
 	} // end CashDispenser constructor
 
-	/** instance methods **/
-
+	/** static methods **/
 	// simulates dispensing of specified amount of cash
-	public static Vector<CashCount> dispenseCash(int amountRequired) throws CashNotEnoughException {
+	public static Vector<CashCount> dispenseCash(int amountRequired)
+			throws CashNotEnoughException {
 		Vector<CashCount> result = new Vector<CashCount>();
 		if (!isSufficientCashAvailable(amountRequired))
 			throw new CashNotEnoughException();
 		for (int i = cashCounts.size() - 1; i >= 0; i--) {
 			result.add(new CashCount(cashCounts.get(i).getValue(), 0));
-			while ((amountRequired >= cashCounts.get(i).getValue()) && (cashCounts.get(i).getCount() > 0)) {
+			while ((amountRequired >= cashCounts.get(i).getValue())
+					&& (cashCounts.get(i).getCount() > 0)) {
 				amountRequired -= cashCounts.get(i).getValue();
 				cashCounts.get(i).remove(1);
 				result.get(result.size() - 1).add(1);
 			}
 		}
+		lastTransaction = result;
 		return result;
 	} // end method dispenseCash
+
+	public static void rollback() {
+		if (lastTransaction == null)
+			return;
+		for (CashCount lastTransactionIterator : lastTransaction) {
+			for (CashCount cashCountIterator : cashCounts) {
+				if (lastTransactionIterator.getValue() == cashCountIterator
+						.getValue())
+					cashCountIterator.add(lastTransactionIterator.getCount());
+			}
+		}
+	}
+
+	// comfirm pop cash
+	public static void commit() {
+		lastTransaction = null;
+	}
+	public static Vector<CashCount> getCash(){
+		return lastTransaction;
+	}
 
 	// indicates whether cash dispenser can dispense desired amount
 	public static boolean isSufficientCashAvailable(double amountRequired) {

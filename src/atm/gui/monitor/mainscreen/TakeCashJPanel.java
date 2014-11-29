@@ -25,6 +25,8 @@ public class TakeCashJPanel extends JPanel {
 	private static JLabel codeLabel;
 	public static final String[] commands = { "", "", "", "", "", "", "", "" };
 
+	private ShowCashNotesJPanel showCashNotesJPanel;
+
 	/**
 	 * Create the panel.
 	 */
@@ -32,36 +34,19 @@ public class TakeCashJPanel extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 
-		Component verticalGlue_1 = Box.createVerticalGlue();
-		add(verticalGlue_1);
-
-		JPanel panel = new JPanel();
-		add(panel);
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
-
-		JLabel lblPleaseTakeYour = new JLabel("Please Take your Card");
-		panel.add(lblPleaseTakeYour);
+		JLabel lblPleaseTakeYour = new JLabel("Please the cash note(s)");
+		add(lblPleaseTakeYour);
 		lblPleaseTakeYour.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblPleaseTakeYour.setFont(new Font("Arial", Font.PLAIN, 26));
 
-		codeLabel = new JLabel("Reference Code: ");
-		codeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		panel.add(codeLabel);
-		codeLabel.setFont(new Font("Arial", Font.PLAIN, 26));
-
-		Component verticalGlue = Box.createVerticalGlue();
-		add(verticalGlue);
-
-		genCode();
-	}
-
-	public static void genCode() {
-		codeLabel.setText("Reference Code: " + (1000 + Utils.random.nextInt(8000)));
+		showCashNotesJPanel = new ShowCashNotesJPanel();
+		add(showCashNotesJPanel);
 	}
 
 	public static void showMe() {
+		showCashNotesJPanel.myUpdate();
 		SideButtons.commands = TakeCashJPanel.commands;
-		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CARD);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CARD);
 	}
 }

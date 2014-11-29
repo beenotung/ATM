@@ -12,6 +12,7 @@ import atm.core.Screen;
 import atm.core.UI;
 import atm.exception.CardOutException;
 import atm.exception.CashNotEnoughException;
+import atm.exception.CashOutException;
 import atm.exception.OverdrawnException;
 import atm.exception.WrongInputException;
 import atm.utils.CashCount;
@@ -39,19 +40,15 @@ public class Withdrawal extends Transaction {
 		CANCELED = MyStaticStuff.MenuCashValue.length + 2;
 	} // end Withdrawal constructor
 
-	public void setAmount(String amountStr) throws NumberFormatException{
+	public void setAmount(String amountStr) throws NumberFormatException {
 		commandMode = false;
-		this.amount = Integer.parseInt(amountStr);	
+		this.amount = Integer.parseInt(amountStr);
 	}
 
 	@Override
 	// perform transaction
 	public void execute() throws WrongInputException, AccountNotFoundException,
 			CardOutException {
-		if (!commandMode) {
-			executeGUI();
-			return;
-		}
 		boolean cashDispensed = false; // cash was not dispensed yet
 		int tryCount = 0;
 		// loop until cash is dispensed or the user cancels
@@ -100,9 +97,22 @@ public class Withdrawal extends Transaction {
 				&& (tryCount < MyInputHandler.MAX_WRONG_INPUT));
 	} // end method execute
 
-	private void executeGUI() {
+	public void executeGUI() throws AccountNotFoundException,
+			OverdrawnException, CashNotEnoughException, CashOutException {
 		// TODO Auto-generated method stub
-
+		// throw overdrawexception, cashnotenoughexception
+		@SuppressWarnings("unused")
+		boolean cashDispensed = false; // cash was not dispensed yet
+		if (!Account.isMyBankAccount(getAccountNumber()))
+			if (!BankDatabase.getAccount(getAccountNumber()).isEnough(amount))
+				throw new OverdrawnException();
+		Vector<CashCount> cashPop = CashDispenser.dispenseCash(amount);
+		if (!Account.isMyBankAccount(getAccountNumber()))
+			BankDatabase.debit(getAccountNumber(), MyStaticStuff.EXTRA_CHARGE);
+		BankDatabase.debit(getAccountNumber(), amount);
+		cashDispensed = true; // cash was dispensed
+		// TODO CashOutException
+		throw new CashOutException(cashPop);
 	}
 
 	// display a menu of withdrawal amounts and the option to cancel;

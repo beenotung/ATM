@@ -14,7 +14,11 @@ import java.awt.Component;
 import javax.swing.Box;
 
 import atm.core.ATM;
+import atm.core.CashDispenser;
 import atm.exception.CardOutException;
+import atm.exception.CashNotEnoughException;
+import atm.exception.CashOutException;
+import atm.exception.OverdrawnException;
 import atm.exception.WrongInputException;
 import atm.gui.MyGUISettings;
 import atm.gui.keypad.KeypadJFrame;
@@ -123,21 +127,35 @@ public class WithDrawalJPanel extends JPanel {
 				.switchToCardStatic(MainScreenCardJPanel.STRING_WITHDRAWAL);
 	}
 
-	public void tryWithDrawal() {		
+	public void tryWithDrawal() {
 		try {
 			withdrawalOperation.setAmount(textField.getText());
-			withdrawalOperation.execute();
-			TakeCashJPanel.showMe();
-		} catch (NumberFormatException | WrongInputException e) {
+			withdrawalOperation.executeGUI();
+			// if success it will throw cash out exception
+			// withdrawal failed
+			CashDispenser.rollback();
+		} catch (NumberFormatException e) {
+			CashDispenser.rollback();
 			System.out.println("Error! cash amount is not int?");
 			textField.setText("");
 			wrongTry++;
 			if (wrongTry > MyInputHandler.MAX_WRONG_INPUT)
 				MaxWrongTryJPanel.showMe();
 		} catch (AccountNotFoundException e) {
+			CashDispenser.rollback();
 			CardNotValidJPanel.showMe();
-		} catch (CardOutException e) {
-			CardSlotCardJPanel.popCardStatic();
+		} catch (OverdrawnException e) {
+			CashDispenser.rollback();
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CashNotEnoughException e) {
+			CashDispenser.rollback();
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CashOutException e) {
+			TakeCashJPanel.showMe();
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
