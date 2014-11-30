@@ -146,16 +146,10 @@ public class WithDrawalJPanel extends JPanel {
 			CardNotValidJPanel.showMe();
 		} catch (OverdrawnException e) {
 			CashDispenser.rollback();
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (CashNotEnoughException e) {
 			CashDispenser.rollback();
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (CashOutException e) {
-			TakeCashJPanel.showMe();
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TakeCashJPanel.showMe(e.getCashCounts());
 		}
 	}
 

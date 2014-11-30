@@ -13,11 +13,12 @@ public class CashOutException extends Exception {
 
 	public CashOutException(Vector<CashCount> popCashCounts) {
 		this.popCashCounts = popCashCounts;
+		System.out.println(toString() + "==>" + popCashCounts.toString());
 	}
 
 	@Override
 	public String toString() {
-		return "Card Out Exception";
+		return "Cash Out Exception";
 	}
 
 	public Vector<CashCount> getCashCounts() {

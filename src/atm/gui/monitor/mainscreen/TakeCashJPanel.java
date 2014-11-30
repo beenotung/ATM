@@ -9,11 +9,13 @@ import java.awt.Font;
 import javax.swing.BoxLayout;
 
 import java.awt.Component;
+import java.util.Vector;
 
 import javax.swing.Box;
 
 import atm.gui.MyGUISettings;
 import atm.gui.monitor.sidebuttons.SideButtons;
+import atm.utils.CashCount;
 import myutils.Utils;
 
 public class TakeCashJPanel extends JPanel {
@@ -22,10 +24,9 @@ public class TakeCashJPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static JLabel codeLabel;
 	public static final String[] commands = { "", "", "", "", "", "", "", "" };
 
-	private ShowCashNotesJPanel showCashNotesJPanel;
+	private ShowPopCashNotesJPanel showPopCashNotesJPanel;
 
 	/**
 	 * Create the panel.
@@ -34,17 +35,17 @@ public class TakeCashJPanel extends JPanel {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 
-		JLabel lblPleaseTakeYour = new JLabel("Please the cash note(s)");
+		JLabel lblPleaseTakeYour = new JLabel("Please take your cash");
 		add(lblPleaseTakeYour);
 		lblPleaseTakeYour.setAlignmentX(Component.CENTER_ALIGNMENT);
 		lblPleaseTakeYour.setFont(new Font("Arial", Font.PLAIN, 26));
 
-		showCashNotesJPanel = new ShowCashNotesJPanel();
-		add(showCashNotesJPanel);
+		showPopCashNotesJPanel = new ShowPopCashNotesJPanel();
+		add(showPopCashNotesJPanel);
 	}
 
-	public static void showMe() {
-		showCashNotesJPanel.myUpdate();
+	public static void showMe(Vector<CashCount> popCashCounts) {
+		ShowPopCashNotesJPanel.myUpdateStatic(popCashCounts);
 		SideButtons.commands = TakeCashJPanel.commands;
 		MainScreenCardJPanel
 				.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CARD);

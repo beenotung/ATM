@@ -1,11 +1,9 @@
 package atm.gui.monitor.mainscreen;
 
 import java.util.Vector;
-
-import myutils.gui.cardlayout.AbstractCardJPanel;
-
 import java.awt.Component;
 
+import myutils.gui.cardlayout.AbstractCardJPanel;
 import atm.gui.MyGUISettings;
 import atm.gui.monitor.MonitorJFrame;
 
@@ -28,6 +26,7 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 	public static final String STRING_MAX_WRONG_TRY = "Max Wrong Try";
 	public static final String STRING_WITHDRAWAL = MainMenuJPanel.STRING_WITHDRAW_CASH;
 	public static final String STRING_TRANSFER = MainMenuJPanel.STRING_TRANSFER_FUNDS;
+	public static final String STRING_TAKE_CASH = "Take Cash";
 
 	public MainScreenCardJPanel() {
 		super();
@@ -41,21 +40,13 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 		addToCards(new CardNotValidJPanel(), STRING_CARD_NOT_VALID);
 		addToCards(new LoginJPanel(), STRING_LOGIN);
 		addToCards(new MainMenuJPanel(), STRING_MAIN_MENU);
-		addToCards(new ViewBalanceJPanel() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			{
-				setOpaque(false);
-			}
-		}, STRING_VIEW_BALANCE);
+		addToCards(new ViewBalanceJPanel() , STRING_VIEW_BALANCE);
 		addToCards(new MaxWrongTryJPanel(), STRING_MAX_WRONG_TRY);
 		addToCards(new TakeCardJPanel(), STRING_TAKE_CARD);
 		addToCards(new ByeJPanel(), STRING_BYE);
 		addToCards(new WithDrawalJPanel(), STRING_WITHDRAWAL);
 		addToCards(new TransferJPanel(), STRING_TRANSFER);
+		addToCards(new TakeCashJPanel(), STRING_TAKE_CASH);
 
 		// switchToCard(STRING_WELCOME);
 		WelcomeJPanel.showMeStatic();
