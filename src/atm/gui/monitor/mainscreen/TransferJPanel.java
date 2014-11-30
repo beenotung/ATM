@@ -94,20 +94,16 @@ public class TransferJPanel extends JPanel {
 	private void tryTransfer() {
 		try {
 			double amount = Double.parseDouble(amountTextField.getText());
-			// TODO Auto-generated method stub
 			Transfer.transferGUI(ATM.getATM(),
 					receiverAccountNumberTextField.getText(), amount);
 		} catch (NumberFormatException e) {
 			MainMenuJPanel.showMe();
 		} catch (AccountNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TransferReceiverAccountNotFoundJPanel.showMeStatic();
 		} catch (TransferSameAccountException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			TransferSameAccountJPanel.showMeStatic();
 		} catch (OverdrawnException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			OverdrawnJPanel.showMeStatic(MainScreenCardJPanel.STRING_TRANSFER);
 		}
 	}
 

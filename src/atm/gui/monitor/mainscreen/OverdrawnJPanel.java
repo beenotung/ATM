@@ -57,21 +57,29 @@ public class OverdrawnJPanel extends JPanel {
 		}
 	}
 
-	public void showMe() {
+	public void showMe(String parent) {
 		try {
 			myUpdate();
 			MainScreenCardJPanel
 					.switchToCardStatic(MainScreenCardJPanel.STRING_OVERDRAWN);
-			WithDrawalJPanel.waitReturnFromWrongStatic();
+			switch (parent) {
+			case MainScreenCardJPanel.STRING_WITHDRAWAL:
+				WithDrawalJPanel.waitReturnFromWrongStatic();
+				break;
+			case MainScreenCardJPanel.STRING_TRANSFER:
+				TransferJPanel.waitReturnFromWrongStatic();
+				break;
+			}
+
 		} catch (AccountNotFoundException e) {
 			CardNotValidJPanel.showMe();
 		}
 
 	}
 
-	public static void showMeStatic() {
+	public static void showMeStatic(String parent) {
 		for (OverdrawnJPanel overdrawnExceptionJPanel : contents) {
-			overdrawnExceptionJPanel.showMe();
+			overdrawnExceptionJPanel.showMe(parent);
 		}
 	}
 }

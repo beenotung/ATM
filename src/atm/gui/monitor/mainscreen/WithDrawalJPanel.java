@@ -177,7 +177,7 @@ public class WithDrawalJPanel extends JPanel {
 			CardNotValidJPanel.showMe();
 		} catch (OverdrawnException e) {
 			CashDispenser.rollback();
-			OverdrawnJPanel.showMeStatic();
+			OverdrawnJPanel.showMeStatic(MainScreenCardJPanel.STRING_WITHDRAWAL);
 		} catch (CashNotEnoughException e) {
 			CashDispenser.rollback();
 			CashNotEnoughJPanel.showMeStatic();
