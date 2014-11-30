@@ -8,7 +8,9 @@ import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
 import webs.layout.CircleLayout;
+import atm.core.CashDispenser;
 import atm.gui.notes.CashNote100;
 import atm.gui.notes.CashNote1000;
 import atm.gui.notes.CashNote500;
@@ -48,11 +50,12 @@ public class CashDispenserJPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("cash taken by user");
+				CashDispenser.commit();
 				noCashLabel.setVisible(true);
 				takeCashJButton.setVisible(false);
 				cashPanel.removeAll();
 				cashPanel.updateUI();
-				updateUI();
+				updateUI();				
 			}
 		};
 	}

@@ -11,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
+import atm.core.CashDispenser;
 import atm.gui.MyGUISettings;
 import atm.utils.MyURLs;
 
@@ -49,7 +50,7 @@ public class Card {
 		ActionListener insertCard = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				CardSlotCardJPanel.takeCardStatic();
+				CardSlotCardJPanel.takeCardStatic();				
 			}
 		};
 		return insertCard;

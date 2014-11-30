@@ -6,8 +6,8 @@ import javax.security.auth.login.AccountNotFoundException;
 
 import com.thoughtworks.xstream.InitializationException;
 
+import bank.BankDatabase;
 import bank.account.Account;
-import bank.database.BankDatabase;
 import atm.core.ATM;
 import atm.core.CashDispenser;
 import atm.core.Screen;

@@ -61,8 +61,7 @@ public class TakeCardJPanel extends JPanel {
 				+ (1000 + Utils.random.nextInt(8000)));
 	}
 
-	public static void showMe() {
-		CashDispenser.commit();
+	public static void showMe() {	
 		SideButtons.commands = TakeCardJPanel.commands;
 		MainScreenCardJPanel
 				.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CARD);

@@ -43,6 +43,7 @@ public class CashDispenser {
 	} // end method dispenseCash
 
 	public static void rollback() {
+		System.out.println("CashDispenser: rollback (cash not taken)");
 		if (lastTransaction == null)
 			return;
 		for (CashCount lastTransactionIterator : lastTransaction) {
@@ -56,9 +57,11 @@ public class CashDispenser {
 
 	// comfirm pop cash
 	public static void commit() {
+		System.out.println("CashDispenser: commit (confirm cash taken)");
 		lastTransaction = null;
 	}
-	public static Vector<CashCount> getCash(){
+
+	public static Vector<CashCount> getCash() {
 		return lastTransaction;
 	}
 

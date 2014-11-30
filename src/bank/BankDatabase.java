@@ -1,4 +1,4 @@
-package bank.database;
+package bank;
 
 import java.util.Vector;
 

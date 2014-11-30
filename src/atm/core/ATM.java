@@ -4,8 +4,8 @@ import java.util.Vector;
 
 import javax.security.auth.login.AccountNotFoundException;
 
+import bank.BankDatabase;
 import bank.account.Account;
-import bank.database.BankDatabase;
 import bank.operation.BalanceInquiry;
 import bank.operation.Transaction;
 import bank.operation.Transfer;

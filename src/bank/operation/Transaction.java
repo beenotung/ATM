@@ -2,7 +2,7 @@ package bank.operation;
 
 import javax.security.auth.login.AccountNotFoundException;
 
-import bank.database.BankDatabase;
+import bank.BankDatabase;
 import atm.core.ATM;
 import atm.core.Keypad;
 import atm.core.Screen;

@@ -1,9 +1,10 @@
 package atm;
 
 import java.io.IOException;
+
 import javax.swing.JOptionPane;
 
-import bank.database.BankDatabase;
+import bank.BankDatabase;
 import atm.core.ATM;
 import atm.core.CashDispenser;
 import atm.gui.ATMGUILauncher;
