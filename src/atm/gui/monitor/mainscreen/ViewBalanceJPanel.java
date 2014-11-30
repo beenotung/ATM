@@ -38,7 +38,7 @@ public class ViewBalanceJPanel extends JPanel {
 	public static final String STRING_TAKE_CARD = "Take Card";
 
 	public static final String[] commands = { "", "", "", "", STRING_MAIN_MENU,
-			STRING_TAKE_CARD, "", "" };
+			STRING_TAKE_CARD, STRING_MAIN_MENU, STRING_TAKE_CARD };
 
 	GUIPrinter guiPrinter;
 	private JTextArea text;
@@ -48,18 +48,13 @@ public class ViewBalanceJPanel extends JPanel {
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-		Box horizontalBox = Box.createHorizontalBox();
-		add(horizontalBox);
-
-		Component horizontalGlue = Box.createHorizontalGlue();
-		horizontalBox.add(horizontalGlue);
+		JPanel topPanel = new JPanel();
+		add(topPanel);
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 
 		JLabel label = new JLabel(MyImages.viewBalance);
+		topPanel.add(label);
 		label.setAlignmentX(0.5f);
-		horizontalBox.add(label);
-
-		Component horizontalGlue_1 = Box.createHorizontalGlue();
-		horizontalBox.add(horizontalGlue_1);
 
 		JPanel contentPanel = new JPanel();
 		contentPanel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
@@ -85,18 +80,23 @@ public class ViewBalanceJPanel extends JPanel {
 		strucPanel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		strucPanel.setLayout(new GridLayout(2, 1, 0, 0));
 
-		JPanel menuPanel = new JPanel();
-		strucPanel.add(menuPanel);
-		menuPanel.setLayout(new GridLayout(1, 2, 0, 0));
-		menuPanel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		JPanel menuPanel1 = new JPanel();
+		strucPanel.add(menuPanel1);
+		menuPanel1.setLayout(new GridLayout(1, 2, 0, 0));
+		menuPanel1.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 
 		Button button_1 = new Button(STRING_MAIN_MENU);
-		menuPanel.add(button_1);
+		menuPanel1.add(button_1);
 		button_1.setFont(new Font("Arial", Font.PLAIN, 26));
 
 		Button button_2 = new Button(STRING_TAKE_CARD);
-		menuPanel.add(button_2);
+		menuPanel1.add(button_2);
 		button_2.setFont(new Font("Arial", Font.PLAIN, 26));
+
+		JPanel menuPanel2 = new JPanel();
+		strucPanel.add(menuPanel2);
+		menuPanel2.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		menuPanel2.setLayout(new GridLayout(1, 2, 0, 0));
 
 		Component verticalStrut_1 = Box.createVerticalStrut(25);
 		add(verticalStrut_1);
