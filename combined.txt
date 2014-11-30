@@ -1,0 +1,4803 @@
+//# tail -n 9999 `find . -type f | grep '.java'` > combined.txt
+==> ./src/bank/account/SavingAccount.java <==
+package bank.account;
+public class SavingAccount extends Account {
+	private double interestRate = 0.1 / 100d;
+	/** constructors **/
+	public SavingAccount(String theAccountNumber, String thePIN,
+			double theAvailableBalance, double theTotalBalance) {
+		super(theAccountNumber, thePIN, theAvailableBalance, theTotalBalance);
+	}
+	public SavingAccount(String theAccountNumber, String thePIN,
+			double theAvailableBalance, double theTotalBalance, double theInterest) {
+		super(theAccountNumber, thePIN, theAvailableBalance, theTotalBalance);
+		interestRate = theInterest;
+	}
+	/** getters **/
+	public double getInterestRate() {
+		return interestRate;
+	}
+	public String getInterestRateString() {
+		return interestRate * 100 + "%";
+	}
+}
+==> ./src/bank/account/CurrentAccount.java <==
+package bank.account;
+public class CurrentAccount extends Account {
+	public CurrentAccount(String theAccountNumber, String thePIN, double theAvailableBalance,
+			double theTotalBalance) {
+		super(theAccountNumber, thePIN, theAvailableBalance, theTotalBalance);
+		overdrawnLimit = 10000;
+	}
+	public CurrentAccount(String theAccountNumber, String thePIN, double theAvailableBalance,
+			double theTotalBalance, double theOverdrawnLimit) {
+		super(theAccountNumber, thePIN, theAvailableBalance, theTotalBalance);
+		overdrawnLimit = theOverdrawnLimit;
+	}
+}
+==> ./src/bank/account/Account.java <==
+package bank.account;
+
+import java.util.Vector;
+
+import javax.security.auth.login.AccountNotFoundException;
+
+import atm.exception.OverdrawnException;
+import atm.utils.MyStaticStuff;
+
+// Account.java
+// Represents a bank account
+
+public class Account {
+	protected String accountNumber; // account number
+	private String pin; // PIN for authentication
+	protected double availableBalance; // funds available for withdrawal
+	protected double totalBalance; // funds available + pending deposits
+	protected double overdrawnLimit;
+
+	/** Account constructor initializes attributes **/
+	public Account(String theAccountNumber, String thePIN,
+			double theAvailableBalance, double theTotalBalance) {
+		accountNumber = theAccountNumber;
+		pin = thePIN;
+		availableBalance = theAvailableBalance;
+		totalBalance = theTotalBalance;
+		overdrawnLimit = 0.0;
+	} // end Account constructor
+
+	/** Static methods **/
+	public static Account getAccount(Vector<Account> accounts,
+			String accountNumber) throws AccountNotFoundException {
+		for (Account account : accounts)
+			if (account.getAccountNumber() == accountNumber)
+				return account;
+		throw new AccountNotFoundException();
+	}
+
+	public static boolean isMyBankAccount(String accountNumber) {
+		return accountNumber.charAt(0) == '1';
+	}
+
+	/** instance methods **/
+
+	// determines whether a user-specified PIN matches PIN in Account
+	public boolean validatePIN(String userPIN) {
+		System.out.println("right pin:" + pin);
+		System.out.println("trying pin:" + userPIN);
+		return pin.equals(userPIN);
+	} // end method validatePIN
+
+	public boolean isMyBankAccount() {
+		String accountStr = String.valueOf(accountNumber);
+		return accountStr.charAt(0) == '1';
+	}
+
+	public boolean isEnough(double amount) {
+		double requiredAmount = amount;
+		if (!isMyBankAccount())
+			requiredAmount += MyStaticStuff.EXTRA_CHARGE;
+		return ((availableBalance + overdrawnLimit) >= requiredAmount);
+	}
+
+	// credits an amount to the account
+	public void credit(double amount) {
+		availableBalance += amount; // add to available balance
+		totalBalance += amount; // add to total balance
+	} // end method credit
+
+	// debits an amount from the account
+	public void debit(double amount) throws OverdrawnException {
+		if ((availableBalance + overdrawnLimit) < amount)
+			throw new OverdrawnException();
+		availableBalance -= amount; // subtract from available balance
+		totalBalance -= amount; // subtract from total balance
+	} // end method debit
+
+	/** getters **/
+	// returns available balance
+	public double getAvailableBalance() {
+		return availableBalance;
+	} // end getAvailableBalance
+
+	// returns the total balance
+	public double getTotalBalance() {
+		return totalBalance;
+	} // end method getTotalBalance
+		// returns account number
+
+	public String getAccountNumber() {
+		return accountNumber;
+	} // end method getAccountNumber
+
+	public double getOverdrawnLimit() {
+		return overdrawnLimit;
+	}
+
+} // end class Account
+==> ./src/bank/operation/Transaction.java <==
+package bank.operation;
+import javax.security.auth.login.AccountNotFoundException;
+import bank.BankDatabase;
+import atm.core.ATM;
+import atm.core.Keypad;
+import atm.core.Screen;
+import atm.core.UI;
+import atm.exception.CardOutException;
+import atm.exception.CashNotesNotSupportedException;
+import atm.exception.WrongInputException;
+// Transaction.java
+// Abstract superclass Transaction represents an ATM transaction
+public abstract class Transaction {
+	private String accountNumber; // indicates account involved
+	private UI ui; // ATM's screen and keypad
+	private BankDatabase bankDatabase; // account info database
+	// Transaction constructor invoked by subclasses using super()
+	public Transaction(ATM atm) {
+		accountNumber = atm.getCurrentAccountNumber();
+		ui = atm.getUI();
+		bankDatabase = atm.getBankDatabase();
+	} // end Transaction constructor
+	// return account number
+	public String getAccountNumber() {
+		return accountNumber;
+	} // end method getAccountNumber
+	// return reference to screen
+	public Screen getScreen() {
+		return ui.screen;
+	} // end method getScreen
+	// return reference to keypad
+	public Keypad getKeypad() {
+		return ui.keypad;
+	} // end method getKeypad
+	// return reference to bank database
+	public BankDatabase getBankDatabase() {
+		return bankDatabase;
+	} // end method getBankDatabase
+	// perform the transaction (overridden by each subclass)
+	public abstract void execute() throws WrongInputException,
+			AccountNotFoundException, CardOutException,
+			CashNotesNotSupportedException;
+} // end class Transaction
+==> ./src/bank/operation/BalanceInquiry.java <==
+package bank.operation;
+
+import javax.security.auth.login.AccountNotFoundException;
+
+import bank.BankDatabase;
+import atm.core.ATM;
+
+// BalanceInquiry.java
+// Represents a balance inquiry ATM transaction
+
+public class BalanceInquiry extends Transaction {
+	// BalanceInquiry constructor
+	public BalanceInquiry(ATM atm) {
+		super(atm);
+	} // end BalanceInquiry constructor
+
+	@Override
+	// performs the transaction
+	// get references to bank database and screen from parameters
+	public void execute() throws AccountNotFoundException {
+		getScreen().displayMessageLine("\nBalance Information:");
+
+		getBankDatabase();
+		// get & display the balance for the account on the screen
+		double availableBalance = BankDatabase
+				.getAvailableBalance(getAccountNumber());
+		getBankDatabase();
+		double totalBalance = BankDatabase.getTotalBalance(getAccountNumber());
+		getScreen().displayMessage(" - Available balance: ");
+		getScreen().displayDollarAmount(availableBalance);
+		getScreen().displayMessageLine();
+		getScreen().displayMessage(" - Total balance:     ");
+		getScreen().displayDollarAmount(totalBalance);
+		getScreen().displayMessageLine();
+
+		getBankDatabase();
+		// check if the account has interest rate
+		if (BankDatabase.IsSavingAccount(getAccountNumber())) {
+			getScreen().displayMessage(" - Interest rate:     ");
+			getScreen().displayMessage(
+					BankDatabase.getInterestRateString(getAccountNumber()));
+			getScreen().displayMessageLine();
+		}
+
+		getBankDatabase();
+		// check if the account has overdraw limit
+		if (BankDatabase.IsCurrentAccount(getAccountNumber())) {
+			getScreen().displayMessage(" - Overdraw limit:     ");
+			getScreen().displayMessage(
+					BankDatabase.getOverdrawLimit(getAccountNumber()));
+			getScreen().displayMessageLine();
+		}
+
+		getScreen().displayMessageLine();
+	} // end method execute
+} // end class BalanceInquiry
+==> ./src/bank/operation/Withdrawal.java <==
+package bank.operation;
+
+import java.util.Vector;
+
+import javax.security.auth.login.AccountNotFoundException;
+
+import com.thoughtworks.xstream.InitializationException;
+
+import bank.BankDatabase;
+import bank.account.Account;
+import atm.core.ATM;
+import atm.core.CashDispenser;
+import atm.core.Screen;
+import atm.core.UI;
+import atm.exception.CardOutException;
+import atm.exception.CashNotEnoughException;
+import atm.exception.CashNotesNotSupportedException;
+import atm.exception.CashOutException;
+import atm.exception.OverdrawnException;
+import atm.exception.WrongInputException;
+import atm.utils.CashCount;
+import atm.utils.MyInputHandler;
+import atm.utils.MyStaticStuff;
+import atm.utils.MyStrings;
+
+// Withdrawal.java
+// Represents a withdrawal ATM transaction
+
+public class Withdrawal extends Transaction {
+	private int amount; // amount to withdraw
+	private ATM atm;
+
+	// constant corresponding to menu option to cancel
+	private static int CANCELED;
+	private boolean commandMode = true;
+
+	// Withdrawal constructor
+	// get references to keypad and cash dispenser from atm
+	public Withdrawal(ATM atm) {
+		// initialize superclass variables
+		super(atm);
+		this.atm = atm;
+		CANCELED = MyStaticStuff.MenuCashValue.length + 2;
+	} // end Withdrawal constructor
+
+	public void setAmount(String amountStr) throws NumberFormatException {
+		commandMode = false;
+		this.amount = Integer.parseInt(amountStr);
+	}
+
+	@Override
+	// perform transaction
+	public void execute() throws WrongInputException, AccountNotFoundException,
+			CardOutException, CashNotesNotSupportedException {
+		boolean cashDispensed = false; // cash was not dispensed yet
+		int tryCount = 0;
+		// loop until cash is dispensed or the user cancels
+		do {
+			tryCount++;
+			// obtain a chosen withdrawal amount from the user
+			amount = displayMenuOfAmounts(atm.getUI());
+
+			// check whether user chose a withdrawal amount or canceled
+			if (amount == CANCELED)
+				return;
+
+			// auto check whether the user has enough money in the account
+			// check whether the cash dispenser has enough money
+			try {
+				try {
+					if (!Account.isMyBankAccount(getAccountNumber()))
+						if (!BankDatabase.getAccount(getAccountNumber())
+								.isEnough(amount))
+							throw new OverdrawnException();
+					Vector<CashCount> cashPop = CashDispenser
+							.dispenseCash(amount);
+					if (!Account.isMyBankAccount(getAccountNumber()))
+						BankDatabase.debit(getAccountNumber(),
+								MyStaticStuff.EXTRA_CHARGE);
+					BankDatabase.debit(getAccountNumber(), amount);
+					cashDispensed = true; // cash was dispensed
+					atm.popCash(cashPop);
+				} catch (OverdrawnException e) {
+					getScreen().displayMessageLine(
+							MyStrings.getOverDrawnMessage(BankDatabase
+									.getAccount(getAccountNumber())
+									.getOverdrawnLimit()));
+					MyStaticStuff.sleep();
+				}
+			} catch (CashNotEnoughException e) {
+				// cash dispenser does not have enough cash
+				getScreen().displayMessageLine(
+						"\nInsufficient cash available in the ATM."
+								+ "\n Avaliabe cash:"
+								+ CashDispenser.getAmount()
+								+ "\n\nPlease choose a smaller amount.");
+				MyStaticStuff.sleep();
+			} // dispense cash
+		} while ((!cashDispensed)
+				&& (tryCount < MyInputHandler.MAX_WRONG_INPUT));
+	} // end method execute
+
+	public void executeGUI() throws AccountNotFoundException,
+			OverdrawnException, CashNotEnoughException, CashOutException, CashNotesNotSupportedException {
+		// throw overdrawexception, cashnotenoughexception
+		if (commandMode)
+			throw new InitializationException(
+					"WithDrawal: amount has not be initialized");
+
+		int withExtraCharge = amount;
+		if (!Account.isMyBankAccount(getAccountNumber()))
+			withExtraCharge += MyStaticStuff.EXTRA_CHARGE;
+
+		if (!BankDatabase.getAccount(getAccountNumber()).isEnough(
+				withExtraCharge))
+			throw new OverdrawnException();
+		Vector<CashCount> cashPop = CashDispenser.dispenseCash(amount);
+		if (!Account.isMyBankAccount(getAccountNumber()))
+			BankDatabase.debit(getAccountNumber(), MyStaticStuff.EXTRA_CHARGE);
+		BankDatabase.debit(getAccountNumber(), amount);
+
+		throw new CashOutException(cashPop);
+	}
+
+	// display a menu of withdrawal amounts and the option to cancel;
+	// return the chosen amount or 0 if the user chooses to cancel
+	private int displayMenuOfAmounts(UI ui) throws WrongInputException {
+		int userChoice = 0; // local variable to store return value
+
+		// loop while no valid choice has been made
+		while (userChoice == 0) {
+			// display the menu
+			String msg = "\nWithdrawal Menu:";
+			int i = 0;
+			for (Integer cashValue : MyStaticStuff.MenuCashValue)
+				msg += "\n" + (++i) + " - " + Screen.getDollarAmount(cashValue);
+			msg += "\n" + (++i) + " - Other";
+			msg += "\n" + CANCELED + " - Cancel withdrawal";
+			msg += "\n\nChoose a withdrawal amount: ";
+			// get user input through keypad
+			int input = ui.keypad.getInputInt(msg);
+
+			// determine how to proceed based on the input value
+			if (input == CANCELED)
+				userChoice = CANCELED;
+			else if (input == CANCELED - 1)
+				userChoice = manualInputAmount(ui);
+			else if ((input >= 1)
+					&& (input <= MyStaticStuff.MenuCashValue.length))
+				userChoice = MyStaticStuff.MenuCashValue[input - 1];
+			else
+				ui.screen.displayMessageLine("\nIvalid selection. Try again.");
+		} // end while
+		return userChoice; // return withdrawal amount or CANCELED
+	} // end method displayMenuOfAmounts
+
+	private int manualInputAmount(UI ui) throws WrongInputException {
+		int amount = CANCELED;
+		int wrongInputCount = 0;
+		boolean ok;
+		do {
+			ok = true;
+			String msg = "We provide " + MyStaticStuff.getCashValuesStrings()
+					+ " note"
+					+ (MyStaticStuff.CashValues.length > 1 ? "s" : "")
+					+ " only";
+			msg += "\nInput the amount to withdraw (input 0 to cancel): ";
+			try {
+				amount = ui.keypad.getInputInt(msg);
+				if (amount == 0)
+					return CANCELED;
+				else if ((amount < 0) || ((amount % 100) != 0))
+					throw new WrongInputException();
+			} catch (WrongInputException e) {
+				ok = false;
+				ui.screen.displayMessageLine("Invalid input");
+				MyStaticStuff.sleep();
+			}
+		} while ((wrongInputCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
+		if (!ok)
+			throw new WrongInputException();
+		return amount;
+	}
+} // end class Withdrawal
+==> ./src/bank/operation/Transfer.java <==
+package bank.operation;
+import java.util.Vector;
+import javax.security.auth.login.AccountNotFoundException;
+import bank.BankDatabase;
+import bank.account.Account;
+import atm.core.ATM;
+import atm.core.UI;
+import atm.exception.OverdrawnException;
+import atm.exception.TransferSameAccountException;
+import atm.exception.WrongInputException;
+import atm.utils.MyInputHandler;
+import atm.utils.MyStaticStuff;
+import atm.utils.MyStrings;
+public class Transfer {
+	public static Vector<Transaction> transfer(ATM atm)
+			throws WrongInputException, AccountNotFoundException {
+		Vector<Transaction> result = new Vector<Transaction>();
+		UI ui = atm.getUI();
+		String accountNumberTo;
+		Account accountFrom = BankDatabase.getAccount(atm
+				.getCurrentAccountNumber());
+		Account accountTo = null;
+		double amount = 0;
+		boolean ok;
+		int wrongCount = 0;
+		// get target account to be transfered from user
+		do {
+			ok = true;
+			accountNumberTo = String
+					.valueOf(ui.keypad
+							.getInputInt("\nPlease input the account number of the receiver: "));
+			try {
+				accountTo = BankDatabase.getAccount(accountNumberTo);
+				if (accountFrom.getAccountNumber() == accountTo
+						.getAccountNumber()) {
+					wrongCount++;
+					ok = false;
+					ui.screen
+							.displayMessageLine(MyStrings.TRANSFER_SAME_ACCOUNT);
+				}
+			} catch (AccountNotFoundException e) {
+				wrongCount++;
+				ok = false;
+				ui.screen.displayMessageLine(MyStrings.ACCOUNT_NOT_FOUND);
+				MyStaticStuff.sleep();
+			}
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
+		if (!ok)
+			throw new WrongInputException();
+		// get amount to be transfered from user
+		// auto throw OverdrawnException if the accountFrom has not enough
+		// available balance
+		wrongCount = 0;
+		do {
+			ok = true;
+			try {
+				amount = ui.keypad
+						.getInputDouble("\nPlease the amount to transfer (input 0 to cancel): ");
+				if (amount == 0)
+					return null;
+				else if (amount < 0) {
+					wrongCount++;
+					ok = false;
+					ui.screen
+							.displayMessageLine("The amount should be positive. Please try again.");
+				} else if (accountFrom.isEnough(amount)) {
+					accountFrom.debit(amount);
+					accountTo.credit(amount);
+				} else {
+					throw new OverdrawnException();
+				}
+			} catch (OverdrawnException e) {
+				wrongCount++;
+				ok = false;
+				ui.screen.displayMessageLine(MyStrings
+						.getOverDrawnMessage(BankDatabase.getAccount(
+								atm.getCurrentAccountNumber())
+								.getOverdrawnLimit()));
+				MyStaticStuff.sleep();
+			}
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
+		if (!ok)
+			throw new WrongInputException();
+		else {
+			if (!accountFrom.isMyBankAccount())
+				ui.screen.displayMessageLine(MyStaticStuff
+						.getExtraChargeString());
+			ui.screen.displayMessageLine(MyStrings.TRANSFER_SUCCEED);
+		}
+		return result;
+	}
+	public static void transferGUI(ATM atm, String accountNumberTo,
+			double amount) throws AccountNotFoundException,
+			TransferSameAccountException, OverdrawnException {
+		Account accountFrom = BankDatabase.getAccount(atm
+				.getCurrentAccountNumber());
+		Account accountTo = BankDatabase.getAccount(accountNumberTo);
+		if (accountFrom.getAccountNumber() == accountTo.getAccountNumber())
+			throw new TransferSameAccountException();
+		// auto throw OverdrawnException if the accountFrom has not enough
+		// available balance
+		double withExtraCharge = amount;
+		if (!accountFrom.isMyBankAccount())
+			withExtraCharge += MyStaticStuff.EXTRA_CHARGE;
+		try {
+			if (accountFrom.isEnough(withExtraCharge)) {
+				accountFrom.debit(withExtraCharge);
+				accountTo.credit(amount);
+			} else {
+				throw new OverdrawnException();
+			}
+		} catch (OverdrawnException overdrawnException) {
+			throw overdrawnException;
+		}
+	}
+}
+==> ./src/bank/BankDatabase.java <==
+package bank;
+import java.util.Vector;
+import javax.security.auth.login.AccountNotFoundException;
+import atm.exception.OverdrawnException;
+import atm.gui.virtualslots.cardslot.CardInsideJPanel;
+import bank.account.Account;
+import bank.account.CurrentAccount;
+import bank.account.SavingAccount;
+public class BankDatabase {
+	// Vector of Accounts
+	private static Vector<Account> accounts = new Vector<Account>();
+	// no-argument BankDatabase constructor initializes accounts
+	public static void init() {
+		accounts.add(new Account("12345", "02345", 5000.0, 5000.0));
+		accounts.add(new CurrentAccount("12356", "02356", 9000.0, 10000.0));
+		accounts.add(new SavingAccount("12369", "02369", 23000.0, 23000.0));
+		accounts.add(new Account("45678", "05678", 2000.0, 2000.0));
+	} // end no-argument BankDatabase constructor
+	/** getters **/
+	// retrieve Account object containing specified account number
+	public static Account getAccount(String accountNumber) throws AccountNotFoundException {
+		// loop through accounts searching for matching account number
+		for (Account account : accounts) {
+			// return current account if match found
+			if (account.getAccountNumber().equals(accountNumber))
+				return account;
+		} // end for
+		throw new AccountNotFoundException(); // if no matching account was
+												// found, throw exception
+	} // end method getAccount
+	public static Vector<Account> getAccounts() {
+		return accounts;
+	}
+	// return available balance of Account with specified account number
+	public static double getAvailableBalance(String userAccountNumber) throws AccountNotFoundException {
+		return getAccount(userAccountNumber).getAvailableBalance();
+	} // end method getAvailableBalance
+	// return total balance of Account with specified account number
+	public static double getTotalBalance(String userAccountNumber) throws AccountNotFoundException {
+		return getAccount(userAccountNumber).getAvailableBalance();
+	} // end method getTotalBalance
+	// return interest rate of Account with specified account number
+	public static double getInterestRate(String userAccountNumber) throws AccountNotFoundException {
+		return ((SavingAccount) getAccount(userAccountNumber)).getInterestRate();
+	} // end method getInterestRate
+	// return interest rate of Account with specified account number
+	// in unit of %
+	public static String getInterestRateString(String userAccountNumber) throws AccountNotFoundException {
+		return ((SavingAccount) getAccount(userAccountNumber)).getInterestRateString();
+	} // end method getInterestRateString
+	// return overdraw limit of Account with specified account number
+	public static double getOverdrawLimit(String userAccountNumber) throws AccountNotFoundException {
+		return getAccount(userAccountNumber).getOverdrawnLimit();
+	} // end method getOverdrawLimit
+	/** instance methods **/
+	// determine whether the account is saving account
+	public static boolean IsSavingAccount(String userAccountNumber) throws AccountNotFoundException {
+		Account account = getAccount(userAccountNumber);
+		return account instanceof SavingAccount;
+	}
+	// determine whether the account is current account
+	public static boolean IsCurrentAccount(String userAccountNumber) throws AccountNotFoundException {
+		Account account = getAccount(userAccountNumber);
+		return account instanceof CurrentAccount;
+	}
+	// determine whether user-specified account number and PIN match
+	// those of an account in the database
+	@Deprecated
+	public static boolean authenticateUser_old(String userAccountNumber, String userPIN)
+			throws AccountNotFoundException {
+		System.out.println("authenticateUser_old");
+		// attempt to retrieve the account with the account number
+		Account userAccount;
+		userAccount = getAccount(userAccountNumber);
+		// if account exists, return result of Account method validateIN
+		return userAccount.validatePIN(userPIN);
+	} // end method authenticateUser
+	public static boolean authenticateUser(String userPIN) throws AccountNotFoundException {
+		System.out.println("authenticating User: " + CardInsideJPanel.getCard().accountNumber);
+		// attempt to retrieve the account with the account number
+		Account userAccount;
+		userAccount = getAccount(CardInsideJPanel.getCard().accountNumber);
+		// if account exists, return result of Account method validateIN
+		return userAccount.validatePIN(userPIN);
+	} // end method authenticateUser
+	// credit an amount to Account with specified account number
+	public static void credit(String userAccountNumber, double amount) throws AccountNotFoundException {
+		getAccount(userAccountNumber).credit(amount);
+	} // end method credit
+	// debit an amount from of Account with specified account number
+	public static void debit(String userAccountNumber, double amount) throws OverdrawnException,
+			AccountNotFoundException {
+		getAccount(userAccountNumber).debit(amount);
+	} // end method debit
+} // end class BankDatabase
+==> ./src/webs/layout/CenterLayout.java <==
+package webs.layout;
+/*
+ * JCommon : a free general purpose class library for the Java(tm) platform
+ *
+ *
+ * (C) Copyright 2000-2005, by Object Refinery Limited and Contributors.
+ * 
+ * Project Info:  http://www.jfree.org/jcommon/index.html
+ *
+ * This library is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU Lesser General Public License as published by 
+ * the Free Software Foundation; either version 2.1 of the License, or 
+ * (at your option) any later version.
+ *
+ */
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.LayoutManager;
+import java.io.Serializable;
+/**
+ * A layout manager that displays a single component in the center of its
+ * container.
+ * 
+ * @author David Gilbert
+ */
+public class CenterLayout implements LayoutManager, Serializable {
+	/** For serialization. */
+	private static final long serialVersionUID = 469319532333015042L;
+	/** Creates a new layout manager.*/
+	public CenterLayout() {
+	}
+	/** Returns the preferred size.
+	 * @param parent
+	 *            the parent.
+	 * @return the preferred size.*/
+	public Dimension preferredLayoutSize(final Container parent) {
+		synchronized (parent.getTreeLock()) {
+			final Insets insets = parent.getInsets();
+			if (parent.getComponentCount() > 0) {
+				final Component component = parent.getComponent(0);
+				final Dimension d = component.getPreferredSize();
+				return new Dimension((int) d.getWidth() + insets.left
+						+ insets.right, (int) d.getHeight() + insets.top
+						+ insets.bottom);
+			} else {
+				return new Dimension(insets.left + insets.right, insets.top
+						+ insets.bottom);
+			}
+		}
+	}
+	/** Returns the minimum size.
+	 * @param parent
+	 *            the parent.
+	 * @return the minimum size.*/
+	public Dimension minimumLayoutSize(final Container parent) {
+		synchronized (parent.getTreeLock()) {
+			final Insets insets = parent.getInsets();
+			if (parent.getComponentCount() > 0) {
+				final Component component = parent.getComponent(0);
+				final Dimension d = component.getMinimumSize();
+				return new Dimension(d.width + insets.left + insets.right,
+						d.height + insets.top + insets.bottom);
+			} else {
+				return new Dimension(insets.left + insets.right, insets.top
+						+ insets.bottom);
+			}
+		}
+	}
+	/** Lays out the components.
+	 * @param parent
+	 *            the parent.*/
+	public void layoutContainer(final Container parent) {
+		synchronized (parent.getTreeLock()) {
+			if (parent.getComponentCount() > 0) {
+				final Insets insets = parent.getInsets();
+				final Dimension parentSize = parent.getSize();
+				final Component component = parent.getComponent(0);
+				final Dimension componentSize = component.getPreferredSize();
+				final int xx = insets.left
+						+ (Math.max((parentSize.width - insets.left
+								- insets.right - componentSize.width) / 2, 0));
+				final int yy = insets.top
+						+ (Math.max((parentSize.height - insets.top
+								- insets.bottom - componentSize.height) / 2, 0));
+				component.setBounds(xx, yy, componentSize.width,
+						componentSize.height);
+			}
+		}
+	}
+	/** Not used.
+	 * @param comp
+	 *            the component.*/
+	public void addLayoutComponent(final Component comp) {
+		// not used.
+	}
+	/** Not used.
+	 * @param comp
+	 *            the component.*/
+	public void removeLayoutComponent(final Component comp) {
+		// not used
+	}
+	/** Not used.
+	 * @param name
+	 *            the component name.
+	 * @param comp
+	 *            the component.*/
+	public void addLayoutComponent(final String name, final Component comp) {
+		// not used
+	}
+	/** Not used.
+	 * @param name
+	 *            the component name.
+	 * @param comp
+	 *            the component.*/
+	public void removeLayoutComponent(final String name, final Component comp) {
+		// not used
+	}
+}
+==> ./src/webs/layout/WrapLayout.java <==
+package webs.layout;
+
+import java.awt.*;
+
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+
+/**
+ *  FlowLayout subclass that fully supports wrapping of components.
+ */
+@SuppressWarnings("serial")
+public class WrapLayout extends FlowLayout
+{
+	@SuppressWarnings("unused")
+	private Dimension preferredLayoutSize;
+
+	/**
+	* Constructs a new <code>WrapLayout</code> with a left
+	* alignment and a default 5-unit horizontal and vertical gap.
+	*/
+	public WrapLayout()
+	{
+		super();
+	}
+
+	/**
+	* Constructs a new <code>FlowLayout</code> with the specified
+	* alignment and a default 5-unit horizontal and vertical gap.
+	* The value of the alignment argument must be one of
+	* <code>WrapLayout</code>, <code>WrapLayout</code>,
+	* or <code>WrapLayout</code>.
+	* @param align the alignment value
+	*/
+	public WrapLayout(int align)
+	{
+		super(align);
+	}
+
+	/**
+	* Creates a new flow layout manager with the indicated alignment
+	* and the indicated horizontal and vertical gaps.
+	* <p>
+	* The value of the alignment argument must be one of
+	* <code>WrapLayout</code>, <code>WrapLayout</code>,
+	* or <code>WrapLayout</code>.
+	* @param align the alignment value
+	* @param hgap the horizontal gap between components
+	* @param vgap the vertical gap between components
+	*/
+	public WrapLayout(int align, int hgap, int vgap)
+	{
+		super(align, hgap, vgap);
+	}
+
+	/**
+	* Returns the preferred dimensions for this layout given the
+	* <i>visible</i> components in the specified target container.
+	* @param target the component which needs to be laid out
+	* @return the preferred dimensions to lay out the
+	* subcomponents of the specified container
+	*/
+	@Override
+	public Dimension preferredLayoutSize(Container target)
+	{
+		return layoutSize(target, true);
+	}
+
+	/**
+	* Returns the minimum dimensions needed to layout the <i>visible</i>
+	* components contained in the specified target container.
+	* @param target the component which needs to be laid out
+	* @return the minimum dimensions to lay out the
+	* subcomponents of the specified container
+	*/
+	@Override
+	public Dimension minimumLayoutSize(Container target)
+	{
+		Dimension minimum = layoutSize(target, false);
+		minimum.width -= (getHgap() + 1);
+		return minimum;
+	}
+
+	/**
+	* Returns the minimum or preferred dimension needed to layout the target
+	* container.
+	*
+	* @param target target to get layout size for
+	* @param preferred should preferred size be calculated
+	* @return the dimension to layout the target container
+	*/
+	private Dimension layoutSize(Container target, boolean preferred)
+	{
+	synchronized (target.getTreeLock())
+	{
+		//  Each row must fit with the width allocated to the containter.
+		//  When the container width = 0, the preferred width of the container
+		//  has not yet been calculated so lets ask for the maximum.
+
+		int targetWidth = target.getSize().width;
+
+		if (targetWidth == 0)
+			targetWidth = Integer.MAX_VALUE;
+
+		int hgap = getHgap();
+		int vgap = getVgap();
+		Insets insets = target.getInsets();
+		int horizontalInsetsAndGap = insets.left + insets.right + (hgap * 2);
+		int maxWidth = targetWidth - horizontalInsetsAndGap;
+
+		//  Fit components into the allowed width
+
+		Dimension dim = new Dimension(0, 0);
+		int rowWidth = 0;
+		int rowHeight = 0;
+
+		int nmembers = target.getComponentCount();
+
+		for (int i = 0; i < nmembers; i++)
+		{
+			Component m = target.getComponent(i);
+
+			if (m.isVisible())
+			{
+				Dimension d = preferred ? m.getPreferredSize() : m.getMinimumSize();
+
+				//  Can't add the component to current row. Start a new row.
+
+				if (rowWidth + d.width > maxWidth)
+				{
+					addRow(dim, rowWidth, rowHeight);
+					rowWidth = 0;
+					rowHeight = 0;
+				}
+
+				//  Add a horizontal gap for all components after the first
+
+				if (rowWidth != 0)
+				{
+					rowWidth += hgap;
+				}
+
+				rowWidth += d.width;
+				rowHeight = Math.max(rowHeight, d.height);
+			}
+		}
+
+		addRow(dim, rowWidth, rowHeight);
+
+		dim.width += horizontalInsetsAndGap;
+		dim.height += insets.top + insets.bottom + vgap * 2;
+
+		//	When using a scroll pane or the DecoratedLookAndFeel we need to
+		//  make sure the preferred size is less than the size of the
+		//  target containter so shrinking the container size works
+		//  correctly. Removing the horizontal gap is an easy way to do this.
+
+		Container scrollPane = SwingUtilities.getAncestorOfClass(JScrollPane.class, target);
+
+		if (scrollPane != null && target.isValid())
+		{
+			dim.width -= (hgap + 1);
+		}
+
+		return dim;
+	}
+	}
+
+	/*
+	 *  A new row has been completed. Use the dimensions of this row
+	 *  to update the preferred size for the container.
+	 *
+	 *  @param dim update the width and height when appropriate
+	 *  @param rowWidth the width of the row to add
+	 *  @param rowHeight the height of the row to add*/
+	private void addRow(Dimension dim, int rowWidth, int rowHeight)
+	{
+		dim.width = Math.max(dim.width, rowWidth);
+
+		if (dim.height > 0)
+		{
+			dim.height += getVgap();
+		}
+
+		dim.height += rowHeight;
+	}
+}
+==> ./src/webs/layout/CircleLayout.java <==
+package webs.layout;
+/*
+ This program is a part of the companion code for Core Java 8th ed.
+ (http://horstmann.com/corejava)
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.LayoutManager;
+/**
+ * @version 1.32 2007-06-12
+ * @author Cay Horstmann
+ */
+/**
+ * A frame that shows buttons arranged along a circle.
+ */
+/**
+ * A layout manager that lays out components along a circle.
+ */
+public class CircleLayout implements LayoutManager {
+	public void addLayoutComponent(String name, Component comp) {
+	}
+	public void removeLayoutComponent(Component comp) {
+	}
+	public void setSizes(Container parent) {
+		if (sizesSet)
+			return;
+		int n = parent.getComponentCount();
+		preferredWidth = 0;
+		preferredHeight = 0;
+		minWidth = 0;
+		minHeight = 0;
+		maxComponentWidth = 0;
+		maxComponentHeight = 0;
+		// compute the maximum component widths and heights
+		// and set the preferred size to the sum of the component sizes.
+		for (int i = 0; i < n; i++) {
+			Component c = parent.getComponent(i);
+			if (c.isVisible()) {
+				Dimension d = c.getPreferredSize();
+				maxComponentWidth = Math.max(maxComponentWidth, d.width);
+				maxComponentHeight = Math.max(maxComponentHeight, d.height);
+				preferredWidth += d.width;
+				preferredHeight += d.height;
+			}
+		}
+		minWidth = preferredWidth / 2;
+		minHeight = preferredHeight / 2;
+		sizesSet = true;
+	}
+	public Dimension preferredLayoutSize(Container parent) {
+		setSizes(parent);
+		Insets insets = parent.getInsets();
+		int width = preferredWidth + insets.left + insets.right;
+		int height = preferredHeight + insets.top + insets.bottom;
+		return new Dimension(width, height);
+	}
+	public Dimension minimumLayoutSize(Container parent) {
+		setSizes(parent);
+		Insets insets = parent.getInsets();
+		int width = minWidth + insets.left + insets.right;
+		int height = minHeight + insets.top + insets.bottom;
+		return new Dimension(width, height);
+	}
+	public void layoutContainer(Container parent) {
+		setSizes(parent);
+		// compute center of the circle
+		Insets insets = parent.getInsets();
+		int containerWidth = parent.getSize().width - insets.left - insets.right;
+		int containerHeight = parent.getSize().height - insets.top - insets.bottom;
+		int xcenter = insets.left + containerWidth / 2;
+		int ycenter = insets.top + containerHeight / 2;
+		// compute radius of the circle
+		int xradius = (containerWidth - maxComponentWidth) / 2;
+		int yradius = (containerHeight - maxComponentHeight) / 2;
+		int radius = Math.min(xradius, yradius);
+		// lay out components along the circle
+		int n = parent.getComponentCount();
+		for (int i = 0; i < n; i++) {
+			Component c = parent.getComponent(i);
+			if (c.isVisible()) {
+				double angle = 2 * Math.PI * i / n;
+				// center point of component
+				int x = xcenter + (int) (Math.cos(angle) * radius);
+				int y = ycenter + (int) (Math.sin(angle) * radius);
+				// move component so that its center is (x, y)
+				// and its size is its preferred size
+				Dimension d = c.getPreferredSize();
+				c.setBounds(x - d.width / 2, y - d.height / 2, d.width, d.height);
+			}
+		}
+	}
+	private int minWidth = 0;
+	private int minHeight = 0;
+	private int preferredWidth = 0;
+	private int preferredHeight = 0;
+	private boolean sizesSet = false;
+	private int maxComponentWidth = 0;
+	private int maxComponentHeight = 0;
+}
+==> ./src/atm/exception/CashOutException.java <==
+package atm.exception;
+import java.util.Vector;
+import atm.utils.CashCount;
+public class CashOutException extends Exception {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private Vector<CashCount> popCashCounts;
+	public CashOutException(Vector<CashCount> popCashCounts) {
+		this.popCashCounts = popCashCounts;
+		System.out.println(toString() + "==>" + popCashCounts.toString());
+	}
+	@Override
+	public String toString() {
+		return "Cash Out Exception";
+	}
+	public Vector<CashCount> getCashCounts() {
+		return popCashCounts;
+	}
+}
+==> ./src/atm/exception/TransferSameAccountException.java <==
+package atm.exception;
+public class TransferSameAccountException extends Exception {
+	/***/
+	private static final long serialVersionUID = 1L;
+	public TransferSameAccountException() {
+		System.out.println(toString());
+	}
+	@Override
+	public String toString() {
+		return "Transfer Same Account Exception";
+	}
+}
+==> ./src/atm/exception/OverdrawnException.java <==
+package atm.exception;
+public class OverdrawnException extends Exception {
+	/***/
+	private static final long serialVersionUID = 1L;
+	public OverdrawnException() {
+		System.out.println(toString());
+	}
+	@Override
+	public String toString() {
+		return "Overdrawn Exception";
+	}
+}
+==> ./src/atm/exception/WrongInputException.java <==
+package atm.exception;
+public class WrongInputException extends Exception {
+	/***/
+	private static final long serialVersionUID = 1L;
+	public WrongInputException() {
+		System.out.println(toString());
+	}
+	@Override
+	public String toString() {
+		return "WrongInput Exception";
+	}
+}
+==> ./src/atm/exception/CashNotesNotSupportedException.java <==
+package atm.exception;
+import java.util.Vector;
+import atm.utils.CashCount;
+public class CashNotesNotSupportedException extends Exception {
+	/***/
+	private static final long serialVersionUID = 1L;
+	public CashNotesNotSupportedException() {
+		System.out.println(toString());
+	}
+	public CashNotesNotSupportedException(int amountRequired,
+			Vector<CashCount> result) {
+		System.out.println("CashNotesNotSupportedException!");
+		System.out.println("amountRequired: " + amountRequired);
+		System.out.println("result set: " + result.toString());
+	}
+	@Override
+	public String toString() {
+		return "CashNotEnough Exception";
+	}
+}
+==> ./src/atm/exception/CashNotEnoughException.java <==
+package atm.exception;
+public class CashNotEnoughException extends Exception {
+	/***/
+	private static final long serialVersionUID = 1L;
+	public CashNotEnoughException() {
+		System.out.println(toString());
+	}
+	@Override
+	public String toString() {
+		return "CashNotEnoughException Exception";
+	}
+}
+==> ./src/atm/exception/CardOutException.java <==
+package atm.exception;
+public class CardOutException extends Exception {
+	/***/
+	private static final long serialVersionUID = 1L;
+	public CardOutException() {
+		System.out.println(toString());
+	}
+	@Override
+	public String toString() {
+		return "Card Out Exception";
+	}
+}
+==> ./src/atm/utils/MyInputHandler.java <==
+package atm.utils;
+public class MyInputHandler {
+	public static int MAX_WRONG_INPUT = 3;
+	public static String CARDOUT = "CARDOUT";
+}
+==> ./src/atm/utils/MyImages.java <==
+package atm.utils;
+import java.io.IOException;
+import java.net.URL;
+import javax.swing.ImageIcon;
+import myutils.gui.MyImageUtils;
+import atm.gui.MyGUISettings;
+public class MyImages implements FetchImageNeeder {
+	public static ImageIcon banner;
+	public static ImageIcon viewBalance;
+	public static ImageIcon transfer;
+	public static ImageIcon extraCharge;
+	public static ImageIcon cashNotEnough;
+	private static boolean inited = false;
+	public static void init() throws IOException {
+		if (inited)
+			return;
+		banner = MyImageUtils.scaleImageIconByHeight(new ImageIcon(new URL(
+				MyURLs.IMAGE_BANNER)), MyGUISettings.MONITOR_TOP_MARGIN);
+		viewBalance = MyImageUtils.scaleImageIconByHeight(new ImageIcon(
+				new URL(MyURLs.IMAGE_VIEW_BALANCE)),
+				MyGUISettings.MONITOR_TOP_MARGIN);
+		transfer = MyImageUtils.scaleImageIconByHeight(new ImageIcon(new URL(
+				MyURLs.IMAGE_TRANSFER)), MyGUISettings.MONITOR_TOP_MARGIN);
+		extraCharge = MyImageUtils.scaleImageIconByHeight(new ImageIcon(
+				new URL(MyURLs.IMAGE_EXTRA_CHARGE)),
+				MyGUISettings.MONITOR_TOP_MARGIN);
+		cashNotEnough = MyImageUtils.scaleImageIconByHeight(new ImageIcon(
+				new URL(MyURLs.IMAGE_CASH_NOT_ENOUGH)),
+				MyGUISettings.MONITOR_TOP_MARGIN);
+		inited = true;
+	}
+	@Override
+	public void fetchImage() throws IOException {
+		init();
+	}
+}
+==> ./src/atm/utils/MyURLs.java <==
+package atm.utils;
+public class MyURLs {
+	public static final String IMAGE_TRIANGLE_POINT_LEFT = "http://xtupload.com/image.php?id=1AEE_54755B4E";
+	public static final String IMAGE_TRIANGLE_POINT_RIGHT = "http://xtupload.com/image.php?id=ED71_54755B4E";
+	public static final String IMAGE_BANNER = "http://xtupload.com/image.php?id=6E8A_5475599F";
+	public static final String IMAGE_CARD1 = "http://xtupload.com/image.php?id=C4C5_5475599F&gif";
+	public static final String IMAGE_CARD2 = "http://xtupload.com/image.php?id=E041_54755AFF&gif";
+	public static final String IMAGE_CARD3 = "http://xtupload.com/image.php?id=5E5E_54755AFF&gif";
+	public static final String IMAGE_CARD4 = "http://xtupload.com/image.php?id=899A_54755B4E&gif";
+	public static final String IMAGE_NOTE100 = "http://xtupload.com/image.php?id=F1F4_54755BB3&gif";
+	public static final String IMAGE_NOTE500 = "http://xtupload.com/image.php?id=1499_54755BB3&gif";
+	public static final String IMAGE_NOTE1000 = "http://xtupload.com/image.php?id=B5A2_54755BB3&gif";
+	public static final String IMAGE_COMFIRM_TRANSFER = "http://xtupload.com/image.php?id=8A92_5475599F&gif";
+	public static final String IMAGE_CANCEL = "http://xtupload.com/image.php?id=C7B4_5475599F&gif";
+	public static final String IMAGE_CLEAR = "http://xtupload.com/image.php?id=75FE_54755B4E&gif";
+	public static final String IMAGE_ENTER = "http://xtupload.com/image.php?id=A967_54755B4E&gif";
+	public static final String IMAGE_CARD1_DARK = "http://xtupload.com/image.php?id=AD5C_5475599F&gif";
+	public static final String IMAGE_CARD2_DARK = "http://xtupload.com/image.php?id=EF6B_54755AFF&gif";
+	public static final String IMAGE_CARD3_DARK = "http://xtupload.com/image.php?id=5389_54755AFF&gif";
+	public static final String IMAGE_CARD4_DARK = "http://xtupload.com/share.php?id=281B_54755AFF";
+	public static final String IMAGE_MENU = "http://xtupload.com/image.php?id=D2B1_54755BB3&gif";
+	public static final String IMAGE_WITHDRAW_MENU = "http://xtupload.com/image.php?id=93F0_54755BB3&gif";
+	@Deprecated
+	public static final String IMAGE_PIX = "http://xtupload.com/image.php?id=A5EC_54755C00";
+	public static final String IMAGE_VIEW_BALANCE = "http://xtupload.com/image.php?id=7510_5476AAEB";
+	public static final String IMAGE_TRANSFER = "http://xtupload.com/image.php?id=F85F_547B1FA3";
+	public static final String IMAGE_EXTRA_CHARGE_THREE_Line = "http://xtupload.com/image.php?id=19BB_547B2F97";
+	public static final String IMAGE_EXTRA_CHARGE = "http://xtupload.com/image.php?id=E99F_547B3824";
+	public static final String IMAGE_CASH_NOT_ENOUGH = "http://xtupload.com/image.php?id=DCDC_547B3D18";
+}
+class MyURLs_OLD {
+	public static final String IMAGE_TRIANGLE_POINT_LEFT = "http://aabbcc1241.freeiz.com/HKCC/oop/publish/images/triangle_point_left.png";
+	public static final String IMAGE_TRIANGLE_POINT_RIGHT = "http://aabbcc1241.freeiz.com/HKCC/oop/publish/images/triangle_point_right.png";
+	public static final String IMAGE_BANNER = "http://aabbcc1241.freeiz.com/HKCC/oop/publish/images/banner.png";
+	public static final String IMAGE_CARD1 = "http://aabbcc1241.freeiz.com/HKCC/oop/publish/images/CARD1.gif";
+	public static final String IMAGE_CARD1_DARK = "http://xtupload.com/image.php?id=5390_54752750&gif";
+	public static final String IMAGE_CARD2 = "http://aabbcc1241.freeiz.com/HKCC/oop/publish/images/CARD2.gif";
+	public static final String IMAGE_CARD2_DARK = "http://xtupload.com/image.php?id=BDCC_54752750&gif";
+	public static final String IMAGE_CARD3 = "http://aabbcc1241.freeiz.com/HKCC/oop/publish/images/CARD3.gif";
+	public static final String IMAGE_CARD3_DARK = "http://xtupload.com/image.php?id=2DB9_547525A6&gif";
+	public static final String IMAGE_CARD4 = "http://aabbcc1241.freeiz.com/HKCC/oop/publish/images/CARD4.gif";
+	public static final String IMAGE_CARD4_DARK = "http://xtupload.com/image.php?id=5A81_547525A6&gif";
+	public static final String IMAGE_NOTE100 = "http://aabbcc1241.freeiz.com/HKCC/oop/publish/images/dollar100.gif";
+	public static final String IMAGE_NOTE500 = "http://aabbcc1241.freeiz.com/HKCC/oop/publish/images/dollar500.gif";
+	public static final String IMAGE_NOTE1000 = "http://aabbcc1241.freeiz.com/HKCC/oop/publish/images/dollar1000.gif";
+}
+==> ./src/atm/utils/FetchImageRunnable.java <==
+package atm.utils;
+import java.io.IOException;
+public class FetchImageRunnable implements Runnable {
+	private FetchImageNeeder needer;
+	private boolean finished = false;
+	public FetchImageRunnable(FetchImageNeeder needer) {
+		this.needer = needer;
+	}
+	@Override
+	public void run() {
+		try {
+			needer.fetchImage();
+		} catch (IOException e) {
+			System.out.println("Failed to get to internet");
+			e.printStackTrace();
+		}
+		finished = true;
+	}
+	public boolean isFinished() {
+		return finished;
+	}
+}
+==> ./src/atm/utils/FetchImageNeeder.java <==
+package atm.utils;
+import java.io.IOException;
+public interface FetchImageNeeder {
+	void fetchImage() throws IOException;
+}
+==> ./src/atm/utils/CashCount.java <==
+package atm.utils;
+import atm.exception.CashNotEnoughException;
+public class CashCount {
+	private final int value;
+	private int count;
+	public CashCount(int value, int count) {
+		this.value = value;
+		this.count = count;
+	}
+	public int getValue() {
+		return value;
+	}
+	public int getCount() {
+		return count;
+	}
+	public void remove(int number) throws CashNotEnoughException {
+		if (number > count)
+			throw new CashNotEnoughException();
+		count -= number;
+	}
+	public void add(int number) {
+		count += number;
+	}
+	@Override
+	public String toString() {
+		return MyStrings.DOLLAR_SIGN + " " + value + " x" + count;
+	}
+}
+==> ./src/atm/utils/MyStaticStuff.java <==
+package atm.utils;
+import java.util.Vector;
+import atm.core.Screen;
+public class MyStaticStuff {
+	public static int[] CashValues = { 100, 500, 1000 };
+	public static final int[] MenuCashValue = { 200, 400, 800, 1000 };
+	public static double EXTRA_CHARGE = 20;
+	public static void sleep() {
+		MyStaticStuff.sleep(1000);
+	}
+	public static void sleep(long millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+		}
+	}
+	public static String getCashValuesStrings() {
+		Vector<String> cashValuesStrings = new Vector<String>();
+		for (int i = 0; i < CashValues.length; i++)
+			cashValuesStrings.add(Screen.getDollarAmount(CashValues[i]));
+		return cashValuesStrings.toString();
+	}
+	public static String getExtraChargeString() {
+		return "Extra charge: " + Screen.getDollarAmount(EXTRA_CHARGE)
+				+ " will be charged for successful transaction";
+	}
+	public static String getCashValuesStrings(Vector<CashCount> cashCounts) {
+		Vector<String> cashValuesStrings = new Vector<String>();
+		for (CashCount cashCount : cashCounts)
+			if (cashCount.getCount() > 0)
+				cashValuesStrings.add(Screen.getDollarAmount(cashCount.getValue()) + "x"
+						+ cashCount.getCount());
+		return cashValuesStrings.toString();
+	}
+}
+==> ./src/atm/utils/MyStrings.java <==
+package atm.utils;
+import java.util.Vector;
+import javax.swing.JLabel;
+import atm.core.Screen;
+public class MyStrings {
+	/** Business part **/
+	public static final String DOLLAR_SIGN = "HKD $";
+	public static final String TAKE_CARD = "Please take your card";
+	public static final String TAKE_CASH = "Please take your cash";
+	public static final String TAKE_RECEIPT = "Please take your receipt";
+	public static final String CONTACTS_US = "Please contact CC Bank (9876-5432)";
+	public static final String WRONG_INPUT = "Invalid inputs";
+	public static final String BYE1 = "Thank you for using our service.";
+	public static final String BYE2 = "Have a good day!";
+	@Deprecated
+	public static final String BYE = BYE1 + " " + BYE2;
+	public static final String ACCOUNT_NOT_FOUND = "The account is not found";
+	public static final String TRANSFER_SAME_ACCOUNT = "Please do not transfer to the same account";
+	public static final String TRANSFER_SUCCEED = "The transfer has been done";
+	public static final String CARD_NOT_VALID = "Your card is not identified";
+	@Deprecated
+	public static final String LOGIN_FAIL = "Invalid account number or PIN. Please try again.";
+	/** System part **/
+	public static final String INTERNET_ERROR = "Internet connection is not stable";
+	public static String getOverDrawnMessage(Double limit) {
+		String msg = "Overdrawn (Insufficient funds in your account)";
+		if (limit > 0)
+			msg += ", your overdrawn limit is: "
+					+ Screen.getDollarAmount(limit);
+		return msg;
+	}
+	public static Vector<JLabel> getOverDrawnMessageLabels(Double limit) {
+		Vector<JLabel> result = new Vector<JLabel>();
+		result.add(new JLabel("Overdrawn (Insufficient funds in your account)"));
+		if (limit > 0)
+			result.add(new JLabel("your overdrawn limit is: "
+					+ Screen.getDollarAmount(limit)));
+		return result;
+	}
+}
+==> ./src/atm/core/ATM.java <==
+package atm.core;
+import java.util.Vector;
+import javax.security.auth.login.AccountNotFoundException;
+import bank.BankDatabase;
+import bank.account.Account;
+import bank.operation.BalanceInquiry;
+import bank.operation.Transaction;
+import bank.operation.Transfer;
+import bank.operation.Withdrawal;
+import atm.exception.CardOutException;
+import atm.exception.CashNotesNotSupportedException;
+import atm.exception.WrongInputException;
+import atm.gui.monitor.mainscreen.CardNotValidJPanel;
+import atm.gui.monitor.mainscreen.LoginJPanel;
+import atm.gui.monitor.mainscreen.MainMenuJPanel;
+import atm.gui.monitor.mainscreen.MainScreenCardJPanel;
+import atm.gui.monitor.mainscreen.MaxWrongTryJPanel;
+import atm.gui.virtualslots.cardslot.Card;
+import atm.gui.virtualslots.cardslot.CardInsideJPanel;
+import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
+import atm.utils.CashCount;
+import atm.utils.MyInputHandler;
+import atm.utils.MyStaticStuff;
+import atm.utils.MyStrings;
+// ATM.java
+// Represents an automated teller machine
+public class ATM {
+	private static ATM atm = null;
+	public static boolean userAuthenticated; // whether user is authenticated
+	public static String currentAccountNumber; // current user's account number
+	private Screen screen; // ATM's screen
+	private Keypad keypad; // ATM's keypad
+	private CashDispenser cashDispenser; // ATM's cash dispenser
+	private BankDatabase bankDatabase; // account information database
+	private UI ui;
+	private int wrongCount = 0;
+	// constants corresponding to main menu options
+	public static final int BALANCE_INQUIRY = 1;
+	public static final int WITHDRAWAL = 2;
+	public static final int TRANSFER = 3;
+	public static final int EXIT = 4;
+	// no-argument ATM constructor initializes instance variables
+	private ATM() {
+		screen = new Screen(); // create screen
+		keypad = new Keypad(screen); // create keypad
+		cashDispenser = new CashDispenser(); // create cash dispenser
+		bankDatabase = new BankDatabase(); // create acct info database
+		ui = new UI(screen, bankDatabase, keypad);
+		init();
+	} // end no-argument ATM constructor
+	public void init() {
+		wrongCount = 0;
+	}
+	/** getters **/
+	public static ATM getATM() {
+		if (atm == null)
+			atm = new ATM();
+		return atm;
+	}
+	public UI getUI() {
+		return ui;
+	}
+	public BankDatabase getBankDatabase() {
+		return bankDatabase;
+	}
+	public CashDispenser getCashDispenser() {
+		return cashDispenser;
+	}
+	public String getCurrentAccountNumber() {
+		try {
+			return CardInsideJPanel.getCard().accountNumber;
+		} catch (NullPointerException e) {
+			return "0";
+		}
+	}
+	/** setters **/
+	public void removeAuthentication() {
+		userAuthenticated = false;
+	}
+	/** instance methods **/
+	// start ATM
+	public void run() {
+		screen.clear();
+		// welcome and authenticate user; perform transactions
+		while (true) {
+			// loop while user is not yet authenticated
+			while (!userAuthenticated) {
+				screen.displayMessageLine("\nWelcome to CC Bank ATM!");
+				authenticateUser_old();
+			} // end while
+			try {
+				try {
+					try {
+						performTransactions();
+					} catch (AccountNotFoundException e) {
+						screen.displayMessageLine(MyStrings.ACCOUNT_NOT_FOUND);
+					}
+				} catch (WrongInputException e) {
+					screen.displayMessageLine(MyStrings.WRONG_INPUT);
+				}
+			} // user is now
+			catch (CardOutException e) {
+				userAuthenticated = false;
+			}
+			// authenticated
+			userAuthenticated = false; // reset before next ATM session
+			ATM.currentAccountNumber = "0"; // reset before next ATM session
+			popCard();
+			showBye();
+		} // end while
+	} // end method run
+	// attempts to authenticate user against database
+	@Deprecated
+	private void authenticateUser_old() {
+		// get account number from user
+		String accountNumber = "";
+		String pin = "";
+		int wrongCount = 0;
+		boolean ok;
+		do {
+			ok = true;
+			try {
+				accountNumber = String.valueOf(keypad
+						.getInputInt("\nPlease enter your account number: "));
+			} catch (WrongInputException e) {
+				ok = false;
+				wrongCount++;
+				screen.displayMessageLine();
+			}
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
+		if (!ok) {
+			userAuthenticated = false;
+			return;
+		}
+		// end of input account number
+		// prompt for PIN
+		wrongCount = 0;
+		do {
+			try {
+				pin = String.valueOf(keypad.getInputInt("\nEnter your PIN: "));// input
+																				// PIN
+			} catch (WrongInputException e) {
+				ok = false;
+				wrongCount++;
+				screen.displayMessageLine();
+			}
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
+		if (!ok) {
+			userAuthenticated = false;
+			return;
+		}
+		// set userAuthenticated to boolean value returned by database
+		try {
+			userAuthenticated = BankDatabase.authenticateUser_old(
+					accountNumber, pin);
+		} catch (AccountNotFoundException e) {
+			System.out.println("Account not Found");
+		}
+		// check whether authentication succeeded
+		if (userAuthenticated) {
+			ATM.currentAccountNumber = accountNumber; // save user's account #
+		} // end if
+		else {
+			screen.displayMessageLine("Invalid account number or PIN. Please try again.");
+			MyStaticStuff.sleep();
+		}
+	} // end method authenticateUser
+	public void authenticateUser(String pin) {
+		System.out.println("attend to login");
+		try {
+			// userAuthenticated =
+			// BankDatabase.authenticateUser_old(ATM.currentAccountNumber, pin);
+			userAuthenticated = BankDatabase.authenticateUser(pin);
+		} catch (AccountNotFoundException e) {
+			CardNotValidJPanel.showMe();
+		}
+		if (!userAuthenticated) {
+			wrongCount++;
+			if (wrongCount <= MyInputHandler.MAX_WRONG_INPUT) {
+				System.out.println("wrong pin");
+				LoginJPanel.showMeWrongStatic(wrongCount);
+			} else {
+				System.out.println("too many wrong try");
+				MaxWrongTryJPanel.showMe();
+			}
+		} else {
+			System.out.println("logged in");
+			MainMenuJPanel.showMe();
+		}
+	}
+	// display the main menu and perform transactions
+	private void performTransactions() throws CardOutException,
+			WrongInputException, AccountNotFoundException {
+		// local variable to store transaction currently being processed
+		Vector<Transaction> currentTransactions = null;
+		boolean userExited = false; // user has not chosen to exit
+		// loop while user has not chosen option to exit system
+		while (!userExited) {
+			// show main menu and get user selection
+			int mainMenuSelection = -1;
+			int wrongCount = 0;
+			try {
+				mainMenuSelection = displayMainMenu();
+			} catch (WrongInputException e) {
+				if (++wrongCount > MyInputHandler.MAX_WRONG_INPUT)
+					mainMenuSelection = EXIT;
+			}
+			// decide how to proceed based on user's menu selection
+			switch (mainMenuSelection) {
+			// user chose to perform one of three transaction types
+			case BALANCE_INQUIRY:
+			case WITHDRAWAL:
+			case TRANSFER:
+				currentTransactions = createTransactions(mainMenuSelection);
+				if (currentTransactions == null) {
+					userExited = false;
+					break;
+				}
+				// execute transaction
+				for (Transaction currentTransaction : currentTransactions)
+					try {
+						currentTransaction.execute();
+					} catch (CashNotesNotSupportedException e) {
+						// unimplemented
+						System.out
+								.println("Cash Notes Not Supported by this ATM");
+					}
+				if (mainMenuSelection == TRANSFER)
+					throw new CardOutException();
+				// auto finish the transaction if with WITHDRAWAL success (card
+				// out expection)
+				break;
+			case EXIT: // user chose to terminate session
+				userExited = true; // this ATM session should end
+				break;
+			default: // user did not enter an integer from 1-4
+				screen.displayMessageLine("\nYou did not enter a valid selection. Please try again.");
+				break;
+			} // end switch
+			MyStaticStuff.sleep();
+		} // end while
+	} // end method performTransactions
+	// display the main menu and return an input selection
+	private int displayMainMenu() throws WrongInputException {
+		screen.clear();
+		if (!Account.isMyBankAccount(ATM.currentAccountNumber))
+			screen.displayMessageLine(MyStaticStuff.getExtraChargeString());
+		String msg = "\nMain menu:";
+		msg += "\n1 - View my balance";
+		msg += "\n2 - Withdraw cash";
+		msg += "\n3 - Transfer funds";
+		msg += "\n4 - Exit";
+		msg += "\n\nEnter a choice: ";
+		return keypad.getInputInt(msg); // return user's selection
+	} // end method displayMainMenu
+	// return object of specified Transaction subclass
+	public Vector<Transaction> createTransactions(int type)
+			throws CardOutException, WrongInputException,
+			AccountNotFoundException {
+		System.out.println("ATM:createTransactions (type:" + type + ")");
+		// temporary Transaction variable
+		Vector<Transaction> result = new Vector<Transaction>();
+		// determine which type of Transaction to create
+		switch (type) {
+		case BALANCE_INQUIRY: // create new BalanceInquiry transaction
+			result.add(new BalanceInquiry(this));
+			break;
+		case WITHDRAWAL: // create new Withdrawal transaction
+			result.add(new Withdrawal(this));
+			break;
+		case TRANSFER: // create new Deposit transaction
+			result = Transfer.transfer(this);
+			break;
+		} // end switch
+		return result; // return the newly created object
+	} // end method createTransaction
+	/** Skipped featured (will be added in GUI) **/
+	// instruct user to take card
+	public void popCard() {
+		screen.displayMessageLine(MyStrings.TAKE_CARD);
+		MyStaticStuff.sleep();
+	}
+	// instruct user to take cash
+	public void popCash(Vector<CashCount> cashPop) throws CardOutException {
+		screen.displayMessageLine(MyStrings.TAKE_CASH + " "
+				+ MyStaticStuff.getCashValuesStrings(cashPop));
+		MyStaticStuff.sleep();
+		throw new CardOutException();
+	}
+	@SuppressWarnings("deprecation")
+	public void showBye() {
+		screen.displayMessageLine("\n" + MyStrings.BYE);
+		MyStaticStuff.sleep();
+	}
+	public static void readCard(Card card) {
+		System.out.println("reading inserted card:" + card.accountNumber);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_READCARD);
+		(new WaitReadCard(card)).start();
+	}
+	public static void checkCard(Card card) {
+		try {
+			ATM.currentAccountNumber = String.valueOf(Integer
+					.parseInt(card.accountNumber));
+			System.out.println("the card [" + ATM.currentAccountNumber
+					+ "] is valid");
+			LoginJPanel.showMeStatic();
+		} catch (NumberFormatException e) {
+			CardNotValidJPanel.showMe();
+		}
+	}
+	public static void popCardStatic() {
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_CARD_NOT_VALID);
+		CardSlotCardJPanel.popCardStatic();
+	}
+	/** private class **/
+	private static class WaitReadCard extends Thread {
+		private Card card;
+		public WaitReadCard(Card card) {
+			this.card = card;
+		}
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+			}
+			ATM.checkCard(card);
+		}
+	}
+	/** static connectors to instance methods **/
+	public static void initStatic() {
+		ATM.atm = new ATM();
+		// user is not authenticated to start/restart
+		ATM.userAuthenticated = false;
+		// no current account number to start/restart
+		ATM.currentAccountNumber = "0";
+		if (CardSlotCardJPanel.hasCard())
+			currentAccountNumber = CardInsideJPanel.getCard().accountNumber;
+		atm.init();
+	}
+} // end class ATM
+==> ./src/atm/core/UI.java <==
+package atm.core;
+import bank.BankDatabase;
+public class UI {
+	public BankDatabase bankDatabase;
+	public Screen screen;
+	public Keypad keypad;
+	public UI(Screen screen, BankDatabase bankDatabase, Keypad keypad) {
+		this.screen = screen;
+		this.bankDatabase = bankDatabase;
+		this.keypad = keypad;
+	}
+}
+==> ./src/atm/core/CashDispenser.java <==
+package atm.core;
+
+import java.util.Vector;
+
+import atm.exception.CashNotEnoughException;
+import atm.exception.CashNotesNotSupportedException;
+import atm.utils.CashCount;
+
+// CashDispenser.java
+// Represents the cash dispenser of the ATM
+
+public class CashDispenser {
+	// number of cash bills remaining
+	public static Vector<CashCount> cashCounts = new Vector<CashCount>();
+	public static Vector<CashCount> lastTransaction = null;
+
+	// no-argument CashDispenser constructor initializes count to default
+	public static void init() {
+		// set count attribute to default
+		cashCounts = new Vector<CashCount>();
+		cashCounts.add(new CashCount(100, 15));
+		cashCounts.add(new CashCount(500, 8));
+		cashCounts.add(new CashCount(1000, 2));
+	} // end CashDispenser constructor
+
+	/**
+	 * static methods
+	 * 
+	 * @throws CashNotesNotSupportedException
+	 **/
+	// simulates dispensing of specified amount of cash
+	public static Vector<CashCount> dispenseCash(int amountRemain)
+			throws CashNotEnoughException, CashNotesNotSupportedException {
+		Vector<CashCount> result = new Vector<CashCount>();
+		if (!isSufficientCashAvailable(amountRemain))
+			throw new CashNotEnoughException();
+		for (int i = cashCounts.size() - 1; i >= 0; i--) {
+			result.add(new CashCount(cashCounts.get(i).getValue(), 0));
+			while ((amountRemain >= cashCounts.get(i).getValue())
+					&& (cashCounts.get(i).getCount() > 0)) {
+				amountRemain -= cashCounts.get(i).getValue();
+				cashCounts.get(i).remove(1);
+				result.get(result.size() - 1).add(1);
+			}
+		}
+		if (amountRemain != 0)
+			throw new CashNotesNotSupportedException(amountRemain, result);
+		lastTransaction = result;
+		return result;
+	} // end method dispenseCash
+
+	public static void rollback() {
+		System.out.println("CashDispenser: rollback (cash not taken)");
+		if (lastTransaction == null)
+			return;
+		for (CashCount lastTransactionIterator : lastTransaction) {
+			for (CashCount cashCountIterator : cashCounts) {
+				if (lastTransactionIterator.getValue() == cashCountIterator
+						.getValue())
+					cashCountIterator.add(lastTransactionIterator.getCount());
+			}
+		}
+	}
+
+	// comfirm pop cash
+	public static void commit() {
+		System.out.println("CashDispenser: commit (confirm cash taken)");
+		lastTransaction = null;
+	}
+
+	public static Vector<CashCount> getCash() {
+		return lastTransaction;
+	}
+
+	// indicates whether cash dispenser can dispense desired amount
+	public static boolean isSufficientCashAvailable(double amountRequired) {
+		return (getAmount() >= amountRequired);
+	} // end method isSufficientCashAvailable
+
+	public static double getAmount() {
+		double amount = 0;
+		for (CashCount cashCount : cashCounts)
+			amount += cashCount.getValue() * cashCount.getCount();
+		return amount;
+	}
+
+} // end class CashDispenser
+
+==> ./src/atm/core/Keypad.java <==
+package atm.core;
+// Keypad.java
+// Represents the keypad of the ATM
+import java.util.Scanner; // program uses Scanner to obtain user input
+import atm.exception.WrongInputException;
+import atm.utils.MyInputHandler;
+import atm.utils.MyStaticStuff;
+public class Keypad {
+	private Screen screen;
+	private Scanner input; // reads data from the command line
+	// no-argument constructor initializes the Scanner
+	public Keypad(Screen screen) {
+		this.screen = screen;
+		input = new Scanner(System.in);
+	} // end no-argument Keypad constructor
+	// return an integer value entered by user
+	public int getInputInt(String msg) throws WrongInputException {
+		int result = 0;
+		int wrongCount = 0;
+		boolean ok;
+		do {
+			ok = true;
+			try {
+				screen.displayMessage(msg);
+				result = Integer.valueOf(input.next());
+			} catch (NumberFormatException e) {
+				screen.displayMessageLine("Please input an integer only.");
+				wrongCount++;
+				ok = false;
+				MyStaticStuff.sleep();
+			}
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
+		if (!ok)
+			throw new WrongInputException();
+		else
+			return result; // we don't assume that user enters an integer
+	} // end method getInput
+	// return an positive integer value entered by user
+	public int getInputIntPositive(String msg) throws WrongInputException {
+		int result = 0;
+		int wrongCount = 0;
+		boolean ok;
+		do {
+			ok = true;
+			try {
+				screen.displayMessage(msg);
+				result = Integer.valueOf(input.next());
+				if (result <= 0)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				screen.displayMessageLine("Please input an positive integer only.");
+				wrongCount++;
+				ok = false;
+				MyStaticStuff.sleep();
+			}
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
+		if (!ok)
+			throw new WrongInputException();
+		else
+			return result; // we don't assume that user enters an integer
+	} // end method getInputIntPositive
+	public double getInputDouble(String msg) throws WrongInputException {
+		double result = 0;
+		int wrongCount = 0;
+		boolean ok;
+		do {
+			ok = true;
+			try {
+				screen.displayMessage(msg);
+				result = Double.valueOf(input.next());
+			} catch (NumberFormatException e) {
+				System.out.println("Please input an real number only.");
+				wrongCount++;
+				ok = false;
+				MyStaticStuff.sleep();
+			}
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
+		if (!ok)
+			throw new WrongInputException();
+		else
+			return result;
+	}
+	public double getInputDoublePositive(String msg) throws WrongInputException {
+		double result = 0;
+		int wrongCount = 0;
+		boolean ok;
+		do {
+			ok = true;
+			try {
+				screen.displayMessage(msg);
+				result = Double.valueOf(input.next());
+				if (result <= 0)
+					throw new NumberFormatException();
+			} catch (NumberFormatException e) {
+				System.out.println("Please input a positive real number only.");
+				wrongCount++;
+				ok = false;
+				MyStaticStuff.sleep();
+			}
+		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
+		if (!ok)
+			throw new WrongInputException();
+		else
+			return result;
+	}
+} // end class Keypad
+==> ./src/atm/core/Screen.java <==
+package atm.core;
+import atm.utils.MyStrings;
+// Screen.java
+// Represents the screen of the ATM
+public class Screen {
+	public void clear() {
+		for (int i = 0; i < 5; i++)
+			displayMessageLine();
+	}
+	// displays a message without a carriage return
+	public void displayMessage(String message) {
+		System.out.print(message);
+	} // end method displayMessage
+	// display a message with a carriage return
+	public void displayMessageLine(String message) {
+		System.out.println(message);
+	}
+	public void displayMessageLine(int i) {
+		displayMessageLine(i + "");
+	}
+	public void displayMessage(double d) {
+		displayMessageLine(d + "");
+	}
+	public void displayMessageLine() {
+		displayMessageLine("");
+	} // end method displayMessageLine
+	// display a dollar amount
+	public void displayDollarAmount(double amount) {
+		displayMessage(Screen.getDollarAmount(amount));
+	} // end method displayDollarAmount
+	// display a dollar amount
+	public void displayDollarAmount(int amount) {
+		displayMessage(Screen.getDollarAmount(amount));
+	} // end method displayDollarAmount
+	// return a dollar amount as String
+	public static String getDollarAmount(double amount) {
+		return String.format(MyStrings.DOLLAR_SIGN + "%,.2f", amount);
+	} // end method displayDollarAmount
+	// return a dollar amount as String
+	public static String getDollarAmount(int amount) {
+		return MyStrings.DOLLAR_SIGN + amount;
+	} // end method displayDollarAmount
+} // end class Screen
+==> ./src/atm/gui/MyGUISettings.java <==
+package atm.gui;
+import java.awt.Color;
+import java.awt.Font;
+public class MyGUISettings {
+	public static int MONITOR_TOP_MARGIN = 75;
+	public static int MONITOR_FRAME_WIDTH = 600;
+	public static int MONITOR_FRAME_HEIGHT = 400;
+	public static int VIRTUAL_SLOTS_FRAME_WIDTH = 400;
+	public static int VIRTUAL_SLOTS_FRAME_HEIGHT = 300;
+	public static int SIDE_BUTTON_MARGIN = 75;
+	public static int SIDE_BUTTON_SIZE = 50;
+	public static int CARD_IMAGE_WIDTH = 128;
+	public static int CARD_IMAGE_HEIGHT = 64;
+	public static int FUNCTION_BUTTON_WIDTH = 64;
+	public static int FUNCTION_BUTTON_HEIGHT = 32;
+	public static Font getFont(int fontSize) {
+		return new Font("Arial", Font.PLAIN, fontSize);
+	}
+	public static Font getBoldFont(int fontSize) {
+		return new Font("Arial", Font.BOLD, fontSize);
+	}
+	public static Color getATMScreenBackGroundColor() {
+		return new Color(135, 206, 250);
+	}
+	public static Color getATMShellColor() {
+		return new Color(128, 128, 128);
+	}
+}
+==> ./src/atm/gui/monitor/MonitorJFrame.java <==
+package atm.gui.monitor;
+import javax.swing.JFrame;
+import atm.gui.MyGUISettings;
+import atm.gui.monitor.mainscreen.CashNotEnoughJPanel;
+import atm.gui.monitor.mainscreen.MainMenuJPanel;
+import atm.gui.monitor.mainscreen.MainScreenCardJPanel;
+import atm.gui.monitor.mainscreen.TransferJPanel;
+import atm.gui.monitor.mainscreen.ViewBalanceJPanel;
+import atm.gui.monitor.mainscreen.WithDrawalJPanel;
+import atm.gui.monitor.sidebuttons.LeftSideButtonsJPanel;
+import atm.gui.monitor.sidebuttons.RightSideButtonsJPanel;
+import atm.gui.virtualslots.cardslot.CardInsideJPanel;
+import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
+import java.awt.BorderLayout;
+import java.net.MalformedURLException;
+public class MonitorJFrame extends JFrame {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private LeftSideButtonsJPanel leftSideButtonsJPanel;
+	private RightSideButtonsJPanel rightSideButtonsJPanel;
+	private MainScreenCardJPanel mainScreenJPanel;
+	public static String STATE = "";
+	public MonitorJFrame() throws MalformedURLException {
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setTitle("ATM Monitor");
+		setVisible(false);
+		setResizable(false);
+		getContentPane().setLayout(new BorderLayout(0, 0));
+		leftSideButtonsJPanel = new LeftSideButtonsJPanel();
+		getContentPane().add(leftSideButtonsJPanel, BorderLayout.WEST);
+		rightSideButtonsJPanel = new RightSideButtonsJPanel();
+		getContentPane().add(rightSideButtonsJPanel, BorderLayout.EAST);
+		mainScreenJPanel = new MainScreenCardJPanel();
+		getContentPane().add(mainScreenJPanel, BorderLayout.CENTER);
+		mainScreenJPanel.setBackground(MyGUISettings
+				.getATMScreenBackGroundColor());
+	}
+	public void calcBounds(int w, int h, int s) {
+		setVisible(true);
+		setBounds(10, 10, w + s * 2, h);
+	}
+	@Override
+	public void dispose() {
+		super.dispose();
+	}
+	public static void sideButtonClick(String command) {
+		System.out.println("Side button clicked: " + command);
+		switch (STATE) {
+		case MainScreenCardJPanel.STRING_MAIN_MENU:
+			System.out.println("MainScreenCardJPanel.STRING_MAIN_MENU:");
+			switch (command) {
+			case MainScreenCardJPanel.STRING_VIEW_BALANCE:
+				ViewBalanceJPanel.showMeStatic();
+				break;
+			case MainScreenCardJPanel.STRING_TAKE_CARD:
+				CardSlotCardJPanel.popCardStatic();
+				break;
+			case MainScreenCardJPanel.STRING_WITHDRAWAL:
+				WithDrawalJPanel.showMeStatic();
+				break;
+			case MainScreenCardJPanel.STRING_TRANSFER:
+				TransferJPanel.showMeStatic();
+				break;
+			}
+			break;
+		case MainScreenCardJPanel.STRING_VIEW_BALANCE:
+			switch (command) {
+			case ViewBalanceJPanel.STRING_MAIN_MENU:
+				MainMenuJPanel.showMe();
+				break;
+			case ViewBalanceJPanel.STRING_TAKE_CARD:
+				CardSlotCardJPanel.popCardStatic();
+				break;
+			}
+			break;
+		case MainScreenCardJPanel.STRING_WITHDRAWAL:
+			switch (command) {
+			case WithDrawalJPanel.STRING_MAIN_MENU:
+				MainMenuJPanel.showMe();
+				break;
+			case WithDrawalJPanel.STRING_TAKE_CARD:
+				CardSlotCardJPanel.popCardStatic();
+				break;
+			default:
+				WithDrawalJPanel.sideButtonClickStatic(command);
+				break;
+			}
+		case MainScreenCardJPanel.STRING_CASH_NOT_ENOUGH:
+			switch (command) {
+			case CashNotEnoughJPanel.STRING_MAIN_MENU:
+				MainMenuJPanel.showMe();
+				break;
+			case CashNotEnoughJPanel.STRING_TAKE_CARD:
+				CardSlotCardJPanel.popCardStatic();
+				break;
+			}
+		case MainScreenCardJPanel.STRING_TRANSFER: {
+		}
+		default:
+			break;
+		}
+	}
+	public static void returnButtonClick() {
+		if (!CardInsideJPanel.hasCard())
+			return;
+		switch (STATE) {
+		case MainScreenCardJPanel.STRING_MAIN_MENU:
+			CardSlotCardJPanel.popCardStatic();
+			break;
+		case MainScreenCardJPanel.STRING_VIEW_BALANCE:
+			MainMenuJPanel.showMe();
+			break;
+		case MainScreenCardJPanel.STRING_TRANSFER:
+			MainMenuJPanel.showMe();
+			break;
+		default:
+			CardSlotCardJPanel.popCardStatic();
+			break;
+		}
+	}
+}
+==> ./src/atm/gui/monitor/sidebuttons/SideButtons.java <==
+package atm.gui.monitor.sidebuttons;
+import java.awt.Image;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.swing.ImageIcon;
+import atm.gui.MyGUISettings;
+import atm.gui.monitor.MonitorJFrame;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote;
+import atm.utils.MyURLs;
+public class SideButtons implements CashNote {
+	public static ImageIcon triangle_point_left_imageIcon;
+	public static ImageIcon triangle_point_right_imageIcon;
+	public static String[] commands = new String[8];
+	public static void init() throws MalformedURLException {
+		triangle_point_right_imageIcon = new ImageIcon(new ImageIcon(new URL(
+				MyURLs.IMAGE_TRIANGLE_POINT_RIGHT)).getImage()
+				.getScaledInstance(MyGUISettings.SIDE_BUTTON_SIZE,
+						MyGUISettings.SIDE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+		triangle_point_left_imageIcon = new ImageIcon(new ImageIcon(new URL(
+				MyURLs.IMAGE_TRIANGLE_POINT_LEFT)).getImage()
+				.getScaledInstance(MyGUISettings.SIDE_BUTTON_SIZE,
+						MyGUISettings.SIDE_BUTTON_SIZE, Image.SCALE_SMOOTH));
+	}
+	public static void click(int id) {
+		MonitorJFrame.sideButtonClick(commands[id - 1]);
+	}
+	@Override
+	public void fetchImage() throws IOException {
+		System.out.println("fetching images for layout");
+		init();
+	}
+}
+==> ./src/atm/gui/monitor/sidebuttons/LeftSideButtonsJPanel.java <==
+package atm.gui.monitor.sidebuttons;
+import java.awt.GridLayout;
+import java.util.Vector;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import atm.gui.MyGUISettings;
+import javax.swing.BoxLayout;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.Box;
+public class LeftSideButtonsJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	public Vector<JButton> buttons;
+	public LeftSideButtonsJPanel() {
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setBackground(MyGUISettings.getATMShellColor());
+		Component topVerticalStrut = Box.createVerticalStrut(75);
+		add(topVerticalStrut);
+		JPanel centerPanel = new JPanel();
+		add(centerPanel);
+		centerPanel.setLayout(new GridLayout(4, 1, 0, 0));
+		centerPanel.setBackground(MyGUISettings.getATMShellColor());
+		Component bottomVerticalStrut = Box.createVerticalStrut(25);
+		add(bottomVerticalStrut);
+		buttons = new Vector<JButton>();
+		for (int i = 0; i < 4; i++) {
+			JButton button = new JButton(SideButtons.triangle_point_right_imageIcon);
+			buttons.add(button);
+			button.addActionListener(getActionListener(i));
+			centerPanel.add(button);
+		}
+	}
+	private ActionListener getActionListener(final int id) {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SideButtons.click(id * 2 + 1);
+			}
+		};
+	}
+}
+==> ./src/atm/gui/monitor/sidebuttons/RightSideButtonsJPanel.java <==
+package atm.gui.monitor.sidebuttons;
+import java.awt.GridLayout;
+import java.util.Vector;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import atm.gui.MyGUISettings;
+import javax.swing.BoxLayout;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.Box;
+public class RightSideButtonsJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	public Vector<JButton> buttons;
+	public RightSideButtonsJPanel() {
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setBackground(MyGUISettings.getATMShellColor());
+		Component topVerticalStrut = Box.createVerticalStrut(75);
+		add(topVerticalStrut);
+		JPanel centerPanel = new JPanel();
+		add(centerPanel);
+		centerPanel.setLayout(new GridLayout(4, 1, 0, 0));
+		centerPanel.setBackground(MyGUISettings.getATMShellColor());
+		Component bottomVerticalStrut = Box.createVerticalStrut(25);
+		add(bottomVerticalStrut);
+		buttons = new Vector<JButton>();
+		for (int i = 0; i < 4; i++) {
+			JButton button = new JButton(SideButtons.triangle_point_left_imageIcon);
+			buttons.add(button);
+			centerPanel.add(button);
+			button.addActionListener(getActionListener(i));
+		}
+	}
+	private ActionListener getActionListener(final int id) {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SideButtons.click((id + 1) * 2);
+			}
+		};
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/ReadCardJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import atm.gui.MyGUISettings;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import java.awt.Component;
+public class ReadCardJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	/** Create the panel.*/
+	public ReadCardJPanel() {
+		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		Component glue = Box.createHorizontalGlue();
+		add(glue);
+		JLabel label = new JLabel("Reading Your Card...");
+		add(label);
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		label.setFont(MyGUISettings.getFont(26));
+		Component glue_1 = Box.createHorizontalGlue();
+		add(glue_1);
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/MainScreenCardJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import java.util.Vector;
+import java.awt.Component;
+import myutils.gui.cardlayout.AbstractCardJPanel;
+import atm.gui.MyGUISettings;
+import atm.gui.monitor.MonitorJFrame;
+public class MainScreenCardJPanel extends AbstractCardJPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<MainScreenCardJPanel> contents = new Vector<MainScreenCardJPanel>();
+	public static final String STRING_WELCOME = "Welcome";
+	public static final String STRING_READCARD = "Read Card";
+	public static final String STRING_CARD_NOT_VALID = "Card Not Valid";
+	public static final String STRING_LOGIN = "Login";
+	public static final String STRING_MAIN_MENU = "Main Menu";
+	public static final String STRING_VIEW_BALANCE = MainMenuJPanel.STRING_VIEW_BALANCE;
+	public static final String STRING_TAKE_CARD = "Take Card";
+	public static final String STRING_BYE = "Bye";
+	public static final String STRING_MAX_WRONG_TRY = "Max Wrong Try";
+	public static final String STRING_WITHDRAWAL = MainMenuJPanel.STRING_WITHDRAW_CASH;
+	public static final String STRING_TRANSFER = MainMenuJPanel.STRING_TRANSFER_FUNDS;
+	public static final String STRING_TAKE_CASH = "Take Cash";
+	public static final String STRING_OVERDRAWN = "Overdrawn";
+	public static final String STRING_CASH_NOT_ENOUGH = "Cash Not Enough";
+	public static final String STRING_TRANSFER_RECEIVER_ACCOUNT_NOT_FOUND = "Transfer Receiver Account Not Found";
+	public static final String STRING_TRANSFER_SAME_ACCOUNT = "Transfer Same Account";
+	public static final String STRING_TRANSFER_SUCCESS = "Trasfer Success";
+	public static final String STRING_CASH_REQUIRED_NOT_SUPPORTED = "Cash Required Not Supported";
+	private ViewBalanceJPanel viewBalanceJPanel;
+	public MainScreenCardJPanel() {
+		super();
+		contents.add(this);
+	}
+	@Override
+	protected void myInit() {
+		addToCards(new WelcomeJPanel(), STRING_WELCOME);
+		addToCards(new ReadCardJPanel(), STRING_READCARD);
+		addToCards(new CardNotValidJPanel(), STRING_CARD_NOT_VALID);
+		addToCards(new LoginJPanel(), STRING_LOGIN);
+		addToCards(new MainMenuJPanel(), STRING_MAIN_MENU);
+		viewBalanceJPanel = new ViewBalanceJPanel();
+		addToCards(new MaxWrongTryJPanel(), STRING_MAX_WRONG_TRY);
+		addToCards(new TakeCardJPanel(), STRING_TAKE_CARD);
+		addToCards(new ByeJPanel(), STRING_BYE);
+		addToCards(new WithDrawalJPanel(), STRING_WITHDRAWAL);
+		addToCards(new TransferJPanel(), STRING_TRANSFER);
+		addToCards(new TakeCashJPanel(), STRING_TAKE_CASH);
+		addToCards(new OverdrawnJPanel(), STRING_OVERDRAWN);
+		addToCards(new CashNotEnoughJPanel(), STRING_CASH_NOT_ENOUGH);
+		addToCards(new TransferReceiverAccountNotFoundJPanel(),
+				STRING_TRANSFER_RECEIVER_ACCOUNT_NOT_FOUND);
+		addToCards(new TransferSameAccountJPanel(),
+				STRING_TRANSFER_SAME_ACCOUNT);
+		addToCards(new TransferSuccessJPanel(), STRING_TRANSFER_SUCCESS);
+		addToCards(new CashRequiredNotSupportedJPanel(),
+				STRING_CASH_REQUIRED_NOT_SUPPORTED);
+		// switchToCard(STRING_WELCOME);
+		WelcomeJPanel.showMeStatic();
+	}
+	public void renewViewBalanceJPanel() {
+		cardLayout.removeLayoutComponent(viewBalanceJPanel);
+		viewBalanceJPanel = new ViewBalanceJPanel();
+		addToCards(viewBalanceJPanel, STRING_VIEW_BALANCE);
+		viewBalanceJPanel.loadinfo();
+	}
+	@Override
+	public void switchToCard(String label) {
+		if (label.equals(STRING_VIEW_BALANCE))
+			renewViewBalanceJPanel();
+		MonitorJFrame.STATE = label;
+		super.switchToCard(label);
+	}
+	/** static connector to instance stuff **/
+	public static void switchToCardStatic(String label) {
+		for (MainScreenCardJPanel content : contents)
+			content.switchToCard(label);
+	}
+	@Override
+	public void addToCards(Component component, String label) {
+		super.addToCards(component, label);
+		component.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/AvailableCashNotesJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import java.util.Vector;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import atm.core.CashDispenser;
+import atm.gui.MyGUISettings;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote100;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote1000;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote500;
+import atm.utils.CashCount;
+import webs.layout.WrapLayout;
+public class AvailableCashNotesJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<AvailableCashNotesJPanel> contents = new Vector<AvailableCashNotesJPanel>();
+	private JLabel label;
+	Vector<JLabel> cashNoteJLabels;
+	public AvailableCashNotesJPanel() {
+		contents.add(this);
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		// setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setLayout(new WrapLayout());
+		label = new JLabel();
+		add(label);
+		cashNoteJLabels = new Vector<JLabel>();
+		myUpdate();
+	}
+	public void myUpdate() {
+		cashNoteJLabels.removeAllElements();
+		for (CashCount cashCount : CashDispenser.cashCounts) {
+			if (cashCount.getCount() > 0) {
+				switch (cashCount.getValue()) {
+				case 100:
+					cashNoteJLabels.add(CashNote100.jLabel);
+					break;
+				case 500:
+					cashNoteJLabels.add(CashNote500.jLabel);
+					break;
+				case 1000:
+					cashNoteJLabels.add(CashNote1000.jLabel);
+					break;
+				}
+			}
+		}
+		if (cashNoteJLabels.size() == 0) {
+			label.setText("This ATM does not provide any cash notes");
+		} else {
+			label.setText("This ATM provide the following types of cash note");
+		}
+		// label.setFont(MyGUISettings.getFont(26));
+		label.setFont(MyGUISettings.getBoldFont(24));
+		removeAll();
+		add(label);
+		for (JLabel cashNoteJLabel : cashNoteJLabels)
+			add(cashNoteJLabel);
+	}
+	public static void myUpdateStatic() {
+		for (AvailableCashNotesJPanel cashAvailableJPanel : contents) {
+			cashAvailableJPanel.myUpdate();
+		}
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/ViewBalanceJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import javax.security.auth.login.AccountNotFoundException;
+import javax.swing.JPanel;
+import atm.core.ATM;
+import atm.exception.CardOutException;
+import atm.exception.CashNotesNotSupportedException;
+import atm.exception.WrongInputException;
+import atm.gui.MyGUISettings;
+import atm.gui.monitor.MonitorJFrame;
+import atm.gui.monitor.sidebuttons.SideButtons;
+import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
+import atm.utils.MyImages;
+import bank.operation.Transaction;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Button;
+import java.awt.Font;
+import java.awt.Component;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
+import java.awt.BorderLayout;
+import java.util.ConcurrentModificationException;
+import java.util.Vector;
+public class ViewBalanceJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<ViewBalanceJPanel> contents = new Vector<ViewBalanceJPanel>();
+	public static final String STRING_MAIN_MENU = "Main Menu";
+	public static final String STRING_TAKE_CARD = "Take Card";
+	public static final String[] commands = { "", "", "", "", STRING_MAIN_MENU,
+			STRING_TAKE_CARD, STRING_MAIN_MENU, STRING_TAKE_CARD };
+	GUIPrinter guiPrinter;
+	private JTextArea text;
+	public ViewBalanceJPanel() {
+		contents.add(this);
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		JPanel topPanel = new JPanel();
+		add(topPanel);
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+		JLabel label = new JLabel(MyImages.viewBalance);
+		topPanel.add(label);
+		label.setAlignmentX(0.5f);
+		JPanel contentPanel = new JPanel();
+		contentPanel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		add(contentPanel);
+		contentPanel.setLayout(new GridLayout(2, 1, 0, 0));
+		JPanel infoPanel1 = new JPanel();
+		contentPanel.add(infoPanel1);
+		infoPanel1.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		infoPanel1.setLayout(new BorderLayout(0, 0));
+		text = new JTextArea();
+		infoPanel1.add(text);
+		text.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		text.setFont(MyGUISettings.getFont(24));
+		text.setSize(400, 150);
+		infoPanel1.setSize(400, 150);
+		text.setPreferredSize(new Dimension(400, 150));
+		infoPanel1.setPreferredSize(new Dimension(40, 150));
+		JPanel strucPanel = new JPanel();
+		contentPanel.add(strucPanel);
+		strucPanel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		strucPanel.setLayout(new GridLayout(2, 1, 0, 0));
+		JPanel menuPanel1 = new JPanel();
+		strucPanel.add(menuPanel1);
+		menuPanel1.setLayout(new GridLayout(1, 2, 0, 0));
+		menuPanel1.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		Button button_1 = new Button(STRING_MAIN_MENU);
+		menuPanel1.add(button_1);
+		button_1.setFont(new Font("Arial", Font.PLAIN, 26));
+		button_1.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		Button button_2 = new Button(STRING_TAKE_CARD);
+		menuPanel1.add(button_2);
+		button_2.setFont(new Font("Arial", Font.PLAIN, 26));
+		button_2.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		JPanel menuPanel2 = new JPanel();
+		strucPanel.add(menuPanel2);
+		menuPanel2.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		menuPanel2.setLayout(new GridLayout(1, 2, 0, 0));
+		Component verticalStrut_1 = Box.createVerticalStrut(25);
+		add(verticalStrut_1);
+		guiPrinter = new GUIPrinter(text);
+	}
+	public void loadinfo() {
+		text.setText("");
+		try {
+			Vector<Transaction> currentTransactions;
+			currentTransactions = ATM.getATM().createTransactions(
+					ATM.BALANCE_INQUIRY);
+			if (currentTransactions == null) {
+				MainMenuJPanel.showMe();
+			}
+			// execute transaction
+			guiPrinter.start();
+			for (Transaction currentTransaction : currentTransactions)
+				currentTransaction.execute();
+		} catch (AccountNotFoundException e) {
+			CardNotValidJPanel.showMe();
+		} catch (CardOutException e) {
+			CardSlotCardJPanel.popCardStatic();
+		} catch (WrongInputException e) {
+			MaxWrongTryJPanel.showMe();
+		} catch (CashNotesNotSupportedException e) {
+			// impossible
+		}
+		guiPrinter.stop();
+	}
+	private void showMe() {
+		loadinfo();
+		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_VIEW_BALANCE;
+		SideButtons.commands = ViewBalanceJPanel.commands;
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_VIEW_BALANCE);
+	}
+	public static void showMeStatic() {
+		try {
+			// contents.removeAllElements();
+			// new ViewBalanceJPanel();
+			for (ViewBalanceJPanel content : contents) {
+				content.showMe();
+			}
+		} catch (ConcurrentModificationException e) {
+			// this is expected to happen normally
+		}
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/TakeCardJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.BoxLayout;
+import java.awt.Component;
+import javax.swing.Box;
+import atm.gui.MyGUISettings;
+import atm.gui.monitor.sidebuttons.SideButtons;
+import myutils.Utils;
+public class TakeCardJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static JLabel codeLabel;
+	public static final String[] commands = { "", "", "", "", "", "", "", "" };
+	/** Create the panel.*/
+	public TakeCardJPanel() {
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		Component verticalGlue_1 = Box.createVerticalGlue();
+		add(verticalGlue_1);
+		JPanel panel = new JPanel();
+		add(panel);
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		JLabel lblPleaseTakeYour = new JLabel("Please Take your Card");
+		panel.add(lblPleaseTakeYour);
+		lblPleaseTakeYour.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblPleaseTakeYour.setFont(new Font("Arial", Font.PLAIN, 26));
+		codeLabel = new JLabel("Reference Code: ");
+		codeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel.add(codeLabel);
+		codeLabel.setFont(new Font("Arial", Font.PLAIN, 26));
+		Component verticalGlue = Box.createVerticalGlue();
+		add(verticalGlue);
+		genCode();
+	}
+	public static void genCode() {
+		codeLabel.setText("Reference Code: "
+				+ (1000 + Utils.random.nextInt(8000)));
+	}
+	public static void showMe() {	
+		SideButtons.commands = TakeCardJPanel.commands;
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CARD);
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/ByeJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import javax.swing.JPanel;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import atm.gui.MyGUISettings;
+import atm.utils.MyStrings;
+import java.awt.Component;
+import javax.swing.Box;
+public class ByeJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	public ByeJPanel() {
+		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		Component horizontalGlue = Box.createHorizontalGlue();
+		add(horizontalGlue);
+		JPanel panel = new JPanel();
+		add(panel);
+		panel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		JLabel lblNewLabel1 = new JLabel(MyStrings.BYE1);
+		lblNewLabel1.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel.add(lblNewLabel1);
+		lblNewLabel1.setFont(MyGUISettings.getFont(26));
+		JLabel lblNewLabel2 = new JLabel(MyStrings.BYE2);
+		lblNewLabel2.setAlignmentX(Component.CENTER_ALIGNMENT);
+		panel.add(lblNewLabel2);
+		lblNewLabel2.setFont(MyGUISettings.getFont(26));
+		Component horizontalGlue_1 = Box.createHorizontalGlue();
+		add(horizontalGlue_1);
+	}	
+	public static void showMe() {
+		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CARD);
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/LoginJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JPasswordField;
+import java.awt.Component;
+import javax.swing.Box;
+import java.awt.BorderLayout;
+import java.util.Vector;
+import atm.core.ATM;
+import atm.gui.MyGUISettings;
+import atm.gui.keypad.KeypadJFrame;
+public class LoginJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<LoginJPanel> contents = new Vector<LoginJPanel>();
+	private JPasswordField passwordField;
+	private JLabel lblWrongPassword;
+	public LoginJPanel() {
+		contents.add(this);
+		setLayout(new BorderLayout(0, 0));
+		Box horizontalBox = Box.createHorizontalBox();
+		horizontalBox.setAlignmentY(Component.CENTER_ALIGNMENT);
+		add(horizontalBox);
+		Component horizontalGlue = Box.createHorizontalGlue();
+		horizontalBox.add(horizontalGlue);
+		Box verticalBox = Box.createVerticalBox();
+		horizontalBox.add(verticalBox);
+		lblWrongPassword = new JLabel("Wrong PIN");
+		verticalBox.add(lblWrongPassword);
+		JLabel lblInputPassword = new JLabel("Please input the password");
+		verticalBox.add(lblInputPassword);
+		lblInputPassword.setFont(MyGUISettings.getFont(26));
+		Component horizontalGlue_1 = Box.createHorizontalGlue();
+		horizontalBox.add(horizontalGlue_1);
+		passwordField = new JPasswordField();
+		add(passwordField, BorderLayout.SOUTH);
+		passwordField.setFont(MyGUISettings.getFont(26));
+		passwordField
+				.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+	}
+	/** instance methods **/
+	public void showMe() {
+		lblWrongPassword.setVisible(false);
+		passwordField.setText("");
+		KeypadJFrame.switchTargetStatic(passwordField,
+				KeypadJFrame.STRING_MODE_PASSWORD);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_LOGIN);
+	}
+	public void showMeWrong(int wrongCount) {
+		lblWrongPassword.setText("Wrong PIN (" + wrongCount + ")");
+		lblWrongPassword.setVisible(true);
+		passwordField.setText("");
+		KeypadJFrame.switchTargetStatic(passwordField,
+				KeypadJFrame.STRING_MODE_PASSWORD);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_LOGIN);
+	}
+	/** static connectors to instance methods **/
+	public static void showMeStatic() {
+		ATM.initStatic();
+		for (LoginJPanel loginJPanel : contents) {
+			loginJPanel.showMe();
+		}
+	}
+	public static void showMeWrongStatic(int wrongCount) {
+		for (LoginJPanel loginJPanel : contents) {
+			loginJPanel.showMeWrong(wrongCount);
+		}
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/BannerJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import atm.gui.MyGUISettings;
+import atm.utils.MyImages;
+import javax.swing.BoxLayout;
+import java.awt.Component;
+public class BannerJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	public BannerJPanel() {
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		JLabel lblBanner = new JLabel(MyImages.banner);
+		lblBanner.setAlignmentY(Component.TOP_ALIGNMENT);
+		lblBanner.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(lblBanner);
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/CashNotEnoughJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import javax.security.auth.login.AccountNotFoundException;
+import javax.swing.JPanel;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import bank.BankDatabase;
+import atm.core.ATM;
+import atm.gui.MyGUISettings;
+import atm.gui.monitor.MonitorJFrame;
+import atm.gui.monitor.sidebuttons.SideButtons;
+import atm.utils.MyImages;
+import atm.utils.MyStrings;
+import java.awt.Button;
+import java.awt.Component;
+import java.awt.Font;
+import java.util.Vector;
+import javax.swing.Box;
+import java.awt.GridLayout;
+public class CashNotEnoughJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<CashNotEnoughJPanel> contents = new Vector<CashNotEnoughJPanel>();
+	public static final String STRING_MAIN_MENU = "Main Menu";
+	public static final String STRING_TAKE_CARD = "Take Card";
+	public static final String[] commands = { "", "", "", "", STRING_MAIN_MENU,
+			STRING_TAKE_CARD, "", "" };
+	public CashNotEnoughJPanel() {
+		contents.add(this);
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		JLabel label = new JLabel(MyImages.cashNotEnough);
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(label);
+		JPanel panel = new JPanel();
+		add(panel);
+		panel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		panel.setLayout(new GridLayout(4, 2, 0, 0));
+		for (String string : commands) {
+			Button button = new Button(string);
+			button.setFont(new Font("Arial", Font.PLAIN, 26));
+			panel.add(button);
+			button.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		}
+		Component verticalStrut = Box.createVerticalStrut(25);
+		add(verticalStrut);
+	}
+	public void myUpdate() throws AccountNotFoundException {
+		double overdrawnLimit = BankDatabase.getAccount(
+				ATM.getATM().getCurrentAccountNumber()).getOverdrawnLimit();
+		Vector<JLabel> overDrawnMessageLabels = MyStrings
+				.getOverDrawnMessageLabels(overdrawnLimit);
+		removeAll();
+		Component verticalGlue = Box.createVerticalGlue();
+		add(verticalGlue);
+		for (JLabel jLabel : overDrawnMessageLabels) {
+			add(jLabel);
+			jLabel.setFont(MyGUISettings.getFont(26));
+			jLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			Component verticalGlue_1 = Box.createVerticalGlue();
+			add(verticalGlue_1);
+		}
+	}
+	public void showMe() {
+		SideButtons.commands = WithDrawalJPanel.commands;
+		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_CASH_NOT_ENOUGH;
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_CASH_NOT_ENOUGH);
+	}
+	public static void showMeStatic() {
+		for (CashNotEnoughJPanel overdrawnExceptionJPanel : contents) {
+			overdrawnExceptionJPanel.showMe();
+		}
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/TakeCashJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import java.awt.Font;
+import webs.layout.CenterLayout;
+import atm.gui.MyGUISettings;
+import atm.gui.monitor.sidebuttons.SideButtons;
+import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
+public class TakeCashJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	public static final String[] commands = { "", "", "", "", "", "", "", "" };
+	/** Create the panel.*/
+	public TakeCashJPanel() {
+		// setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setLayout(new CenterLayout());
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		JLabel lblPleaseTakeYour = new JLabel("Please take your cash");
+		add(lblPleaseTakeYour);
+		// lblPleaseTakeYour.setAlignmentX(Component.CENTER_ALIGNMENT);
+		lblPleaseTakeYour.setFont(new Font("Arial", Font.PLAIN, 26));
+	}
+	public static void showMe() {
+		SideButtons.commands = TakeCashJPanel.commands;
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CASH);
+		CashDispenserJPanel.showMeStatic();
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/MaxWrongTryJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.BoxLayout;
+import java.awt.Component;
+import java.awt.Font;
+import javax.swing.Box;
+import atm.gui.MyGUISettings;
+import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
+public class MaxWrongTryJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	/** Create the panel.*/
+	public MaxWrongTryJPanel() {
+		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		Component horizontalGlue_1 = Box.createHorizontalGlue();
+		add(horizontalGlue_1);
+		Box verticalBox = Box.createVerticalBox();
+		verticalBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(verticalBox);
+		JLabel label = new JLabel("Too many wrong try");
+		label.setFont(new Font("Arial", Font.PLAIN, 26));
+		label.setAlignmentX(0.5f);
+		verticalBox.add(label);
+		JLabel label_1 = new JLabel("Please contact CC Bank (9876-5432)");
+		label_1.setFont(new Font("Arial", Font.PLAIN, 26));
+		label_1.setAlignmentX(0.5f);
+		verticalBox.add(label_1);
+		Component horizontalGlue = Box.createHorizontalGlue();
+		add(horizontalGlue);
+	}
+	public static void showMe() {
+		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_MAX_WRONG_TRY);
+		CardSlotCardJPanel.waitPopCardStatic();
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/OverdrawnJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import javax.security.auth.login.AccountNotFoundException;
+import javax.swing.JPanel;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import bank.BankDatabase;
+import atm.core.ATM;
+import atm.gui.MyGUISettings;
+import atm.utils.MyStrings;
+import java.awt.Component;
+import java.util.Vector;
+import javax.swing.Box;
+public class OverdrawnJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<OverdrawnJPanel> contents = new Vector<OverdrawnJPanel>();
+	public OverdrawnJPanel() {
+		contents.add(this);
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		Component verticalGlue = Box.createVerticalGlue();
+		add(verticalGlue);
+		JLabel label = new JLabel("Overdrawn: Loading...");
+		label.setFont(MyGUISettings.getFont(26));
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(label);
+		Component verticalGlue_1 = Box.createVerticalGlue();
+		add(verticalGlue_1);
+	}
+	public void myUpdate() throws AccountNotFoundException {
+		double overdrawnLimit = BankDatabase.getAccount(
+				ATM.getATM().getCurrentAccountNumber()).getOverdrawnLimit();
+		Vector<JLabel> overDrawnMessageLabels = MyStrings
+				.getOverDrawnMessageLabels(overdrawnLimit);
+		removeAll();
+		Component verticalGlue = Box.createVerticalGlue();
+		add(verticalGlue);
+		for (JLabel jLabel : overDrawnMessageLabels) {
+			add(jLabel);
+			jLabel.setFont(MyGUISettings.getFont(26));
+			jLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			Component verticalGlue_1 = Box.createVerticalGlue();
+			add(verticalGlue_1);
+		}
+	}
+	public void showMe(String parent) {
+		try {
+			myUpdate();
+			MainScreenCardJPanel
+					.switchToCardStatic(MainScreenCardJPanel.STRING_OVERDRAWN);
+			switch (parent) {
+			case MainScreenCardJPanel.STRING_WITHDRAWAL:
+				WithDrawalJPanel.waitReturnFromWrongStatic();
+				break;
+			case MainScreenCardJPanel.STRING_TRANSFER:
+				TransferJPanel.waitReturnFromWrongStatic();
+				break;
+			}
+		} catch (AccountNotFoundException e) {
+			CardNotValidJPanel.showMe();
+		}
+	}
+	public static void showMeStatic(String parent) {
+		for (OverdrawnJPanel overdrawnExceptionJPanel : contents) {
+			overdrawnExceptionJPanel.showMe(parent);
+		}
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/CardNotValidJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.BoxLayout;
+import java.awt.Component;
+import java.awt.Font;
+import javax.swing.Box;
+import atm.gui.MyGUISettings;
+import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
+public class CardNotValidJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	/** Create the panel.*/
+	public CardNotValidJPanel() {
+		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		Component horizontalGlue_1 = Box.createHorizontalGlue();
+		add(horizontalGlue_1);
+		Box verticalBox = Box.createVerticalBox();
+		verticalBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(verticalBox);
+		JLabel label = new JLabel("Your card is not identified");
+		label.setFont(new Font("Arial", Font.PLAIN, 26));
+		label.setAlignmentX(0.5f);
+		verticalBox.add(label);
+		JLabel label_1 = new JLabel("Please contact CC Bank (9876-5432)");
+		label_1.setFont(new Font("Arial", Font.PLAIN, 26));
+		label_1.setAlignmentX(0.5f);
+		verticalBox.add(label_1);
+		Component horizontalGlue = Box.createHorizontalGlue();
+		add(horizontalGlue);
+	}
+	public static void showMe() {
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_CARD_NOT_VALID);
+		CardSlotCardJPanel.waitPopCardStatic();
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/CashRequiredNotSupportedJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import java.awt.Component;
+import java.util.Vector;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import atm.gui.MyGUISettings;
+public class CashRequiredNotSupportedJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<CashRequiredNotSupportedJPanel> contents = new Vector<CashRequiredNotSupportedJPanel>();
+	public CashRequiredNotSupportedJPanel() {
+		contents.add(this);
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		Component verticalGlue = Box.createVerticalGlue();
+		add(verticalGlue);
+		JLabel label = new JLabel(
+				"Cash Notes required is not supported by this ATM");
+		label.setFont(MyGUISettings.getFont(26));
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(label);
+		Component verticalGlue_1 = Box.createVerticalGlue();
+		add(verticalGlue_1);
+	}
+	public static void showMe() {
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_CASH_REQUIRED_NOT_SUPPORTED);
+		WithDrawalJPanel.waitReturnFromWrongStatic();
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/TransferJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import javax.security.auth.login.AccountNotFoundException;
+import javax.swing.JPanel;
+import java.util.Vector;
+import javax.swing.BoxLayout;
+import java.awt.Component;
+import atm.core.ATM;
+import atm.exception.OverdrawnException;
+import atm.exception.TransferSameAccountException;
+import atm.gui.MyGUISettings;
+import atm.gui.keypad.KeypadJFrame;
+import atm.gui.monitor.MonitorJFrame;
+import atm.gui.monitor.sidebuttons.SideButtons;
+import atm.utils.MyInputHandler;
+import atm.utils.MyStaticStuff;
+import bank.operation.Transfer;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+public class TransferJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<TransferJPanel> contents = new Vector<TransferJPanel>();
+	public static final String STRING_VIEW_BALANCE = "View Balance";
+	public static final String STRING_WITHDRAW_CASH = "Withdraw Cash";
+	public static final String STRING_TRANSFER_FUNDS = "Transfer Funds";
+	public static final String STRING_TAKE_CARD = "Take Card";
+	public static final String[] commands = { "", "", STRING_VIEW_BALANCE,
+			STRING_WITHDRAW_CASH, STRING_TRANSFER_FUNDS, STRING_TAKE_CARD, "",
+			"" };
+	private int wrongTry;
+	private JTextField receiverAccountNumberTextField;
+	private JTextField amountTextField;
+	public TransferJPanel() {
+		contents.add(this);
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		JLabel lblExtraCharge = new JLabel(MyStaticStuff.getExtraChargeString());
+		lblExtraCharge.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(lblExtraCharge);
+		lblExtraCharge.setFont(MyGUISettings.getFont(18));
+		JLabel lblNewLabel = new JLabel("Receiver Account Number:");
+		lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(lblNewLabel);
+		lblNewLabel.setFont(MyGUISettings.getFont(26));
+		receiverAccountNumberTextField = new JTextField();
+		add(receiverAccountNumberTextField);
+		receiverAccountNumberTextField.setColumns(10);
+		receiverAccountNumberTextField.setBackground(MyGUISettings
+				.getATMScreenBackGroundColor());
+		JLabel lblNewLabel_1 = new JLabel("Amount to transfer:");
+		lblNewLabel_1.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(lblNewLabel_1);
+		lblNewLabel_1.setFont(MyGUISettings.getFont(26));
+		amountTextField = new JTextField();
+		add(amountTextField);
+		amountTextField.setColumns(10);
+		amountTextField.setBackground(MyGUISettings
+				.getATMScreenBackGroundColor());
+		wrongTry = 0;
+	}
+	/** instance methods **/
+	public void enterKeyPressed() {
+		System.out.println("enter");
+		switch (KeypadJFrame.getModeStatic()) {
+		case KeypadJFrame.STRING_MODE_ACCOUNTNUMBER:
+			System.out.println("next");
+			KeypadJFrame.switchTargetStatic(amountTextField,
+					KeypadJFrame.STRING_MODE_AMOUNT);
+			break;
+		case KeypadJFrame.STRING_MODE_AMOUNT:
+			System.out.println("try");
+			tryTransfer();
+			break;
+		}
+	}
+	private void tryTransfer() {
+		boolean transferSuccess = false;
+		try {
+			System.out.println("check Transfer");
+			double amount = Double.parseDouble(amountTextField.getText());
+			Transfer.transferGUI(ATM.getATM(),
+					receiverAccountNumberTextField.getText(), amount);
+			transferSuccess = true;
+		} catch (NumberFormatException e) {
+			System.out.println("not double?");
+			MainMenuJPanel.showMe();
+		} catch (AccountNotFoundException e) {
+			System.out.println("account not found");
+			TransferReceiverAccountNotFoundJPanel.showMeStatic();
+		} catch (TransferSameAccountException e) {
+			System.out.println("tranfer same account");
+			TransferSameAccountJPanel.showMeStatic();
+		} catch (OverdrawnException e) {
+			System.out.println("overdrawn");
+			OverdrawnJPanel.showMeStatic(MainScreenCardJPanel.STRING_TRANSFER);
+		}
+		if (transferSuccess) {
+			// transfer success
+			System.out.println("transfer success");
+			TransferSuccessJPanel.showMeStatic();
+		}
+	}
+	public void showMe() {
+		System.out.println("show transfer jpanel");
+		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_TRANSFER;
+		SideButtons.commands = TransferJPanel.commands;
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_TRANSFER);
+		receiverAccountNumberTextField.setText("");
+		amountTextField.setText("");
+		KeypadJFrame.switchTargetStatic(receiverAccountNumberTextField,
+				KeypadJFrame.STRING_MODE_ACCOUNTNUMBER);
+	}
+	public void showMeWrong() {
+		int oldWrongTry = wrongTry;
+		showMe();
+		wrongTry = oldWrongTry + 1;
+		if (wrongTry > MyInputHandler.MAX_WRONG_INPUT)
+			MaxWrongTryJPanel.showMe();
+	}
+	/** static connector to instance stuff **/
+	public static void showMeStatic() {
+		for (TransferJPanel content : contents) {
+			content.showMe();
+		}
+	}
+	public static void showMeWrongStatic() {
+		for (TransferJPanel content : contents) {
+			content.showMeWrong();
+		}
+	}
+	public static void enterKeyPressedStatic() {
+		for (TransferJPanel transferJPanel : contents) {
+			transferJPanel.enterKeyPressed();
+		}
+	}
+	/** static methods **/
+	public static void waitReturnFromWrongStatic() {
+		WaitReturnFromWrongThread returnFromWrongThread = new WaitReturnFromWrongThread();
+		returnFromWrongThread.start();
+	}
+	/** private class **/
+	private static class WaitReturnFromWrongThread extends Thread {
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+			}
+			showMeWrongStatic();
+		}
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/TransferSuccessJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import java.awt.Component;
+import java.util.Vector;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import atm.gui.MyGUISettings;
+public class TransferSuccessJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<TransferSuccessJPanel> contents = new Vector<TransferSuccessJPanel>();
+	public TransferSuccessJPanel() {
+		contents.add(this);
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		Component verticalGlue = Box.createVerticalGlue();
+		add(verticalGlue);
+		JLabel label = new JLabel("Transfer Success");
+		label.setFont(MyGUISettings.getFont(26));
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(label);
+		Component verticalGlue_1 = Box.createVerticalGlue();
+		add(verticalGlue_1);
+	}
+	public void showMe() {
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_TRANSFER_SUCCESS);
+		MainMenuJPanel.waitShowMeStatic();		
+	}
+	public static void showMeStatic() {
+		for (TransferSuccessJPanel content : contents) {
+			content.showMe();
+		}
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/MainMenuJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import javax.swing.JPanel;
+import java.awt.GridLayout;
+import java.util.Vector;
+import java.awt.Button;
+import javax.swing.BoxLayout;
+import java.awt.Component;
+import javax.swing.Box;
+import atm.core.ATM;
+import atm.gui.MyGUISettings;
+import atm.gui.keypad.KeypadJFrame;
+import atm.gui.monitor.MonitorJFrame;
+import atm.gui.monitor.sidebuttons.SideButtons;
+import java.awt.Font;
+public class MainMenuJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<MainMenuJPanel> contents = new Vector<MainMenuJPanel>();
+	public static final String STRING_VIEW_BALANCE = "View Balance";
+	public static final String STRING_WITHDRAW_CASH = "Withdraw Cash";
+	public static final String STRING_TRANSFER_FUNDS = "Transfer Funds";
+	public static final String STRING_TAKE_CARD = "Take Card";
+	public static final String[] commands = { "", "", STRING_VIEW_BALANCE,
+			STRING_WITHDRAW_CASH, STRING_TRANSFER_FUNDS, STRING_TAKE_CARD, "",
+			"" };
+	public MainMenuJPanel() {
+		contents.add(this);
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		Component verticalStrut_1 = Box.createVerticalStrut(75);
+		add(verticalStrut_1);
+		JPanel panel = new JPanel();
+		add(panel);
+		panel.setLayout(new GridLayout(4, 2, 0, 0));
+		panel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		for (String string : commands) {
+			Button button = new Button(string);
+			button.setFont(new Font("Arial", Font.PLAIN, 26));
+			panel.add(button);
+			button.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		}
+		Component verticalStrut = Box.createVerticalStrut(25);
+		add(verticalStrut);
+	}
+	public static void showMe() {
+		ATM.getATM().init();
+		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_MAIN_MENU;
+		SideButtons.commands = MainMenuJPanel.commands;
+		KeypadJFrame.switchModeStatic(KeypadJFrame.STRING_MODE_NULL);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_MAIN_MENU);
+	}
+	public static void waitShowMeStatic() {
+		WaitReturnThread waitReturnThread = new WaitReturnThread();
+		waitReturnThread.start();
+	}
+	/** private class **/
+	private static class WaitReturnThread extends Thread {
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+			}
+			showMe();
+		}
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/TransferReceiverAccountNotFoundJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import java.awt.Component;
+import java.util.Vector;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import atm.gui.MyGUISettings;
+public class TransferReceiverAccountNotFoundJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<TransferReceiverAccountNotFoundJPanel> contents = new Vector<TransferReceiverAccountNotFoundJPanel>();
+	public TransferReceiverAccountNotFoundJPanel() {
+		contents.add(this);
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		Component verticalGlue = Box.createVerticalGlue();
+		add(verticalGlue);
+		JLabel label = new JLabel("Receiver Account Not Found");
+		label.setFont(MyGUISettings.getFont(26));
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(label);
+		Component verticalGlue_1 = Box.createVerticalGlue();
+		add(verticalGlue_1);
+	}
+	public void showMe() {
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_TRANSFER_RECEIVER_ACCOUNT_NOT_FOUND);
+		TransferJPanel.waitReturnFromWrongStatic();
+	}
+	public static void showMeStatic() {
+		for (TransferReceiverAccountNotFoundJPanel content : contents) {
+			content.showMe();
+		}
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/ShowPopCashNotesJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import java.util.Vector;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import atm.gui.MyGUISettings;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote100;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote1000;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote500;
+import atm.utils.CashCount;
+import webs.layout.CircleLayout;
+public class ShowPopCashNotesJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<ShowPopCashNotesJPanel> contents = new Vector<ShowPopCashNotesJPanel>();
+	public ShowPopCashNotesJPanel() {
+		contents.add(this);
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		setLayout(new CircleLayout());
+	}
+	public void myUpdate(Vector<CashCount> popCashCounts) {
+		// reset layout (shown-part GUI)
+		removeAll();
+		for (CashCount cashCount : popCashCounts) {
+			if (cashCount.getCount() > 0) {
+				switch (cashCount.getValue()) {
+				case 100:
+					for (int i = 0; i < cashCount.getCount(); i++)
+						add(new JLabel(CashNote100.imageIcon));
+					break;
+				case 500:
+					for (int i = 0; i < cashCount.getCount(); i++)
+						add(new JLabel(CashNote500.imageIcon));
+					break;
+				case 1000:
+					for (int i = 0; i < cashCount.getCount(); i++)
+						add(new JLabel(CashNote1000.imageIcon));
+					break;
+				}
+			}
+		}
+	}
+	public static void myUpdateStatic(Vector<CashCount> popCashCounts) {
+		for (ShowPopCashNotesJPanel content : contents) {
+			content.myUpdate(popCashCounts);
+		}
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/WithDrawalJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import javax.security.auth.login.AccountNotFoundException;
+import javax.swing.JPanel;
+import java.awt.GridLayout;
+import java.util.Vector;
+import java.awt.Button;
+import javax.swing.BoxLayout;
+import java.awt.Component;
+import javax.swing.Box;
+import atm.core.ATM;
+import atm.core.CashDispenser;
+import atm.exception.CashNotEnoughException;
+import atm.exception.CashNotesNotSupportedException;
+import atm.exception.CashOutException;
+import atm.exception.OverdrawnException;
+import atm.gui.MyGUISettings;
+import atm.gui.keypad.KeypadJFrame;
+import atm.gui.monitor.MonitorJFrame;
+import atm.gui.monitor.sidebuttons.SideButtons;
+import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
+import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
+import atm.utils.MyImages;
+import atm.utils.MyInputHandler;
+import atm.utils.MyStaticStuff;
+import atm.utils.MyStrings;
+import bank.account.Account;
+import bank.operation.Withdrawal;
+import java.awt.Font;
+import javax.swing.JTextField;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.BorderLayout;
+import javax.swing.JLabel;
+public class WithDrawalJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<WithDrawalJPanel> contents = new Vector<WithDrawalJPanel>();
+	public static final String STRING_MAIN_MENU = "Main Menu";
+	public static final String STRING_TAKE_CARD = "Take Card";
+	public static final String[] commands = {
+			String.valueOf(MyStaticStuff.MenuCashValue[0]),
+			String.valueOf(MyStaticStuff.MenuCashValue[1]),
+			String.valueOf(MyStaticStuff.MenuCashValue[2]),
+			String.valueOf(MyStaticStuff.MenuCashValue[3]), STRING_MAIN_MENU,
+			STRING_TAKE_CARD, "", "" };
+	private JTextField textField;
+	private Withdrawal withdrawalOperation;
+	private int wrongTry;
+	private JPanel topPanel;
+	private Component verticalStrut;
+	private JLabel extraChargeLabel;
+	/** constructor **/
+	public WithDrawalJPanel() {
+		contents.add(this);
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		setLayout(new BorderLayout(0, 0));
+		JPanel strucPanel = new JPanel();
+		add(strucPanel);
+		strucPanel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		strucPanel.setLayout(new BoxLayout(strucPanel, BoxLayout.Y_AXIS));
+		topPanel = new JPanel();
+		strucPanel.add(topPanel);
+		topPanel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+		verticalStrut = Box.createVerticalStrut(75);
+		topPanel.add(verticalStrut);
+		extraChargeLabel = new JLabel(MyImages.extraCharge);
+		topPanel.add(extraChargeLabel);
+		JPanel contentPanel = new JPanel();
+		strucPanel.add(contentPanel);
+		contentPanel.setLayout(new GridLayout(4, 2, 0, 0));
+		contentPanel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		Box horizontalBox = Box.createHorizontalBox();
+		add(horizontalBox, BorderLayout.SOUTH);
+		JLabel lblNewLabel = new JLabel("HKD $ ");
+		horizontalBox.add(lblNewLabel);
+		textField = new JTextField("");
+		horizontalBox.add(textField);
+		textField.setPreferredSize(new Dimension(400, 25));
+		textField.setColumns(10);
+		textField.setBackground(new Color(135, 206, 250));
+		for (int i = 0; i < 4; i++) {
+			Button button = new Button(MyStrings.DOLLAR_SIGN + " "
+					+ commands[i]);
+			button.setFont(new Font("Arial", Font.PLAIN, 26));
+			contentPanel.add(button);
+			button.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		}
+		for (int i = 4; i < 8; i++) {
+			Button button = new Button(commands[i]);
+			button.setFont(new Font("Arial", Font.PLAIN, 26));
+			contentPanel.add(button);
+			button.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		}
+	}
+	/** instance methods **/
+	public void sideButtonClick(String command) {
+		textField.setText(command);
+		tryWithDrawal();
+	}
+	public void enterButtonClick() {
+		tryWithDrawal();
+	}
+	public void showMe() {
+		if (Account.isMyBankAccount(ATM.getATM().getCurrentAccountNumber())) {
+			topPanel.removeAll();
+			topPanel.add(verticalStrut);
+			verticalStrut.setVisible(true);
+			extraChargeLabel.setVisible(false);
+		} else {
+			topPanel.removeAll();
+			topPanel.add(extraChargeLabel);
+			verticalStrut.setVisible(false);
+			extraChargeLabel.setVisible(true);
+		}
+		wrongTry = 0;
+		textField.setText("");
+		withdrawalOperation = new Withdrawal(ATM.getATM());
+		ATM.getATM().init();
+		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_WITHDRAWAL;
+		SideButtons.commands = WithDrawalJPanel.commands;
+		KeypadJFrame.switchTargetStatic(textField,
+				KeypadJFrame.STRING_MODE_CASH_AMOUNT);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_WITHDRAWAL);
+	}
+	public void showMeWrong() {
+		int oldWrongTry = wrongTry;
+		CashDispenser.rollback();
+		showMe();
+		wrongTry = oldWrongTry + 1;
+		if (wrongTry > MyInputHandler.MAX_WRONG_INPUT)
+			MaxWrongTryJPanel.showMe();
+	}
+	public void tryWithDrawal() {
+		try {
+			withdrawalOperation.setAmount(textField.getText());
+			withdrawalOperation.executeGUI();
+			// if success it will throw cash out exception
+			// withdrawal failed
+			CashDispenser.rollback();
+		} catch (NumberFormatException e) {
+			CashDispenser.rollback();
+			System.out.println("Error! cash amount is not int?");
+			wrongTry++;
+			MainMenuJPanel.showMe();
+		} catch (AccountNotFoundException e) {
+			CashDispenser.rollback();
+			CardNotValidJPanel.showMe();
+		} catch (OverdrawnException e) {
+			CashDispenser.rollback();
+			OverdrawnJPanel
+					.showMeStatic(MainScreenCardJPanel.STRING_WITHDRAWAL);
+		} catch (CashNotEnoughException e) {
+			CashDispenser.rollback();
+			CashNotEnoughJPanel.showMeStatic();
+		} catch (CashOutException e) {
+			CashDispenserJPanel.setPopCashCountsStatic(e.getCashCounts());
+			CardSlotCardJPanel.popCardStatic();
+		} catch (CashNotesNotSupportedException e) {
+			CashRequiredNotSupportedJPanel.showMe();
+		}
+	}
+	/** static methods **/
+	public static void waitReturnFromWrongStatic() {
+		WaitReturnFromWrongThread returnFromWrongThread = new WaitReturnFromWrongThread();
+		returnFromWrongThread.start();
+	}
+	/** static connector to instance stuff **/
+	public static void sideButtonClickStatic(String command) {
+		for (WithDrawalJPanel withDrawalJPanel : contents) {
+			withDrawalJPanel.sideButtonClick(command);
+		}
+	}
+	public static void showMeStatic() {
+		for (WithDrawalJPanel withDrawalJPanel : contents) {
+			withDrawalJPanel.showMe();
+		}
+	}
+	public static void showMeWrongStatic() {
+		for (WithDrawalJPanel withDrawalJPanel : contents) {
+			withDrawalJPanel.showMeWrong();
+		}
+	}
+	public static void enterButtonClickStatic() {
+		for (WithDrawalJPanel withDrawalJPanel : contents) {
+			withDrawalJPanel.enterButtonClick();
+		}
+	}
+	/** private class **/
+	private static class WaitReturnFromWrongThread extends Thread {
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+			}
+			showMeWrongStatic();
+		}
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/TransferSameAccountJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import java.awt.Component;
+import java.util.Vector;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import atm.gui.MyGUISettings;
+import atm.utils.MyStrings;
+public class TransferSameAccountJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<TransferSameAccountJPanel> contents = new Vector<TransferSameAccountJPanel>();
+	public TransferSameAccountJPanel() {
+		contents.add(this);
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		Component verticalGlue = Box.createVerticalGlue();
+		add(verticalGlue);
+		JLabel label = new JLabel(MyStrings.TRANSFER_SAME_ACCOUNT);
+		label.setFont(MyGUISettings.getFont(26));
+		label.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(label);
+		Component verticalGlue_1 = Box.createVerticalGlue();
+		add(verticalGlue_1);
+	}
+	public void showMe() {
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_TRANSFER_SAME_ACCOUNT);
+		TransferJPanel.waitReturnFromWrongStatic();
+	}
+	public static void showMeStatic() {
+		for (TransferSameAccountJPanel content : contents) {
+			content.showMe();
+		}
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/GUIPrinter.java <==
+package atm.gui.monitor.mainscreen;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Vector;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+public class GUIPrinter extends OutputStream {
+	private static Vector<GUIPrinter> contents = new Vector<GUIPrinter>();
+	public JTextArea textArea;
+	private static PrintStream systemPrintStream = System.out;
+	public GUIPrinter(JTextArea textArea) {
+		contents.add(this);
+		this.textArea = textArea;
+	}
+	@Override
+	public void write(byte[] bytes, int offset, int length) throws IOException {
+		final String text = new String(bytes, offset, length);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				textArea.append(text);
+			}
+		});
+	}
+	@Override
+	public void write(int b) throws IOException {
+		write(new byte[] { (byte) b }, 0, 1);
+	}
+	public void start() {
+		for (GUIPrinter guiPrinter : contents) {
+			System.setOut(new PrintStream(guiPrinter));
+		}
+	}
+	public void stop() {
+		System.setOut(systemPrintStream);
+	}
+}
+==> ./src/atm/gui/monitor/mainscreen/WelcomeJPanel.java <==
+package atm.gui.monitor.mainscreen;
+import java.util.Vector;
+import javax.swing.JPanel;
+import javax.swing.BoxLayout;
+import atm.core.ATM;
+import atm.gui.MyGUISettings;
+import java.awt.Component;
+public class WelcomeJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<WelcomeJPanel> contents = new Vector<WelcomeJPanel>();
+	private BannerJPanel bannerJPanel;
+	private AvailableCashNotesJPanel availableCashNotesJPanel;
+	public WelcomeJPanel() {
+		contents.add(this);
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		bannerJPanel = new BannerJPanel();
+		bannerJPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(bannerJPanel);
+		availableCashNotesJPanel = new AvailableCashNotesJPanel();
+		add(availableCashNotesJPanel);
+	}
+	public void showMe() {
+		System.out.println("WelcomeJPanel.showMe()");
+		availableCashNotesJPanel.myUpdate();
+		ATM.initStatic();
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_WELCOME);
+	}
+	public static void showMeStatic() {
+		System.out.println("WelcomeJPanel.showMeStatic()");
+		for (WelcomeJPanel welcomeJPanel : contents) {
+			welcomeJPanel.showMe();
+		}
+	}
+}
+==> ./src/atm/gui/virtualslots/cashdispenser/CashDispenserJPanel.java <==
+package atm.gui.virtualslots.cashdispenser;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import webs.layout.WrapLayout;
+import atm.core.CashDispenser;
+import atm.gui.virtualslots.VirtualSlotsJFrame;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote100;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote1000;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote500;
+import atm.utils.CashCount;
+import atm.utils.MyStrings;
+import javax.swing.BoxLayout;
+import java.awt.Component;
+public class CashDispenserJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<CashDispenserJPanel> contents = new Vector<CashDispenserJPanel>();
+	private JButton takeCashJButton;
+	private JPanel cashPanel;
+	public static boolean hasCashToBePopped = false;
+	private Vector<CashCount> popCashCounts;
+	public CashDispenserJPanel() {
+		contents.add(this);
+		setLayout(new BorderLayout(0, 0));
+		JPanel northPanel = new JPanel();
+		add(northPanel, BorderLayout.NORTH);
+		northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.Y_AXIS));
+		takeCashJButton = new JButton("Take all cash");
+		takeCashJButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		northPanel.add(takeCashJButton);
+		takeCashJButton.setVisible(false);
+		takeCashJButton.addActionListener(getButtonActionListener());
+		//cashPanel = new JPanel(new CircleLayout());
+		cashPanel = new JPanel(new WrapLayout());
+		add(cashPanel, BorderLayout.CENTER);
+		cashPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+		cashPanel.setVisible(false);
+	}
+	private ActionListener getButtonActionListener() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("cash taken by user");
+				hasCashToBePopped = false;
+				CashDispenser.commit();
+				takeCashJButton.setVisible(false);
+				cashPanel.setVisible(false);
+				VirtualSlotsJFrame.myResetStatic();
+			}
+		};
+	}
+	public void setPopCashCounts(Vector<CashCount> popCashCounts) {
+		hasCashToBePopped = true;
+		this.popCashCounts = popCashCounts;
+	}
+	public void showMe() {
+		takeCashJButton.setVisible(true);
+		cashPanel.setVisible(true);
+		// reset contentpanel layout (shown-part GUI)
+		cashPanel.removeAll();
+		for (CashCount cashCount : popCashCounts) {
+			if (cashCount.getCount() > 0) {
+				switch (cashCount.getValue()) {
+				case 100:
+					for (int i = 0; i < cashCount.getCount(); i++) {
+						cashPanel.add(new JLabel(CashNote100.imageIcon));
+						System.out.println("popping " + MyStrings.DOLLAR_SIGN
+								+ " " + cashCount.getValue());
+					}
+					break;
+				case 500:
+					for (int i = 0; i < cashCount.getCount(); i++) {
+						cashPanel.add(new JLabel(CashNote500.imageIcon));
+						System.out.println("popping " + MyStrings.DOLLAR_SIGN
+								+ " " + cashCount.getValue());
+					}
+					break;
+				case 1000:
+					for (int i = 0; i < cashCount.getCount(); i++) {
+						cashPanel.add(new JLabel(CashNote1000.imageIcon));
+						System.out.println("popping " + MyStrings.DOLLAR_SIGN
+								+ " " + cashCount.getValue());
+					}
+					break;
+				}
+			}
+		}
+	}
+	/** static connector to instance stuff **/
+	public static void setPopCashCountsStatic(Vector<CashCount> popCashCounts) {
+		for (CashDispenserJPanel content : contents) {
+			content.setPopCashCounts(popCashCounts);
+		}
+	}
+	public static void showMeStatic() {
+		for (CashDispenserJPanel content : contents) {
+			content.showMe();
+		}
+	}
+}
+==> ./src/atm/gui/virtualslots/cashdispenser/notes/CashNote500.java <==
+package atm.gui.virtualslots.cashdispenser.notes;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import atm.utils.MyURLs;
+public class CashNote500 implements CashNote {
+	public static ImageIcon imageIcon;
+	public static JLabel jLabel;
+	public static int value;
+	public static void init() throws MalformedURLException {
+		imageIcon = new ImageIcon(new URL(MyURLs.IMAGE_NOTE500));
+		jLabel = new JLabel(imageIcon);
+		value = 500;
+	}
+	@Override
+	public void fetchImage() throws IOException {
+		System.out.println("fetching images of cash note 500");
+		init();
+	}
+}
+==> ./src/atm/gui/virtualslots/cashdispenser/notes/CashNote.java <==
+package atm.gui.virtualslots.cashdispenser.notes;
+import atm.utils.FetchImageNeeder;
+public interface CashNote extends FetchImageNeeder {
+}
+==> ./src/atm/gui/virtualslots/cashdispenser/notes/CashNote100.java <==
+package atm.gui.virtualslots.cashdispenser.notes;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import atm.utils.MyURLs;
+public class CashNote100 implements CashNote {
+	public static ImageIcon imageIcon;
+	public static JLabel jLabel;
+	public static int value;
+	public static void init() throws MalformedURLException {
+		imageIcon = new ImageIcon(new URL(MyURLs.IMAGE_NOTE100));
+		jLabel = new JLabel(imageIcon);
+		value = 100;
+	}
+	@Override
+	public void fetchImage() throws IOException {
+		System.out.println("fetching images of cash note 100");
+		init();
+	}
+}
+==> ./src/atm/gui/virtualslots/cashdispenser/notes/CashNote1000.java <==
+package atm.gui.virtualslots.cashdispenser.notes;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import atm.utils.MyURLs;
+public class CashNote1000 implements CashNote {
+	public static ImageIcon imageIcon;
+	public static JLabel jLabel;
+	public static int value;
+	public static void init() throws MalformedURLException {
+		imageIcon = new ImageIcon(new URL(MyURLs.IMAGE_NOTE1000));
+		jLabel = new JLabel(imageIcon);
+		value = 1000;
+	}
+	@Override
+	public void fetchImage() throws IOException {
+		System.out.println("fetching images of cash note 1000");
+		init();
+	}
+}
+==> ./src/atm/gui/virtualslots/VirtualSlotsJFrame.java <==
+package atm.gui.virtualslots;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
+import java.util.Vector;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import atm.gui.MyGUISettings;
+import atm.gui.monitor.mainscreen.WelcomeJPanel;
+import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
+import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
+public class VirtualSlotsJFrame extends JFrame {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<VirtualSlotsJFrame> contents = new Vector<VirtualSlotsJFrame>();
+	private CardSlotCardJPanel cardSlotCardJPanel;
+	private CashDispenserJPanel cashDispenserJPanel;
+	public VirtualSlotsJFrame() {
+		super("Virtual Slots");
+		contents.add(this);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setSize(400, 300);
+		getContentPane().setLayout(
+				new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+		// getContentPane().setLayout(new WrapLayout());
+		cardSlotCardJPanel = new CardSlotCardJPanel();
+		getContentPane().add(cardSlotCardJPanel);
+		cashDispenserJPanel = new CashDispenserJPanel();
+		getContentPane().add(cashDispenserJPanel);
+		myReset();
+	}
+	public void calcBounds() {
+		setVisible(true);
+		pack();
+		Rectangle client = new Rectangle(
+				MyGUISettings.VIRTUAL_SLOTS_FRAME_WIDTH,
+				MyGUISettings.VIRTUAL_SLOTS_FRAME_HEIGHT);
+		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getMaximumWindowBounds().getBounds();
+		int x = screen.width - client.width;
+		int y = 0;
+		setBounds(x, y, client.width, client.height);
+	}
+	public void calcBounds(float wRatio, float hRatio) {
+		setVisible(true);
+		pack();
+		Rectangle client = new Rectangle(
+				Math.round(MyGUISettings.VIRTUAL_SLOTS_FRAME_WIDTH * wRatio),
+				Math.round(MyGUISettings.VIRTUAL_SLOTS_FRAME_HEIGHT * hRatio));
+		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getMaximumWindowBounds().getBounds();
+		int x = screen.width - client.width;
+		int y = 0;
+		setBounds(x, y, client.width, client.height);
+	}
+	public void hideCardSlot() {
+		cardSlotCardJPanel.setVisible(false);
+		// calcBounds(1f, 2f);
+	}
+	public void myReset() {
+		cardSlotCardJPanel.setVisible(true);
+		cardSlotCardJPanel.switchToCard(CardSlotCardJPanel.STRING_SELECT_CARD);
+		WelcomeJPanel.showMeStatic();
+		calcBounds();
+	}
+	/** static connector to instance stuff **/
+	public static void myResetStatic() {
+		for (VirtualSlotsJFrame virtualSlotsJFrame : contents) {
+			virtualSlotsJFrame.myReset();
+		}
+	}
+	public static void hideCardSlotStatic() {
+		for (VirtualSlotsJFrame virtualSlotsJFrame : contents) {
+			virtualSlotsJFrame.hideCardSlot();
+		}
+	}
+}
+==> ./src/atm/gui/virtualslots/cardslot/Card.java <==
+package atm.gui.virtualslots.cardslot;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Vector;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import atm.gui.MyGUISettings;
+import atm.utils.MyURLs;
+import atm.utils.FetchImageNeeder;
+public class Card implements FetchImageNeeder {
+	private static Vector<Card> cards = new Vector<Card>();
+	public ImageIcon imageIconBright;
+	public ImageIcon imageIconDark;
+	public JButton buttonInsert;
+	public JButton buttonTake;
+	public JLabel labelDark;
+	public String accountNumber;
+	/** static instances **/
+	public static void init() throws MalformedURLException {
+		cards.add(new Card(MyURLs.IMAGE_CARD1, MyURLs.IMAGE_CARD1_DARK, "12356"));
+		cards.add(new Card(MyURLs.IMAGE_CARD2, MyURLs.IMAGE_CARD2_DARK, "12369"));
+		cards.add(new Card(MyURLs.IMAGE_CARD3, MyURLs.IMAGE_CARD3_DARK, "45678"));
+		cards.add(new Card(MyURLs.IMAGE_CARD4, MyURLs.IMAGE_CARD4_DARK, "E3545"));
+	}
+	public static Vector<Card> getCards() {
+		return cards;
+	}
+	public static ActionListener getInsertActionListener(final Card card) {
+		ActionListener insertCard = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CardSlotCardJPanel.insertCardStatic(card);
+			}
+		};
+		return insertCard;
+	}
+	public static ActionListener getTakeActionListener(final Card card) {
+		ActionListener insertCard = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CardSlotCardJPanel.takeCardStatic();
+			}
+		};
+		return insertCard;
+	}
+	/** constructor **/
+	public Card(String imageURLBright, String imageURLDark, String accountNumber)
+			throws MalformedURLException {
+		imageIconBright = new ImageIcon(new ImageIcon(new URL(imageURLBright))
+				.getImage().getScaledInstance(MyGUISettings.CARD_IMAGE_WIDTH,
+						MyGUISettings.CARD_IMAGE_HEIGHT, Image.SCALE_SMOOTH));
+		imageIconDark = new ImageIcon(new ImageIcon(new URL(imageURLDark))
+				.getImage().getScaledInstance(MyGUISettings.CARD_IMAGE_WIDTH,
+						MyGUISettings.CARD_IMAGE_HEIGHT, Image.SCALE_SMOOTH));
+		buttonInsert = new JButton(imageIconBright);
+		buttonInsert.addActionListener(getInsertActionListener(this));
+		buttonTake = new JButton(new ImageIcon(imageIconBright.getImage()));
+		buttonTake.addActionListener(getTakeActionListener(this));
+		labelDark = new JLabel(imageIconDark);
+		this.accountNumber = accountNumber;
+	}
+	@Deprecated
+	public Card() {		
+	}
+	@Override
+	public void fetchImage() throws IOException {
+		System.out.println("fetching images of cards");
+		init();
+	}
+}
+==> ./src/atm/gui/virtualslots/cardslot/SelectCardJPanel.java <==
+package atm.gui.virtualslots.cardslot;
+import javax.swing.JPanel;
+import webs.layout.CircleLayout;
+public class SelectCardJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	public SelectCardJPanel() {
+		setLayout(new CircleLayout());
+		for (Card card : Card.getCards())
+			add(card.buttonInsert);
+		setPreferredSize(getMinimumSize());
+	}
+	public void myUpdateUI() {
+		setPreferredSize(getMinimumSize());
+		updateUI();
+	}
+}
+==> ./src/atm/gui/virtualslots/cardslot/CardInsideJPanel.java <==
+package atm.gui.virtualslots.cardslot;
+import java.util.Vector;
+import javax.swing.JPanel;
+import atm.gui.virtualslots.VirtualSlotsJFrame;
+public class CardInsideJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<CardInsideJPanel> contents = new Vector<CardInsideJPanel>();
+	private static Card card = null;
+	/** constructor **/
+	public CardInsideJPanel() {
+		contents.add(this);
+		setPreferredSize(getMinimumSize());
+	}
+	/** static methods **/
+	public static boolean hasCard() {
+		return (card != null);
+	}
+	public static void removeCard() {
+		CardInsideJPanel.card = null;
+		VirtualSlotsJFrame.hideCardSlotStatic();
+	}
+	public static Card getCard() {
+		return card;
+	}
+	/** instance methods **/
+	public void insertCard(Card card) {
+		CardInsideJPanel.card = card;
+		removeAll();
+		add(card.labelDark);
+		card.labelDark.setVisible(true);
+		add(card.buttonTake);
+		card.buttonTake.setVisible(false);
+	}
+	public void popCard() {
+		card.labelDark.setVisible(false);
+		card.buttonTake.setVisible(true);
+	}
+	public void myUpdateUI() {
+		setPreferredSize(getMinimumSize());
+		updateUI();
+	}
+	/** static connector to instance stuff **/
+	public static void insertCardStatic(Card card) {
+		for (CardInsideJPanel cardInsideJPanel : contents)
+			cardInsideJPanel.insertCard(card);
+	}
+	public static void popCardStatic() {
+		for (CardInsideJPanel cardInsideJPanel : contents)
+			cardInsideJPanel.popCard();
+	}
+}
+==> ./src/atm/gui/virtualslots/cardslot/CardSlotCardJPanel.java <==
+package atm.gui.virtualslots.cardslot;
+import java.util.Vector;
+import atm.core.ATM;
+import atm.gui.monitor.mainscreen.MainScreenCardJPanel;
+import atm.gui.monitor.mainscreen.TakeCardJPanel;
+import atm.gui.monitor.mainscreen.TakeCashJPanel;
+import atm.gui.virtualslots.VirtualSlotsJFrame;
+import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
+import myutils.gui.cardlayout.AbstractCardJPanel;
+public class CardSlotCardJPanel extends AbstractCardJPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<CardSlotCardJPanel> contents = new Vector<CardSlotCardJPanel>();
+	public static final String STRING_SELECT_CARD = "Select Card";
+	public static final String STRING_CARD_INSIDE = "Card Inside";
+	public static final String STRING_EMPTY = "Empty";
+	public static String STATE = "";
+	private SelectCardJPanel selectCardJPanel;
+	private CardInsideJPanel cardInsideJPanel;
+	/** constructor **/
+	public CardSlotCardJPanel() {
+		contents.add(this);
+	}
+	@Override
+	protected void myInit() {
+		selectCardJPanel = new SelectCardJPanel();
+		cardInsideJPanel = new CardInsideJPanel();
+		addToCards(selectCardJPanel, STRING_SELECT_CARD);
+		addToCards(cardInsideJPanel, STRING_CARD_INSIDE);
+		addToCards(new EmptyJPanel(), STRING_EMPTY);
+		switchToCard(STRING_SELECT_CARD);
+	}
+	/** static methods **/
+	public static boolean hasCard() {
+		return CardInsideJPanel.hasCard();
+	}
+	/** instance methods **/
+	public void insertCard(Card card) {
+		CardInsideJPanel.insertCardStatic(card);
+		switchToCard(STRING_CARD_INSIDE);
+		ATM.readCard(card);
+	}
+	public void popCard() {
+		switchToCard(STRING_CARD_INSIDE);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CARD);
+		CardInsideJPanel.popCardStatic();
+	}
+	@Override
+	public void switchToCard(String label) {
+		STATE = label;
+		super.switchToCard(label);
+		System.out.println(STATE);
+		updateUI();
+		myUpdateUI();
+	}
+	public void waitPopCard() {
+		(new WaitPopCard()).start();
+	}
+	private void takeCard() {
+		System.out.println("card taken by user");
+		CardInsideJPanel.removeCard();
+		if (CashDispenserJPanel.hasCashToBePopped) {
+			System.out.println("going to pop cash");
+			switchToCardStatic(STRING_EMPTY);
+			TakeCashJPanel.showMe();
+		} else {
+			VirtualSlotsJFrame.myResetStatic();
+		}
+	}
+	public void myUpdateUI() {
+		if (selectCardJPanel != null)
+			selectCardJPanel.myUpdateUI();
+		if (cardInsideJPanel != null)
+			cardInsideJPanel.myUpdateUI();
+		setPreferredSize(getMinimumSize());
+		updateUI();
+	}
+	/** private class **/
+	private static class WaitPopCard extends Thread {
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+			}
+			CardSlotCardJPanel.popCardStatic();
+		}
+	}
+	/** static-instance connector **/
+	public static void switchToCardStatic(String label) {
+		for (CardSlotCardJPanel cardSlotCardJPanel : contents) {
+			cardSlotCardJPanel.switchToCard(label);
+		}
+	}
+	public static void insertCardStatic(Card card) {
+		for (CardSlotCardJPanel cardSlotCardJPanel : contents) {
+			cardSlotCardJPanel.insertCard(card);
+		}
+	}
+	public static void popCardStatic() {
+		if (!CardInsideJPanel.hasCard())
+			return;
+		TakeCardJPanel.showMe();		
+		for (CardSlotCardJPanel cardSlotCardJPanel : contents) {
+			cardSlotCardJPanel.popCard();
+		}		
+	}
+	public static void takeCardStatic() {
+		for (CardSlotCardJPanel cardSlotCardJPanel : contents) {
+			cardSlotCardJPanel.takeCard();
+		}
+	}
+	public static void waitPopCardStatic() {
+		for (CardSlotCardJPanel cardSlotCardJPanel : contents) {
+			cardSlotCardJPanel.waitPopCard();
+		}
+	}
+}
+==> ./src/atm/gui/virtualslots/cardslot/EmptyJPanel.java <==
+package atm.gui.virtualslots.cardslot;
+import javax.swing.JPanel;
+public class EmptyJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = 1L;
+	public EmptyJPanel() {		
+	}
+}
+==> ./src/atm/gui/ATMGUILauncher.java <==
+package atm.gui;
+import java.io.IOException;
+import java.util.Vector;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import atm.gui.keypad.KeyPadButtonIcons;
+import atm.gui.monitor.sidebuttons.SideButtons;
+import atm.gui.virtualslots.cardslot.Card;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote100;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote1000;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote500;
+import atm.utils.FetchImageRunnable;
+import atm.utils.MyImages;
+public class ATMGUILauncher {
+	JFrameManager frameManager;
+	public ATMGUILauncher() throws IOException {
+		System.out.println("fetching image in multi-thread mode");
+		fetchImages();
+		System.out.println("initializing GUI");
+		setLookAndFeel();
+		frameManager = new JFrameManager();
+		frameManager.start();
+	}
+	private void setLookAndFeel() {
+		String name = "";
+		try {
+			// name = "com.easynth.lookandfeel.EaSynthLookAndFeel";
+			// name="com.alee.laf.WebLookAndFeel";
+			UIManager.setLookAndFeel(name);
+			System.out.println("loading native system look and feel (" + name
+					+ ")");
+		} catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException | UnsupportedLookAndFeelException e) {
+			try {
+				name = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+				UIManager.setLookAndFeel(name);
+				System.out.println("loading native system look and feel ("
+						+ name + ")");
+			} catch (ClassNotFoundException | InstantiationException
+					| IllegalAccessException | UnsupportedLookAndFeelException e1) {
+				try {
+					name = UIManager.getSystemLookAndFeelClassName();
+					UIManager.setLookAndFeel(name);
+					System.out.println("loading native system look and feel ("
+							+ name + ")");
+				} catch (ClassNotFoundException | InstantiationException
+						| IllegalAccessException
+						| UnsupportedLookAndFeelException e2) {
+					System.out.println("loading cross platform look and feel ("
+							+ UIManager.getCrossPlatformLookAndFeelClassName()
+							+ ")");
+				}
+			}
+		}
+	}
+	/** Launch the application.*/
+	public void start() {
+		System.out.println();
+		System.out.println("showing GUI");
+		frameManager.start();
+	}
+	@SuppressWarnings("deprecation")
+	public void fetchImages() throws IOException {
+		// prepare
+		Vector<FetchImageRunnable> runnables = new Vector<FetchImageRunnable>();
+		Vector<Thread> threads = new Vector<Thread>();
+		runnables.add(new FetchImageRunnable(new Card()));
+		runnables.add(new FetchImageRunnable(new CashNote100()));
+		runnables.add(new FetchImageRunnable(new CashNote500()));
+		runnables.add(new FetchImageRunnable(new CashNote1000()));
+		runnables.add(new FetchImageRunnable(new KeyPadButtonIcons()));
+		runnables.add(new FetchImageRunnable(new SideButtons()));
+		runnables.add(new FetchImageRunnable(new MyImages()));
+		for (FetchImageRunnable fetchImageRunnable : runnables) {
+			threads.add(new Thread(fetchImageRunnable));
+		}
+		// start all downloading thread
+		for (Thread thread : threads) {
+			thread.start();
+		}
+		// wait all downloading thread finished
+		boolean allFinished;
+		long startTime = System.currentTimeMillis();
+		do {
+			allFinished = true;
+			for (FetchImageRunnable fetchImageRunnable : runnables) {
+				allFinished &= fetchImageRunnable.isFinished();
+			}
+			if (!allFinished) {
+				System.out.println("still downloading..."
+						+ (System.currentTimeMillis() - startTime) / 1000.0
+						+ " second(s) passed");
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// OS Level Error
+					System.out.println("OS Level Error");
+				}
+			}
+		} while (!allFinished);
+		System.out.println("finished download==>"
+				+ (System.currentTimeMillis() - startTime) / 1000.0
+				+ " second(s) passed");
+	}
+}
+==> ./src/atm/gui/JFrameManager.java <==
+package atm.gui;
+import java.net.MalformedURLException;
+import atm.gui.keypad.KeypadJFrame;
+import atm.gui.monitor.MonitorJFrame;
+import atm.gui.virtualslots.VirtualSlotsJFrame;
+public class JFrameManager {
+	private KeypadJFrame keypadJFrame;
+	private MonitorJFrame monitorJFrame;
+	private VirtualSlotsJFrame virtualSlotsJFrame;
+	/** Create the application.
+	 * @throws MalformedURLException*/
+	public JFrameManager() throws MalformedURLException {
+		initialize();
+	}
+	/** Initialize the contents of the frame.
+	 * @throws MalformedURLException*/
+	private void initialize() throws MalformedURLException {
+		System.out.println("initializing keypad");
+		keypadJFrame = new KeypadJFrame();
+		System.out.println("initializing monitor");
+		monitorJFrame = new MonitorJFrame();
+		System.out.println("initializing virtual slots");
+		virtualSlotsJFrame = new VirtualSlotsJFrame();
+		// set size and location on screen
+		System.out.println("showing keypad");
+		keypadJFrame.calcBounds();
+		System.out.println("showing virtual slots");
+		virtualSlotsJFrame.calcBounds();
+		System.out.println("showing monitor");
+		monitorJFrame.calcBounds(MyGUISettings.MONITOR_FRAME_WIDTH,
+				MyGUISettings.MONITOR_FRAME_HEIGHT,
+				MyGUISettings.SIDE_BUTTON_MARGIN);
+	}
+	protected void start() {
+	}
+	public void end() {
+		keypadJFrame.dispose();
+		monitorJFrame.dispose();
+		virtualSlotsJFrame.dispose();
+		System.exit(0);
+	}
+}
+==> ./src/atm/gui/keypad/KeypadJFrame.java <==
+package atm.gui.keypad;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridLayout;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.BoxLayout;
+import javax.swing.JPasswordField;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.JTextComponent;
+import atm.core.ATM;
+import atm.gui.monitor.MonitorJFrame;
+import atm.gui.monitor.mainscreen.TransferJPanel;
+import atm.gui.monitor.mainscreen.WithDrawalJPanel;
+public class KeypadJFrame extends JFrame {
+	/***/
+	private static final long serialVersionUID = 1L;
+	private static Vector<KeypadJFrame> contents = new Vector<KeypadJFrame>();
+	public static final String STRING_MODE_PASSWORD = "Password";
+	public static final String STRING_MODE_ACCOUNTNUMBER = "AccountNumber";
+	public static final String STRING_MODE_AMOUNT = "Amount";
+	public static final String STRING_MODE_CASH_AMOUNT = "Cash Amount";
+	public static final String STRING_MODE_NULL = "Null";
+	private String mode;
+	private boolean dotEnable;
+	private int maxLength;
+	private JComponent keys[];
+	private JPanel numberKeysJPanel;
+	private JPanel functionKeysJPanel;
+	private JTextComponent textComponent;
+	// constructor sets up GUI
+	public KeypadJFrame() {
+		contents.add(this);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setTitle("Keypad");
+		getContentPane().setLayout(
+				new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
+		numberKeysJPanel = new JPanel(new GridLayout(4, 3));
+		getContentPane().add(numberKeysJPanel);
+		functionKeysJPanel = new JPanel(new GridLayout(4, 1));
+		getContentPane().add(functionKeysJPanel);
+		keys = new JComponent[16]; // array keys contains 16 JButtons
+		// initialize all digit key buttons
+		for (int i = 0; i <= 9; i++) {
+			JButton button = new JButton(String.valueOf(i));
+			keys[i] = button;
+			button.addActionListener(getNumActionListener(String.valueOf(i)));
+		}
+		// initialize all function key buttons
+		{
+			JButton button = new JButton(KeyPadButtonIcons.IMAGEICON_CANCEL);
+			keys[10] = button;
+			button.addActionListener(getCancelActionListener());
+		}
+		{
+			JButton button = new JButton(KeyPadButtonIcons.IMAGEICON_CLEAR);
+			keys[11] = button;
+			button.addActionListener(getClearActionListener());
+		}
+		{
+			JButton button = new JButton(KeyPadButtonIcons.IMAGEICON_ENTER);
+			keys[12] = button;
+			button.addActionListener(getEnterActionListener());
+		}
+		keys[13] = new JPanel();
+		{
+			JButton button = new JButton("00");
+			keys[14] = button;
+			button.addActionListener(getNumActionListener("00"));
+		}
+		{
+			JButton button = new JButton(".");
+			keys[15] = button;
+			button.addActionListener(getDotActionListener());
+		}
+		// add buttons to keyPadJPanel panel
+		// 7 8 9
+		for (int i = 7; i <= 9; i++)
+			numberKeysJPanel.add(keys[i]);
+		// 4 5 6
+		for (int i = 4; i <= 6; i++)
+			numberKeysJPanel.add(keys[i]);
+		// 1 2 3
+		for (int i = 1; i <= 3; i++)
+			numberKeysJPanel.add(keys[i]);
+		// 0 . 00
+		numberKeysJPanel.add(keys[0]);
+		numberKeysJPanel.add(keys[15]);
+		numberKeysJPanel.add(keys[14]);
+		for (int i = 10; i <= 13; i++)
+			functionKeysJPanel.add(keys[i]);
+		switchMode(STRING_MODE_NULL);
+		switchTarget(null);
+	} // end CalculatorFrame constructor
+	/** instance methods **/
+	private void switchMode(String stringModePassword) {
+		mode = stringModePassword;
+		switch (mode) {
+		case STRING_MODE_PASSWORD:
+			dotEnable = false;
+			maxLength = 5;
+			break;
+		case STRING_MODE_AMOUNT:
+			dotEnable = true;
+			maxLength = 8;
+			break;
+		case STRING_MODE_ACCOUNTNUMBER:
+			dotEnable = false;
+			maxLength = 13;
+			break;
+		case STRING_MODE_CASH_AMOUNT:
+			dotEnable = false;
+			maxLength = 5;
+			break;
+		case STRING_MODE_NULL:
+			dotEnable = false;
+			maxLength = 0;
+			break;
+		}
+	}
+	public void switchTarget(JTextComponent textComponent) {
+		this.textComponent = textComponent;
+	}
+	private boolean hasDot() throws BadLocationException {
+		for (char c : getText().toCharArray())
+			if (c == '.')
+				return true;
+		return false;
+	}
+	public String getText() throws BadLocationException {
+		return textComponent.getText();
+	}
+	public void insertText(String str) throws BadLocationException {
+		textComponent.getDocument().insertString(
+				textComponent.getCaretPosition(), str, null);
+	}
+	public int getDecimalPlace(String text) {
+		int decimalPlace = 0;
+		boolean meetDot = false;
+		for (char c : text.toCharArray()) {
+			if (c == '.')
+				meetDot = true;
+			else if (meetDot)
+				decimalPlace++;
+		}
+		return decimalPlace;
+	}
+	private ActionListener getNumActionListener(final String content) {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (textComponent.getDocument().getLength() >= maxLength)
+						return;
+					if ((getDecimalPlace(textComponent.getText()) < 2)
+							&& !((textComponent.getDocument().getLength() == 0) && (content == "00")))
+						insertText(content);
+				} catch (BadLocationException e1) {
+					insertTextAlternative(content);
+				} catch (NullPointerException e2) {
+				}
+			}
+		};
+	}
+	private ActionListener getDotActionListener() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if ((!hasDot()) && dotEnable) {
+						if (textComponent.getDocument().getLength() == 0)
+							insertText("0");
+						insertText(".");
+					}
+				} catch (BadLocationException e1) {
+					insertTextAlternative(".");
+				} catch (NullPointerException e2) {
+				}
+			}
+		};
+	}
+	private ActionListener getCancelActionListener() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MonitorJFrame.returnButtonClick();
+			}
+		};
+	}
+	private ActionListener getClearActionListener() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					textComponent.setText("");
+				} catch (NullPointerException e2) {
+					// just ignore this
+				}
+			}
+		};
+	}
+	private ActionListener getEnterActionListener() {
+		return new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				switch (mode) {
+				case STRING_MODE_PASSWORD:
+					System.out.println("[Enter] password mode");
+					ATM.getATM().authenticateUser(
+							String.valueOf(((JPasswordField) textComponent)
+									.getPassword()));
+					break;
+				case STRING_MODE_CASH_AMOUNT:
+					WithDrawalJPanel.enterButtonClickStatic();
+					break;
+				case STRING_MODE_ACCOUNTNUMBER:
+				case STRING_MODE_AMOUNT:
+					TransferJPanel.enterKeyPressedStatic();
+					break;
+				}
+			}
+		};
+	}
+	private void insertTextAlternative(String content) {
+		textComponent.setText(textComponent.getText() + content);
+	}
+	public void calcBounds() {
+		setVisible(true);
+		pack();
+		Rectangle client = getBounds();
+		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getMaximumWindowBounds().getBounds();
+		int x = screen.width - client.width - 10;
+		int y = screen.height - client.height - 10;
+		setLocation(x, y);
+	}
+	/** static connector to instance methods **/
+	public static void switchTargetStatic(JTextComponent textComponent,
+			String mode) {
+		for (KeypadJFrame keypadJFrame : contents) {
+			keypadJFrame.switchTarget(textComponent);
+			keypadJFrame.switchMode(mode);
+		}
+	}
+	public static void switchModeStatic(String mode) {
+		for (KeypadJFrame keypadJFrame : contents) {
+			keypadJFrame.switchMode(mode);
+		}
+	}
+	public static String getModeStatic() {
+		for (KeypadJFrame keypadJFrame : contents) {
+			return keypadJFrame.mode;
+		}
+		return null;
+	}
+} // end class CalculatorFrame 
+==> ./src/atm/gui/keypad/KeyPadButtonIcons.java <==
+package atm.gui.keypad;
+import java.awt.Image;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.swing.ImageIcon;
+import atm.gui.MyGUISettings;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote;
+import atm.utils.MyURLs;
+public class KeyPadButtonIcons implements CashNote {
+	public static ImageIcon IMAGEICON_ENTER;
+	public static ImageIcon IMAGEICON_CANCEL;
+	public static ImageIcon IMAGEICON_CLEAR;
+	public static void init() throws MalformedURLException {
+		IMAGEICON_ENTER = new ImageIcon(new ImageIcon(new URL(
+				MyURLs.IMAGE_ENTER)).getImage().getScaledInstance(
+				MyGUISettings.FUNCTION_BUTTON_WIDTH,
+				MyGUISettings.FUNCTION_BUTTON_HEIGHT, Image.SCALE_SMOOTH));
+		IMAGEICON_CANCEL = new ImageIcon(new ImageIcon(new URL(
+				MyURLs.IMAGE_CANCEL)).getImage().getScaledInstance(
+				MyGUISettings.FUNCTION_BUTTON_WIDTH,
+				MyGUISettings.FUNCTION_BUTTON_HEIGHT, Image.SCALE_SMOOTH));
+		IMAGEICON_CLEAR = new ImageIcon(new ImageIcon(new URL(
+				MyURLs.IMAGE_CLEAR)).getImage().getScaledInstance(
+				MyGUISettings.FUNCTION_BUTTON_WIDTH,
+				MyGUISettings.FUNCTION_BUTTON_HEIGHT, Image.SCALE_SMOOTH));
+	}
+	@Override
+	public void fetchImage() throws IOException {
+		System.out.println("fetching images of keypads");
+		init();
+	}
+}
+==> ./src/atm/ATMLauncher.java <==
+package atm;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import bank.BankDatabase;
+import atm.core.ATM;
+import atm.core.CashDispenser;
+import atm.gui.ATMGUILauncher;
+import atm.utils.MyStrings;
+public class ATMLauncher {
+	private ATMGUILauncher atmguiLauncher;
+	public ATMLauncher() {
+		BankDatabase.init();
+		CashDispenser.init();
+		ATM.initStatic();
+		try {
+			atmguiLauncher = new ATMGUILauncher();
+		} catch (IOException e) {
+			System.out.println(MyStrings.INTERNET_ERROR);
+			JOptionPane.showMessageDialog(null, MyStrings.INTERNET_ERROR, "Internet Error",
+					JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
+	}
+	public void start() {
+		System.out.println("start GUI launcher");
+		atmguiLauncher.start();
+	}
+}
+==> ./src/launcher/ATMCaseStudy.java <==
+package launcher;
+import atm.ATMLauncher;
+// ATMCaseStudy.java
+// Driver program for the ATM case study
+/**
+ * Standard program entry point Launch the application.
+ */
+public class ATMCaseStudy {
+	// main method creates and runs the ATM
+	public static void main(String[] args) {
+		System.out.println("ATMCaseStudy start");
+		// ATM theATM = new ATM();
+		// theATM.run();
+		ATMLauncher atmLauncher = new ATMLauncher();
+		System.out.println("start ATM Launcher");
+		atmLauncher.start();
+	} // end main
+} // end class ATMCaseStudy
+==> ./src/myutils/Utils.java <==
+package myutils;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Random;
+import java.util.Vector;
+public class Utils {
+	public static Random random = new Random(System.currentTimeMillis());
+	public static Vector<Object> getShuffled(Vector<Object> ori) {
+		Vector<Object> result = new Vector<Object>();
+		for (Object o : ori)
+			result.add(o);
+		int t;
+		Object tmp;
+		int size = ori.size();
+		for (int i = 0; i < size; i++) {
+			t = random.nextInt(size);
+			tmp = result.get(i);
+			result.set(i, result.get(t));
+			result.set(t, tmp);
+		}
+		return result;
+	}
+	public static String StringListToString(List<String> lines, String symbol) {
+		String result = "";
+		for (String line : lines)
+			result += line + symbol;
+		return result;
+	}
+	public static java.sql.Timestamp getCurrentTimestamp() {
+		return new java.sql.Timestamp(Calendar.getInstance().getTime()
+				.getTime());
+	}
+}
+==> ./src/myutils/gui/cardlayout/AbstractCardJPanel.java <==
+package myutils.gui.cardlayout;
+import java.awt.CardLayout;
+import java.awt.Component;
+import javax.swing.JPanel;
+public abstract class AbstractCardJPanel extends JPanel {
+	/***/
+	private static final long serialVersionUID = -6243990180583440256L;
+	public CardLayout cardLayout;
+	public AbstractCardJPanel() {
+		cardLayout = new CardLayout();
+		setLayout(cardLayout);
+		myInit();
+	}
+	protected abstract void myInit();
+	public void addToCards(Component component, String label) {
+		add(component);
+		cardLayout.addLayoutComponent(component, label);
+	}
+	public void switchToCard(String label) {
+		cardLayout.show(this, label);		
+	}
+}
+==> ./src/myutils/gui/cardlayout/AbstractCardJFrame.java <==
+package myutils.gui.cardlayout;
+import java.awt.CardLayout;
+import java.awt.Component;
+import javax.swing.JFrame;
+public abstract class AbstractCardJFrame extends JFrame {
+	/***/
+	private static final long serialVersionUID = -1690280875210999260L;
+	public CardLayout cardLayout;
+	public AbstractCardJFrame(String title) {
+		setVisible(false);
+		setTitle(title);
+		cardLayout = new CardLayout();
+		getContentPane().setLayout(cardLayout);
+		myInit();
+		setVisible(true);
+	}
+	protected abstract void myInit();
+	public void addToCards(Component component, String label) {
+		add(component);
+		cardLayout.addLayoutComponent(component, label);
+	}
+	public void switchToCard(String label) {
+		cardLayout.show(getContentPane(), label);
+	}
+}
+==> ./src/myutils/gui/MyImageUtils.java <==
+package myutils.gui;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
+public class MyImageUtils {
+	public static ImageIcon scaleImageIconByHeight(ImageIcon image, int height) {
+		int width = (int) Math.round(image.getIconWidth() * (height * 1.0 / image.getIconHeight()));
+		return new ImageIcon(image.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
+	}
+	public static Image scaleImageByHeight(Image image, int height) {
+		BufferedImage bufferedImage = (BufferedImage) image;
+		int width = (int) Math.round(bufferedImage.getWidth() * (height * 1.0 / bufferedImage.getHeight()));
+		return image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+	}
+}
