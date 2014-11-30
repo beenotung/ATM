@@ -36,7 +36,7 @@ public class TransferSuccessJPanel extends JPanel {
 
 	public void showMe() {
 		MainScreenCardJPanel
-				.switchToCardStatic(MainScreenCardJPanel.STRING_TRANSFER_RECEIVER_ACCOUNT_NOT_FOUND);
+				.switchToCardStatic(MainScreenCardJPanel.STRING_TRANSFER_SUCCESS);
 		MainMenuJPanel.waitShowMeStatic();		
 	}
 

@@ -248,6 +248,7 @@ public class KeypadJFrame extends JFrame {
 				case STRING_MODE_CASH_AMOUNT:
 					WithDrawalJPanel.enterButtonClickStatic();
 					break;
+				case STRING_MODE_ACCOUNTNUMBER:
 				case STRING_MODE_AMOUNT:
 					TransferJPanel.enterKeyPressedStatic();
 					break;
@@ -280,7 +281,7 @@ public class KeypadJFrame extends JFrame {
 		}
 	}
 
-	public static void switchTargetStatic(String mode) {
+	public static void switchModeStatic(String mode) {
 		for (KeypadJFrame keypadJFrame : contents) {
 			keypadJFrame.switchMode(mode);
 		}

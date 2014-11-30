@@ -64,7 +64,7 @@ public class MainMenuJPanel extends JPanel {
 		ATM.getATM().init();
 		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_MAIN_MENU;
 		SideButtons.commands = MainMenuJPanel.commands;
-		KeypadJFrame.switchTargetStatic(KeypadJFrame.STRING_MODE_NULL);
+		KeypadJFrame.switchModeStatic(KeypadJFrame.STRING_MODE_NULL);
 		MainScreenCardJPanel
 				.switchToCardStatic(MainScreenCardJPanel.STRING_MAIN_MENU);
 	}

@@ -8,7 +8,7 @@ public class MyGUISettings {
 	public static int MONITOR_FRAME_WIDTH = 600;
 	public static int MONITOR_FRAME_HEIGHT = 400;
 	public static int VIRTUAL_SLOTS_FRAME_WIDTH = 400;
-	public static int VIRTUAL_SLOTS_FRAME_HEIGHT = 400;
+	public static int VIRTUAL_SLOTS_FRAME_HEIGHT = 300;
 	public static int SIDE_BUTTON_MARGIN = 75;
 	public static int SIDE_BUTTON_SIZE = 50;
 	public static int CARD_IMAGE_WIDTH = 128;

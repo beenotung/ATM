@@ -15,6 +15,7 @@ import atm.utils.MyStrings;
 
 import java.awt.Button;
 import java.awt.Component;
+import java.awt.Font;
 import java.util.Vector;
 
 import javax.swing.Box;
@@ -50,8 +51,16 @@ public class CashNotEnoughJPanel extends JPanel {
 
 		for (int i = 0; i < 4; i++)
 			panel.add(new Button());
-		panel.add(new Button(STRING_MAIN_MENU));
-		panel.add(new Button(STRING_TAKE_CARD));
+		{
+			Button button = new Button(STRING_MAIN_MENU);
+			panel.add(button);
+			button.setFont(new Font("Arial", Font.PLAIN, 26));
+		}
+		{
+			Button button = new Button(STRING_TAKE_CARD);
+			panel.add(button);
+			button.setFont(new Font("Arial", Font.PLAIN, 26));
+		}
 		for (int i = 0; i < 2; i++)
 			panel.add(new Button());
 
@@ -80,7 +89,7 @@ public class CashNotEnoughJPanel extends JPanel {
 
 	public void showMe() {
 		SideButtons.commands = WithDrawalJPanel.commands;
-		MonitorJFrame.STATE=MainScreenCardJPanel.STRING_CASH_NOT_ENOUGH;
+		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_CASH_NOT_ENOUGH;
 		MainScreenCardJPanel
 				.switchToCardStatic(MainScreenCardJPanel.STRING_CASH_NOT_ENOUGH);
 	}

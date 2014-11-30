@@ -1,4 +1,3 @@
-//TODO TransferJPanel
 package atm.gui.monitor.mainscreen;
 
 import javax.security.auth.login.AccountNotFoundException;
@@ -17,6 +16,7 @@ import atm.gui.MyGUISettings;
 import atm.gui.keypad.KeypadJFrame;
 import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
+import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
 import bank.operation.Transfer;
 
@@ -80,12 +80,15 @@ public class TransferJPanel extends JPanel {
 
 	/** instance methods **/
 	public void enterKeyPressed() {
+		System.out.println("enter");
 		switch (KeypadJFrame.getModeStatic()) {
 		case KeypadJFrame.STRING_MODE_ACCOUNTNUMBER:
+			System.out.println("next");
 			KeypadJFrame.switchTargetStatic(amountTextField,
 					KeypadJFrame.STRING_MODE_AMOUNT);
 			break;
 		case KeypadJFrame.STRING_MODE_AMOUNT:
+			System.out.println("try");
 			tryTransfer();
 			break;
 		}
@@ -93,20 +96,26 @@ public class TransferJPanel extends JPanel {
 
 	private void tryTransfer() {
 		try {
+			System.out.println("check Transfer");
 			double amount = Double.parseDouble(amountTextField.getText());
 			Transfer.transferGUI(ATM.getATM(),
 					receiverAccountNumberTextField.getText(), amount);
 		} catch (NumberFormatException e) {
+			System.out.println("not double?");
 			MainMenuJPanel.showMe();
 		} catch (AccountNotFoundException e) {
+			System.out.println("account not found");
 			TransferReceiverAccountNotFoundJPanel.showMeStatic();
 		} catch (TransferSameAccountException e) {
+			System.out.println("tranfer same account");
 			TransferSameAccountJPanel.showMeStatic();
 		} catch (OverdrawnException e) {
+			System.out.println("overdrawn");
 			OverdrawnJPanel.showMeStatic(MainScreenCardJPanel.STRING_TRANSFER);
 		}
 		// transfer success
-		
+		System.out.println("transfer success");
+		TransferSuccessJPanel.showMeStatic();
 	}
 
 	public void showMe() {
@@ -127,8 +136,11 @@ public class TransferJPanel extends JPanel {
 		int oldWrongTry = wrongTry;
 		showMe();
 		wrongTry = oldWrongTry + 1;
+		if (wrongTry > MyInputHandler.MAX_WRONG_INPUT)
+			MaxWrongTryJPanel.showMe();
 	}
 
+	/** static connector to instance stuff **/
 	public static void showMeStatic() {
 		for (TransferJPanel content : contents) {
 			content.showMe();
