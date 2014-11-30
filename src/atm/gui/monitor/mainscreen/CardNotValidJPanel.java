@@ -48,7 +48,8 @@ public class CardNotValidJPanel extends JPanel {
 	}
 
 	public static void showMe() {
-		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_CARD_NOT_VALID);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_CARD_NOT_VALID);
 		CardSlotCardJPanel.waitPopCardStatic();
 	}
 }

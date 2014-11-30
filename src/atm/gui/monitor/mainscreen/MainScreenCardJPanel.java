@@ -27,6 +27,7 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 	public static final String STRING_WITHDRAWAL = MainMenuJPanel.STRING_WITHDRAW_CASH;
 	public static final String STRING_TRANSFER = MainMenuJPanel.STRING_TRANSFER_FUNDS;
 	public static final String STRING_TAKE_CASH = "Take Cash";
+	public static final String STRING_OVERDRAWN = "Overdrawn";
 
 	private ViewBalanceJPanel viewBalanceJPanel;
 
@@ -49,6 +50,7 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 		addToCards(new WithDrawalJPanel(), STRING_WITHDRAWAL);
 		addToCards(new TransferJPanel(), STRING_TRANSFER);
 		addToCards(new TakeCashJPanel(), STRING_TAKE_CASH);
+		addToCards(new OverdrawnJPanel(), STRING_OVERDRAWN);
 
 		// switchToCard(STRING_WELCOME);
 		WelcomeJPanel.showMeStatic();
@@ -63,7 +65,7 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 
 	@Override
 	public void switchToCard(String label) {
-		if(label.equals(STRING_VIEW_BALANCE))
+		if (label.equals(STRING_VIEW_BALANCE))
 			renewViewBalanceJPanel();
 		MonitorJFrame.STATE = label;
 		super.switchToCard(label);

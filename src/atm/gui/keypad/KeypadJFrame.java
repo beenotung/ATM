@@ -133,7 +133,7 @@ public class KeypadJFrame extends JFrame {
 			break;
 		case STRING_MODE_CASH_AMOUNT:
 			dotEnable = false;
-			maxLength = 4;
+			maxLength = 5;
 			break;
 		case STRING_MODE_NULL:
 			dotEnable = false;

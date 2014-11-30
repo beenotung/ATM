@@ -116,6 +116,9 @@ public class MonitorJFrame extends JFrame {
 		case MainScreenCardJPanel.STRING_VIEW_BALANCE:
 			MainMenuJPanel.showMe();
 			break;
+		case MainScreenCardJPanel.STRING_TRANSFER:
+			MainMenuJPanel.showMe();
+			break;
 		default:
 			CardSlotCardJPanel.popCardStatic();
 			break;

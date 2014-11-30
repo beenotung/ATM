@@ -4,6 +4,8 @@ import java.util.Vector;
 
 import javax.swing.JPanel;
 
+import atm.gui.virtualslots.VirtualSlotsJFrame;
+
 public class CardInsideJPanel extends JPanel {
 	/**
 	 * 
@@ -26,6 +28,7 @@ public class CardInsideJPanel extends JPanel {
 
 	public static void removeCard() {
 		CardInsideJPanel.card = null;
+		VirtualSlotsJFrame.hideCardSlotStatic();
 	}
 
 	public static Card getCard() {

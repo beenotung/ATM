@@ -22,6 +22,7 @@ import atm.gui.MyGUISettings;
 import atm.gui.keypad.KeypadJFrame;
 import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
+import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
 import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
 import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
@@ -115,6 +116,7 @@ public class WithDrawalJPanel extends JPanel {
 
 	public void showMe() {
 		wrongTry = 0;
+		textField.setText("");
 		withdrawalOperation = new Withdrawal(ATM.getATM());
 		ATM.getATM().init();
 		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_WITHDRAWAL;
@@ -144,11 +146,12 @@ public class WithDrawalJPanel extends JPanel {
 			CardNotValidJPanel.showMe();
 		} catch (OverdrawnException e) {
 			CashDispenser.rollback();
+			OverdrawnJPanel.showMeStatic();
 		} catch (CashNotEnoughException e) {
 			CashDispenser.rollback();
 		} catch (CashOutException e) {
 			CashDispenserJPanel.setPopCashCountsStatic(e.getCashCounts());
-			TakeCardJPanel.showMe();
+			CardSlotCardJPanel.popCardStatic();
 		}
 	}
 

@@ -5,9 +5,11 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 
 import java.awt.Font;
+
 import webs.layout.CenterLayout;
 import atm.gui.MyGUISettings;
 import atm.gui.monitor.sidebuttons.SideButtons;
+import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
 
 public class TakeCashJPanel extends JPanel {
 
@@ -34,6 +36,7 @@ public class TakeCashJPanel extends JPanel {
 	public static void showMe() {
 		SideButtons.commands = TakeCashJPanel.commands;
 		MainScreenCardJPanel
-				.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CASH);		
+				.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CASH);
+		CashDispenserJPanel.showMeStatic();
 	}
 }

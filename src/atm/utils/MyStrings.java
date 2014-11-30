@@ -1,5 +1,9 @@
 package atm.utils;
 
+import java.util.Vector;
+
+import javax.swing.JLabel;
+
 import atm.core.Screen;
 
 public class MyStrings {
@@ -27,7 +31,17 @@ public class MyStrings {
 	public static String getOverDrawnMessage(Double limit) {
 		String msg = "Overdrawn (Insufficient funds in your account)";
 		if (limit > 0)
-			msg += ", your overdrawn limit is: " + Screen.getDollarAmount(limit);
+			msg += ", your overdrawn limit is: "
+					+ Screen.getDollarAmount(limit);
 		return msg;
+	}
+
+	public static Vector<JLabel> getOverDrawnMessageLabels(Double limit) {
+		Vector<JLabel> result = new Vector<JLabel>();
+		result.add(new JLabel("Overdrawn (Insufficient funds in your account)"));
+		if (limit > 0)
+			result.add(new JLabel("your overdrawn limit is: "
+					+ Screen.getDollarAmount(limit)));
+		return result;
 	}
 }

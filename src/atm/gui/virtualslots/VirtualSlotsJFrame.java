@@ -37,6 +37,8 @@ public class VirtualSlotsJFrame extends JFrame {
 
 		cashDispenserJPanel = new CashDispenserJPanel();
 		getContentPane().add(cashDispenserJPanel);
+
+		myReset();
 	}
 
 	public void calcBounds() {
@@ -52,30 +54,43 @@ public class VirtualSlotsJFrame extends JFrame {
 		setBounds(x, y, client.width, client.height);
 	}
 
-	public void myUpdateUI() {
-		if (cardSlotCardJPanel != null)
-			cardSlotCardJPanel.myUpdateUI();
-		if (cashDispenserJPanel != null)
-			cashDispenserJPanel.myUpdateUI();
-		setPreferredSize(getMinimumSize());
-		calcBounds();
+	public void calcBounds(float wRatio, float hRatio) {
+		setVisible(true);
+		pack();
+		Rectangle client = new Rectangle(
+				Math.round(MyGUISettings.VIRTUAL_SLOTS_FRAME_WIDTH * wRatio),
+				Math.round(MyGUISettings.VIRTUAL_SLOTS_FRAME_HEIGHT * hRatio));
+		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getMaximumWindowBounds().getBounds();
+		int x = screen.width - client.width;
+		int y = 0;
+		setBounds(x, y, client.width, client.height);
+	}
+
+	public void hideCardSlot() {
+		cardSlotCardJPanel.setVisible(false);
+		// calcBounds(1f, 2f);
 	}
 
 	public void myReset() {
+		cardSlotCardJPanel.setVisible(true);
+
 		cardSlotCardJPanel.switchToCard(CardSlotCardJPanel.STRING_SELECT_CARD);
 		WelcomeJPanel.showMeStatic();
+
+		calcBounds();
 	}
 
 	/** static connector to instance stuff **/
-	public static void myUpdateUIStatic() {
-		for (VirtualSlotsJFrame virtualSlotsJFrame : contents) {
-			virtualSlotsJFrame.myUpdateUI();
-		}
-	}
-
 	public static void myResetStatic() {
 		for (VirtualSlotsJFrame virtualSlotsJFrame : contents) {
 			virtualSlotsJFrame.myReset();
+		}
+	}
+
+	public static void hideCardSlotStatic() {
+		for (VirtualSlotsJFrame virtualSlotsJFrame : contents) {
+			virtualSlotsJFrame.hideCardSlot();
 		}
 	}
 }
