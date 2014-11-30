@@ -54,6 +54,7 @@ public class MainMenuJPanel extends JPanel {
 			Button button = new Button(string);
 			button.setFont(new Font("Arial", Font.PLAIN, 26));
 			panel.add(button);
+			button.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		}
 
 		Component verticalStrut = Box.createVerticalStrut(25);

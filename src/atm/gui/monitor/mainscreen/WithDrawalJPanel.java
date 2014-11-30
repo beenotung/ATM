@@ -110,11 +110,13 @@ public class WithDrawalJPanel extends JPanel {
 					+ commands[i]);
 			button.setFont(new Font("Arial", Font.PLAIN, 26));
 			contentPanel.add(button);
+			button.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		}
 		for (int i = 4; i < 8; i++) {
 			Button button = new Button(commands[i]);
 			button.setFont(new Font("Arial", Font.PLAIN, 26));
 			contentPanel.add(button);
+			button.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		}
 	}
 

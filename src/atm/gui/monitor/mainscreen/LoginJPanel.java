@@ -53,22 +53,28 @@ public class LoginJPanel extends JPanel {
 		passwordField = new JPasswordField();
 		add(passwordField, BorderLayout.SOUTH);
 		passwordField.setFont(MyGUISettings.getFont(26));
+		passwordField
+				.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 	}
 
 	/** instance methods **/
 	public void showMe() {
 		lblWrongPassword.setVisible(false);
 		passwordField.setText("");
-		KeypadJFrame.switchTargetStatic(passwordField, KeypadJFrame.STRING_MODE_PASSWORD);
-		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_LOGIN);
+		KeypadJFrame.switchTargetStatic(passwordField,
+				KeypadJFrame.STRING_MODE_PASSWORD);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_LOGIN);
 	}
 
 	public void showMeWrong(int wrongCount) {
 		lblWrongPassword.setText("Wrong PIN (" + wrongCount + ")");
 		lblWrongPassword.setVisible(true);
 		passwordField.setText("");
-		KeypadJFrame.switchTargetStatic(passwordField, KeypadJFrame.STRING_MODE_PASSWORD);
-		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_LOGIN);
+		KeypadJFrame.switchTargetStatic(passwordField,
+				KeypadJFrame.STRING_MODE_PASSWORD);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_LOGIN);
 	}
 
 	/** static connectors to instance methods **/

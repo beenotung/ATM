@@ -88,10 +88,12 @@ public class ViewBalanceJPanel extends JPanel {
 		Button button_1 = new Button(STRING_MAIN_MENU);
 		menuPanel1.add(button_1);
 		button_1.setFont(new Font("Arial", Font.PLAIN, 26));
+		button_1.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 
 		Button button_2 = new Button(STRING_TAKE_CARD);
 		menuPanel1.add(button_2);
 		button_2.setFont(new Font("Arial", Font.PLAIN, 26));
+		button_2.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 
 		JPanel menuPanel2 = new JPanel();
 		strucPanel.add(menuPanel2);
