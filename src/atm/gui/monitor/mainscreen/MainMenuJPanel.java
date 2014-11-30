@@ -33,8 +33,9 @@ public class MainMenuJPanel extends JPanel {
 	public static final String STRING_TRANSFER_FUNDS = "Transfer Funds";
 	public static final String STRING_TAKE_CARD = "Take Card";
 
-	public static final String[] commands = { "", "", STRING_VIEW_BALANCE, STRING_WITHDRAW_CASH,
-			STRING_TRANSFER_FUNDS, STRING_TAKE_CARD, "", "" };
+	public static final String[] commands = { "", "", STRING_VIEW_BALANCE,
+			STRING_WITHDRAW_CASH, STRING_TRANSFER_FUNDS, STRING_TAKE_CARD, "",
+			"" };
 
 	public MainMenuJPanel() {
 		contents.add(this);
@@ -64,6 +65,24 @@ public class MainMenuJPanel extends JPanel {
 		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_MAIN_MENU;
 		SideButtons.commands = MainMenuJPanel.commands;
 		KeypadJFrame.switchTargetStatic(KeypadJFrame.STRING_MODE_NULL);
-		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_MAIN_MENU);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_MAIN_MENU);
+	}
+
+	public static void waitShowMeStatic() {
+		WaitReturnThread waitReturnThread = new WaitReturnThread();
+		waitReturnThread.start();
+	}
+
+	/** private class **/
+	private static class WaitReturnThread extends Thread {
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+			}
+			showMe();
+		}
 	}
 }

@@ -177,7 +177,8 @@ public class WithDrawalJPanel extends JPanel {
 			CardNotValidJPanel.showMe();
 		} catch (OverdrawnException e) {
 			CashDispenser.rollback();
-			OverdrawnJPanel.showMeStatic(MainScreenCardJPanel.STRING_WITHDRAWAL);
+			OverdrawnJPanel
+					.showMeStatic(MainScreenCardJPanel.STRING_WITHDRAWAL);
 		} catch (CashNotEnoughException e) {
 			CashDispenser.rollback();
 			CashNotEnoughJPanel.showMeStatic();
@@ -189,7 +190,7 @@ public class WithDrawalJPanel extends JPanel {
 
 	/** static methods **/
 	public static void waitReturnFromWrongStatic() {
-		waitReturnFromWrongThread returnFromWrongThread = new waitReturnFromWrongThread();
+		WaitReturnFromWrongThread returnFromWrongThread = new WaitReturnFromWrongThread();
 		returnFromWrongThread.start();
 	}
 
@@ -219,7 +220,7 @@ public class WithDrawalJPanel extends JPanel {
 	}
 
 	/** private class **/
-	private static class waitReturnFromWrongThread extends Thread {
+	private static class WaitReturnFromWrongThread extends Thread {
 		@Override
 		public void run() {
 			try {

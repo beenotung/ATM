@@ -105,6 +105,8 @@ public class TransferJPanel extends JPanel {
 		} catch (OverdrawnException e) {
 			OverdrawnJPanel.showMeStatic(MainScreenCardJPanel.STRING_TRANSFER);
 		}
+		// transfer success
+		
 	}
 
 	public void showMe() {
@@ -147,12 +149,12 @@ public class TransferJPanel extends JPanel {
 
 	/** static methods **/
 	public static void waitReturnFromWrongStatic() {
-		waitReturnFromWrongThread returnFromWrongThread = new waitReturnFromWrongThread();
+		WaitReturnFromWrongThread returnFromWrongThread = new WaitReturnFromWrongThread();
 		returnFromWrongThread.start();
 	}
 
 	/** private class **/
-	private static class waitReturnFromWrongThread extends Thread {
+	private static class WaitReturnFromWrongThread extends Thread {
 		@Override
 		public void run() {
 			try {
