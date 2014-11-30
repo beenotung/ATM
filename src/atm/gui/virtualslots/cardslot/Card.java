@@ -1,4 +1,4 @@
-package atm.gui.virtualslots;
+package atm.gui.virtualslots.cardslot;
 
 import java.awt.Image;
 import java.awt.event.ActionEvent;

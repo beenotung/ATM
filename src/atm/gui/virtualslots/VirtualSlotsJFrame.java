@@ -1,11 +1,14 @@
 package atm.gui.virtualslots;
 
-import java.awt.BorderLayout;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
+import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+
+import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
+import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
 
 public class VirtualSlotsJFrame extends JFrame {
 
@@ -13,11 +16,14 @@ public class VirtualSlotsJFrame extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private static Vector<VirtualSlotsJFrame> contents = new Vector<VirtualSlotsJFrame>();
+
 	private CardSlotCardJPanel cardSlotCardJPanel;
 	private CashDispenserJPanel cashDispenserJPanel;
 
 	public VirtualSlotsJFrame() {
 		super("Virtual Slots");
+		contents.add(this);
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setSize(400, 300);
 		getContentPane().setLayout(
@@ -39,5 +45,18 @@ public class VirtualSlotsJFrame extends JFrame {
 		int x = screen.width - client.width;
 		int y = 0;
 		setLocation(x, y);
+	}
+
+	public void myUpdateUI() {
+		cardSlotCardJPanel.myUpdateUI();
+		cashDispenserJPanel.myUpdateUI();
+		setPreferredSize(getMinimumSize());
+		calcBounds();
+	}
+
+	public static void myUpdateUIStatic() {
+		for (VirtualSlotsJFrame virtualSlotsJFrame : contents) {
+			virtualSlotsJFrame.myUpdateUI();
+		}
 	}
 }

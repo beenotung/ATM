@@ -1,4 +1,4 @@
-package atm.gui.virtualslots;
+package atm.gui.virtualslots.cardslot;
 
 import javax.swing.JPanel;
 
@@ -14,5 +14,6 @@ public class SelectCardJPanel extends JPanel {
 		setLayout(new CircleLayout());
 		for (Card card : Card.getCards())
 			add(card.buttonInsert);
+		setPreferredSize(getMinimumSize());
 	}
 }

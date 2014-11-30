@@ -1,4 +1,4 @@
-package atm.gui.virtualslots;
+package atm.gui.virtualslots.cardslot;
 
 import java.util.Vector;
 
@@ -16,6 +16,7 @@ public class CardInsideJPanel extends JPanel {
 	/** constructor **/
 	public CardInsideJPanel() {
 		contents.add(this);
+		setPreferredSize(getMinimumSize());
 	}
 
 	/** static methods **/

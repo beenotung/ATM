@@ -9,7 +9,7 @@ import atm.exception.WrongInputException;
 import atm.gui.MyGUISettings;
 import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
-import atm.gui.virtualslots.CardSlotCardJPanel;
+import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
 import atm.utils.MyImages;
 import bank.operation.Transaction;
 

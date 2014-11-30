@@ -10,7 +10,7 @@ import java.util.Vector;
 import webs.layout.CenterLayout;
 import atm.gui.MyGUISettings;
 import atm.gui.monitor.sidebuttons.SideButtons;
-import atm.gui.virtualslots.CashDispenserJPanel;
+import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
 import atm.utils.CashCount;
 
 public class TakeCashJPanel extends JPanel {

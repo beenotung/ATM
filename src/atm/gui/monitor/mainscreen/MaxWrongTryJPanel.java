@@ -10,7 +10,7 @@ import java.awt.Font;
 import javax.swing.Box;
 
 import atm.gui.MyGUISettings;
-import atm.gui.virtualslots.CardSlotCardJPanel;
+import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
 
 public class MaxWrongTryJPanel extends JPanel {
 

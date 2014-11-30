@@ -10,7 +10,7 @@ import atm.gui.monitor.sidebuttons.SideButtons;
 import atm.gui.notes.CashNote100;
 import atm.gui.notes.CashNote1000;
 import atm.gui.notes.CashNote500;
-import atm.gui.virtualslots.Card;
+import atm.gui.virtualslots.cardslot.Card;
 import atm.utils.MyImages;
 
 public class ATMGUILauncher {

@@ -1,10 +1,11 @@
-package atm.gui.virtualslots;
+package atm.gui.virtualslots.cardslot;
 
 import java.util.Vector;
 
 import atm.core.ATM;
 import atm.gui.monitor.mainscreen.MainScreenCardJPanel;
 import atm.gui.monitor.mainscreen.TakeCardJPanel;
+import atm.gui.virtualslots.VirtualSlotsJFrame;
 import myutils.gui.cardlayout.AbstractCardJPanel;
 
 public class CardSlotCardJPanel extends AbstractCardJPanel {
@@ -53,10 +54,18 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 	public void switchToCard(String label) {
 		STATE = label;
 		super.switchToCard(label);
+		System.out.println(STATE);
+		updateUI();
+		VirtualSlotsJFrame.myUpdateUIStatic();
 	}
 
 	public void waitPopCard() {
 		(new WaitPopCard()).start();
+	}
+
+	public void myUpdateUI() {
+		setPreferredSize(getMinimumSize());
+		updateUI();
 	}
 
 	/** private class **/
@@ -97,7 +106,8 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 		System.out.println("card taken by user");
 		CardInsideJPanel.removeCard();
 		switchToCardStatic(STRING_SELECT_CARD);
-		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_WELCOME);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_WELCOME);
 	}
 
 	public static void waitPopCardStatic() {

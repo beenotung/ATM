@@ -1,9 +1,6 @@
-package atm.gui.virtualslots;
+package atm.gui.virtualslots.cashdispenser;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
@@ -11,8 +8,6 @@ import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
-
 import webs.layout.CircleLayout;
 import atm.gui.notes.CashNote100;
 import atm.gui.notes.CashNote1000;
@@ -94,6 +89,13 @@ public class CashDispenserJPanel extends JPanel {
 				}
 			}
 		}
+		myUpdateUI();
+	}
+
+	public void myUpdateUI() {
+		cashPanel.setPreferredSize(cashPanel.getMinimumSize());
+		setPreferredSize(getMinimumSize());
+		cashPanel.updateUI();
 		updateUI();
 	}
 

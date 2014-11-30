@@ -10,8 +10,8 @@ import atm.gui.monitor.mainscreen.ViewBalanceJPanel;
 import atm.gui.monitor.mainscreen.WithDrawalJPanel;
 import atm.gui.monitor.sidebuttons.LeftSideButtonsJPanel;
 import atm.gui.monitor.sidebuttons.RightSideButtonsJPanel;
-import atm.gui.virtualslots.CardInsideJPanel;
-import atm.gui.virtualslots.CardSlotCardJPanel;
+import atm.gui.virtualslots.cardslot.CardInsideJPanel;
+import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
 
 import java.awt.BorderLayout;
 import java.net.MalformedURLException;
