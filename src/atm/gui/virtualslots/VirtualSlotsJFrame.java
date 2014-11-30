@@ -1,10 +1,11 @@
 package atm.gui.virtualslots;
 
+import java.awt.BorderLayout;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 
-import javax.swing.JFrame;
 import javax.swing.BoxLayout;
+import javax.swing.JFrame;
 
 public class VirtualSlotsJFrame extends JFrame {
 
@@ -19,7 +20,8 @@ public class VirtualSlotsJFrame extends JFrame {
 		super("Virtual Slots");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setSize(400, 300);
-		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+		getContentPane().setLayout(
+				new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
 		cardSlotCardJPanel = new CardSlotCardJPanel();
 		getContentPane().add(cardSlotCardJPanel);
@@ -32,8 +34,8 @@ public class VirtualSlotsJFrame extends JFrame {
 		setVisible(true);
 		pack();
 		Rectangle client = getBounds();
-		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds()
-				.getBounds();
+		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getMaximumWindowBounds().getBounds();
 		int x = screen.width - client.width;
 		int y = 0;
 		setLocation(x, y);

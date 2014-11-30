@@ -28,4 +28,9 @@ public class CashCount {
 	public void add(int number) {
 		count += number;
 	}
+
+	@Override
+	public String toString() {
+		return MyStrings.DOLLAR_SIGN + " " + value + " x" + count;
+	}
 }
