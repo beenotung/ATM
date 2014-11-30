@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project ATM with Jar-in-Jar Loader">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="/home/beenotung/Dropbox/tmp/atm.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="launcher.ATMCaseStudy"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ jsch-0.1.51.jar mysql-connector-java-5.1.34-bin.jar mariadb-java-client-1.1.7.jar EaSynthLookAndFeel.jar weblaf-complete-1.28.jar miglayout15-swing.jar"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="/home/beenotung/.temp/eclipse/ATM/bin"/>
+            <fileset dir="/home/beenotung/.temp/eclipse/java-myutils/bin"/>
+            <zipfileset dir="/home/beenotung/.temp/eclipse/java-myutils/lib" includes="jsch-0.1.51.jar"/>
+            <zipfileset dir="/home/beenotung/.temp/eclipse/java-myutils/lib" includes="mysql-connector-java-5.1.34-bin.jar"/>
+            <zipfileset dir="/home/beenotung/.temp/eclipse/java-myutils/lib" includes="mariadb-java-client-1.1.7.jar"/>
+            <zipfileset dir="/home/beenotung/.temp/eclipse/ATM/lib" includes="EaSynthLookAndFeel.jar"/>
+            <zipfileset dir="/home/beenotung/.temp/eclipse/ATM/lib" includes="weblaf-complete-1.28.jar"/>
+            <zipfileset dir="/home/beenotung/.temp/eclipse/ATM" includes="miglayout15-swing.jar"/>
+        </jar>
+    </target>
+</project>
