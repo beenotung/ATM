@@ -156,6 +156,7 @@ public class WithDrawalJPanel extends JPanel {
 
 	public void showMeWrong() {
 		int oldWrongTry = wrongTry;
+		CashDispenser.rollback();
 		showMe();
 		wrongTry = oldWrongTry + 1;
 		if (wrongTry > MyInputHandler.MAX_WRONG_INPUT)
@@ -185,6 +186,8 @@ public class WithDrawalJPanel extends JPanel {
 			CashDispenser.rollback();
 			CashNotEnoughJPanel.showMeStatic();
 		} catch (CashOutException e) {
+			if (e.getCashCounts() == null)
+				CashRequiredNotSupportedJPanel.showMe();
 			CashDispenserJPanel.setPopCashCountsStatic(e.getCashCounts());
 			CardSlotCardJPanel.popCardStatic();
 		}

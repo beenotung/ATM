@@ -17,7 +17,7 @@ public class CashDispenser {
 	public static void init() {
 		// set count attribute to default
 		cashCounts = new Vector<CashCount>();
-		cashCounts.add(new CashCount(100, 15));
+		cashCounts.add(new CashCount(100, 1));
 		cashCounts.add(new CashCount(500, 8));
 		cashCounts.add(new CashCount(1000, 2));
 	} // end CashDispenser constructor
@@ -38,6 +38,11 @@ public class CashDispenser {
 				result.get(result.size() - 1).add(1);
 			}
 		}
+		int amountPop = 0;
+		for (CashCount cashCount : result)
+			amountPop += cashCount.getValue() * cashCount.getCount();
+		if (amountPop != amountRequired)
+			return null;
 		lastTransaction = result;
 		return result;
 	} // end method dispenseCash
