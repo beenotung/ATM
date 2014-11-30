@@ -105,16 +105,19 @@ public class Withdrawal extends Transaction {
 		if (commandMode)
 			throw new InitializationException(
 					"WithDrawal: amount has not be initialized");
-		@SuppressWarnings("unused")
-		boolean cashDispensed = false; // cash was not dispensed yet
+
+		int withExtraCharge = amount;
 		if (!Account.isMyBankAccount(getAccountNumber()))
-			if (!BankDatabase.getAccount(getAccountNumber()).isEnough(amount))
-				throw new OverdrawnException();
+			withExtraCharge += MyStaticStuff.EXTRA_CHARGE;
+
+		if (!BankDatabase.getAccount(getAccountNumber()).isEnough(
+				withExtraCharge))
+			throw new OverdrawnException();
 		Vector<CashCount> cashPop = CashDispenser.dispenseCash(amount);
 		if (!Account.isMyBankAccount(getAccountNumber()))
 			BankDatabase.debit(getAccountNumber(), MyStaticStuff.EXTRA_CHARGE);
 		BankDatabase.debit(getAccountNumber(), amount);
-		cashDispensed = true; // cash was dispensed
+
 		throw new CashOutException(cashPop);
 	}
 

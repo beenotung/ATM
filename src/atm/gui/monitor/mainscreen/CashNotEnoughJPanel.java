@@ -1,6 +1,5 @@
 package atm.gui.monitor.mainscreen;
 
-import javax.management.monitor.Monitor;
 import javax.security.auth.login.AccountNotFoundException;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;

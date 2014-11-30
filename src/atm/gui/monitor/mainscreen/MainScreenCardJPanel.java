@@ -29,6 +29,7 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 	public static final String STRING_TAKE_CASH = "Take Cash";
 	public static final String STRING_OVERDRAWN = "Overdrawn";
 	public static final String STRING_CASH_NOT_ENOUGH = "Cash Not Enough";
+	public static final String STRING_TRANSFER_RECEIVER_ACCOUNT_NOT_FOUND = "Transfer Receiver Account Not Found";
 
 	private ViewBalanceJPanel viewBalanceJPanel;
 
@@ -53,6 +54,8 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 		addToCards(new TakeCashJPanel(), STRING_TAKE_CASH);
 		addToCards(new OverdrawnJPanel(), STRING_OVERDRAWN);
 		addToCards(new CashNotEnoughJPanel(), STRING_CASH_NOT_ENOUGH);
+		addToCards(new TransferReceiverAccountNotFoundJPanel(),
+				STRING_TRANSFER_RECEIVER_ACCOUNT_NOT_FOUND);
 
 		// switchToCard(STRING_WELCOME);
 		WelcomeJPanel.showMeStatic();

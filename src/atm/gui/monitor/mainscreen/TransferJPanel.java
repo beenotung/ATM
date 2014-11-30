@@ -1,6 +1,7 @@
 //TODO TransferJPanel
 package atm.gui.monitor.mainscreen;
 
+import javax.security.auth.login.AccountNotFoundException;
 import javax.swing.JPanel;
 
 import java.util.Vector;
@@ -9,12 +10,15 @@ import javax.swing.BoxLayout;
 
 import java.awt.Component;
 
+import atm.core.ATM;
+import atm.exception.OverdrawnException;
+import atm.exception.TransferSameAccountException;
 import atm.gui.MyGUISettings;
 import atm.gui.keypad.KeypadJFrame;
 import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
 import atm.utils.MyStaticStuff;
-import atm.utils.MyStrings;
+import bank.operation.Transfer;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -74,6 +78,7 @@ public class TransferJPanel extends JPanel {
 		wrongTry = 0;
 	}
 
+	/** instance methods **/
 	public void enterKeyPressed() {
 		switch (KeypadJFrame.getModeStatic()) {
 		case KeypadJFrame.STRING_MODE_ACCOUNTNUMBER:
@@ -87,8 +92,23 @@ public class TransferJPanel extends JPanel {
 	}
 
 	private void tryTransfer() {
-		// TODO Auto-generated method stub
-
+		try {
+			double amount = Double.parseDouble(amountTextField.getText());
+			// TODO Auto-generated method stub
+			Transfer.transferGUI(ATM.getATM(),
+					receiverAccountNumberTextField.getText(), amount);
+		} catch (NumberFormatException e) {
+			MainMenuJPanel.showMe();
+		} catch (AccountNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransferSameAccountException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OverdrawnException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void showMe() {
@@ -129,4 +149,21 @@ public class TransferJPanel extends JPanel {
 		}
 	}
 
+	/** static methods **/
+	public static void waitReturnFromWrongStatic() {
+		waitReturnFromWrongThread returnFromWrongThread = new waitReturnFromWrongThread();
+		returnFromWrongThread.start();
+	}
+
+	/** private class **/
+	private static class waitReturnFromWrongThread extends Thread {
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+			}
+			showMeWrongStatic();
+		}
+	}
 }

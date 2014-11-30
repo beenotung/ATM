@@ -98,47 +98,33 @@ public class Transfer {
 		return result;
 	}
 
-	public static Vector<Transaction> transferGUI(ATM atm,
-			String accountNumberTo, double amount)
-			throws AccountNotFoundException, TransferSameAccountException,
-			OverdrawnException {
-		Vector<Transaction> result = new Vector<Transaction>();
-		UI ui = atm.getUI();
+	public static void transferGUI(ATM atm, String accountNumberTo,
+			double amount) throws AccountNotFoundException,
+			TransferSameAccountException, OverdrawnException {
 
 		Account accountFrom = BankDatabase.getAccount(atm
 				.getCurrentAccountNumber());
-		Account accountTo = null;
-
-		boolean ok;
-
-		accountTo = BankDatabase.getAccount(accountNumberTo);
+		Account accountTo = BankDatabase.getAccount(accountNumberTo);
 		if (accountFrom.getAccountNumber() == accountTo.getAccountNumber())
 			throw new TransferSameAccountException();
 
-		// get amount to be transfered from user
 		// auto throw OverdrawnException if the accountFrom has not enough
 		// available balance
 
-		try {
+		double withExtraCharge = amount;
+		if (!accountFrom.isMyBankAccount())
+			withExtraCharge += MyStaticStuff.EXTRA_CHARGE;
 
-			if (accountFrom.isEnough(amount)) {
-				accountFrom.debit(amount);
+		try {
+			if (accountFrom.isEnough(withExtraCharge)) {
+				accountFrom.debit(withExtraCharge);
 				accountTo.credit(amount);
 			} else {
 				throw new OverdrawnException();
 			}
-
-		} catch (OverdrawnException e) {
-			throw e;
+		} catch (OverdrawnException overdrawnException) {
+			throw overdrawnException;
 		}
-
-		{
-			if (!accountFrom.isMyBankAccount())
-				ui.screen.displayMessageLine(MyStaticStuff
-						.getExtraChargeString());
-			ui.screen.displayMessageLine(MyStrings.TRANSFER_SUCCEED);
-		}
-		return result;
 	}
 
 }

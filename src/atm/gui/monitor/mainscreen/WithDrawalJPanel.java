@@ -22,7 +22,6 @@ import atm.gui.MyGUISettings;
 import atm.gui.keypad.KeypadJFrame;
 import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
-import atm.gui.virtualslots.cardslot.Card;
 import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
 import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
 import atm.utils.MyImages;
