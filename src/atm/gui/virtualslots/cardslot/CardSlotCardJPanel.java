@@ -126,8 +126,7 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 		TakeCardJPanel.showMe();		
 		for (CardSlotCardJPanel cardSlotCardJPanel : contents) {
 			cardSlotCardJPanel.popCard();
-		}
-		VirtualSlotsJFrame.myResetStatic();
+		}		
 	}
 
 	public static void takeCardStatic() {

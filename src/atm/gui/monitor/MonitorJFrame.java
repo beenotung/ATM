@@ -3,6 +3,7 @@ package atm.gui.monitor;
 import javax.swing.JFrame;
 
 import atm.gui.MyGUISettings;
+import atm.gui.monitor.mainscreen.CashNotEnoughJPanel;
 import atm.gui.monitor.mainscreen.MainMenuJPanel;
 import atm.gui.monitor.mainscreen.MainScreenCardJPanel;
 import atm.gui.monitor.mainscreen.TransferJPanel;
@@ -42,7 +43,8 @@ public class MonitorJFrame extends JFrame {
 
 		mainScreenJPanel = new MainScreenCardJPanel();
 		getContentPane().add(mainScreenJPanel, BorderLayout.CENTER);
-		mainScreenJPanel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		mainScreenJPanel.setBackground(MyGUISettings
+				.getATMScreenBackGroundColor());
 	}
 
 	public void calcBounds(int w, int h, int s) {
@@ -60,7 +62,7 @@ public class MonitorJFrame extends JFrame {
 		switch (STATE) {
 		case MainScreenCardJPanel.STRING_MAIN_MENU:
 			System.out.println("MainScreenCardJPanel.STRING_MAIN_MENU:");
-			switch (command) {			
+			switch (command) {
 			case MainScreenCardJPanel.STRING_VIEW_BALANCE:
 				ViewBalanceJPanel.showMeStatic();
 				break;
@@ -97,9 +99,17 @@ public class MonitorJFrame extends JFrame {
 				WithDrawalJPanel.sideButtonClickStatic(command);
 				break;
 			}
-		case MainScreenCardJPanel.STRING_TRANSFER:
-		{
-			
+		case MainScreenCardJPanel.STRING_CASH_NOT_ENOUGH:
+			switch (command) {
+			case CashNotEnoughJPanel.STRING_MAIN_MENU:
+				MainMenuJPanel.showMe();
+				break;
+			case CashNotEnoughJPanel.STRING_TAKE_CARD:
+				CardSlotCardJPanel.popCardStatic();
+				break;
+			}
+		case MainScreenCardJPanel.STRING_TRANSFER: {
+
 		}
 		default:
 			break;

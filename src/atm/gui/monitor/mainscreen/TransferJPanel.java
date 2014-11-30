@@ -38,20 +38,17 @@ public class TransferJPanel extends JPanel {
 	private int wrongTry;
 	private JTextField receiverAccountNumberTextField;
 	private JTextField amountTextField;
-	private int pointer;
 
 	public TransferJPanel() {
 		contents.add(this);
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-		
 		JLabel lblExtraCharge = new JLabel(MyStaticStuff.getExtraChargeString());
 		lblExtraCharge.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(lblExtraCharge);
 		lblExtraCharge.setFont(MyGUISettings.getFont(18));
-		
-		
+
 		JLabel lblNewLabel = new JLabel("Receiver Account Number:");
 		lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(lblNewLabel);
@@ -108,9 +105,21 @@ public class TransferJPanel extends JPanel {
 				KeypadJFrame.STRING_MODE_ACCOUNTNUMBER);
 	}
 
+	public void showMeWrong() {
+		int oldWrongTry = wrongTry;
+		showMe();
+		wrongTry = oldWrongTry + 1;
+	}
+
 	public static void showMeStatic() {
 		for (TransferJPanel content : contents) {
 			content.showMe();
+		}
+	}
+
+	public static void showMeWrongStatic() {
+		for (TransferJPanel content : contents) {
+			content.showMeWrong();
 		}
 	}
 

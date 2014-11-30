@@ -22,6 +22,7 @@ import atm.gui.MyGUISettings;
 import atm.gui.keypad.KeypadJFrame;
 import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
+import atm.gui.virtualslots.cardslot.Card;
 import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
 import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
 import atm.utils.MyImages;
@@ -152,6 +153,12 @@ public class WithDrawalJPanel extends JPanel {
 				.switchToCardStatic(MainScreenCardJPanel.STRING_WITHDRAWAL);
 	}
 
+	public void showMeWrong() {
+		int oldWrongTry = wrongTry;
+		showMe();
+		wrongTry = oldWrongTry + 1;
+	}
+
 	public void tryWithDrawal() {
 		try {
 			withdrawalOperation.setAmount(textField.getText());
@@ -174,6 +181,7 @@ public class WithDrawalJPanel extends JPanel {
 			OverdrawnJPanel.showMeStatic();
 		} catch (CashNotEnoughException e) {
 			CashDispenser.rollback();
+			CashNotEnoughJPanel.showMeStatic();
 		} catch (CashOutException e) {
 			CashDispenserJPanel.setPopCashCountsStatic(e.getCashCounts());
 			CardSlotCardJPanel.popCardStatic();
@@ -181,6 +189,12 @@ public class WithDrawalJPanel extends JPanel {
 	}
 
 	/** static methods **/
+	public static void waitReturnFromWrongStatic() {
+		waitReturnFromWrongThread returnFromWrongThread = new waitReturnFromWrongThread();
+		returnFromWrongThread.start();
+	}
+
+	/** static connector to instance stuff **/
 	public static void sideButtonClickStatic(String command) {
 		for (WithDrawalJPanel withDrawalJPanel : contents) {
 			withDrawalJPanel.sideButtonClick(command);
@@ -193,9 +207,28 @@ public class WithDrawalJPanel extends JPanel {
 		}
 	}
 
+	public static void showMeWrongStatic() {
+		for (WithDrawalJPanel withDrawalJPanel : contents) {
+			withDrawalJPanel.showMeWrong();
+		}
+	}
+
 	public static void enterButtonClickStatic() {
 		for (WithDrawalJPanel withDrawalJPanel : contents) {
 			withDrawalJPanel.enterButtonClick();
 		}
 	}
+
+	/** private class **/
+	private static class waitReturnFromWrongThread extends Thread {
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+			}
+			showMeWrongStatic();
+		}
+	}
+
 }

@@ -13,7 +13,6 @@ public class MyImages {
 	public static ImageIcon viewBalance;
 	public static ImageIcon transfer;
 	public static ImageIcon extraCharge;
-	public static ImageIcon cashNotEnough;
 
 	private static boolean inited = false;
 
@@ -30,9 +29,6 @@ public class MyImages {
 				MyURLs.IMAGE_TRANSFER)), MyGUISettings.MONITOR_TOP_MARGIN);
 		extraCharge = MyImageUtils.scaleImageIconByHeight(new ImageIcon(
 				new URL(MyURLs.IMAGE_EXTRA_CHARGE)),
-				MyGUISettings.MONITOR_TOP_MARGIN);
-		cashNotEnough = MyImageUtils.scaleImageIconByHeight(new ImageIcon(
-				new URL(MyURLs.IMAGE_CASH_NOT_ENOUGH)),
 				MyGUISettings.MONITOR_TOP_MARGIN);
 
 		inited = true;

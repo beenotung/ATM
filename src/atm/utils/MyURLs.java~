@@ -27,7 +27,6 @@ public class MyURLs {
 	public static final String IMAGE_TRANSFER = "http://xtupload.com/image.php?id=F85F_547B1FA3";
 	public static final String IMAGE_EXTRA_CHARGE_THREE_Line = "http://xtupload.com/image.php?id=19BB_547B2F97";
 	public static final String IMAGE_EXTRA_CHARGE = "http://xtupload.com/image.php?id=E99F_547B3824";
-	public static final String IMAGE_CASH_NOT_ENOUGH = "http://xtupload.com/image.php?id=DCDC_547B3D18";
 }
 
 class MyURLs_OLD {

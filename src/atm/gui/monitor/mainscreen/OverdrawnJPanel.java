@@ -62,6 +62,7 @@ public class OverdrawnJPanel extends JPanel {
 			myUpdate();
 			MainScreenCardJPanel
 					.switchToCardStatic(MainScreenCardJPanel.STRING_OVERDRAWN);
+			WithDrawalJPanel.waitReturnFromWrongStatic();
 		} catch (AccountNotFoundException e) {
 			CardNotValidJPanel.showMe();
 		}
