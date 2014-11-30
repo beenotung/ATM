@@ -101,7 +101,6 @@ public class Withdrawal extends Transaction {
 
 	public void executeGUI() throws AccountNotFoundException,
 			OverdrawnException, CashNotEnoughException, CashOutException {
-		// TODO Auto-generated method stub
 		// throw overdrawexception, cashnotenoughexception
 		if (commandMode)
 			throw new InitializationException(
@@ -116,7 +115,6 @@ public class Withdrawal extends Transaction {
 			BankDatabase.debit(getAccountNumber(), MyStaticStuff.EXTRA_CHARGE);
 		BankDatabase.debit(getAccountNumber(), amount);
 		cashDispensed = true; // cash was dispensed
-		// TODO CashOutException
 		throw new CashOutException(cashPop);
 	}
 

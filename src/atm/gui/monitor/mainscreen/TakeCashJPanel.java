@@ -1,4 +1,3 @@
-//TODO TakeCashJPanel
 package atm.gui.monitor.mainscreen;
 
 import javax.swing.JPanel;

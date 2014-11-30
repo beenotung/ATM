@@ -11,6 +11,7 @@ import java.awt.Component;
 
 import atm.core.ATM;
 import atm.gui.MyGUISettings;
+import atm.gui.keypad.KeypadJFrame;
 import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
 
@@ -36,6 +37,7 @@ public class TransferJPanel extends JPanel {
 	private int wrongTry;
 	private JTextField receiverAccountNumberTextField;
 	private JTextField amountTextField;
+	private int pointer;
 
 	public TransferJPanel() {
 		contents.add(this);
@@ -67,15 +69,35 @@ public class TransferJPanel extends JPanel {
 		wrongTry = 0;
 	}
 
+	public void enterKeyPressed() {
+		switch (KeypadJFrame.getModeStatic()) {
+		case KeypadJFrame.STRING_MODE_ACCOUNTNUMBER:
+			KeypadJFrame.switchTargetStatic(amountTextField,
+					KeypadJFrame.STRING_MODE_AMOUNT);
+			break;
+		case KeypadJFrame.STRING_MODE_AMOUNT:
+			tryTransfer();
+			break;
+		}
+	}
+
+	private void tryTransfer() {
+		// TODO Auto-generated method stub
+
+	}
+
 	public void showMe() {
 		System.out.println("show transfer jpanel");
 
-		receiverAccountNumberTextField.setText("");
-		amountTextField.setText("");
 		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_TRANSFER;
 		SideButtons.commands = TransferJPanel.commands;
 		MainScreenCardJPanel
 				.switchToCardStatic(MainScreenCardJPanel.STRING_TRANSFER);
+
+		receiverAccountNumberTextField.setText("");
+		amountTextField.setText("");
+		KeypadJFrame.switchTargetStatic(receiverAccountNumberTextField,
+				KeypadJFrame.STRING_MODE_ACCOUNTNUMBER);
 	}
 
 	public static void showMeStatic() {
@@ -83,4 +105,11 @@ public class TransferJPanel extends JPanel {
 			content.showMe();
 		}
 	}
+
+	public static void enterKeyPressedStatic() {
+		for (TransferJPanel transferJPanel : contents) {
+			transferJPanel.enterKeyPressed();
+		}
+	}
+
 }

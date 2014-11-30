@@ -18,6 +18,7 @@ import javax.swing.text.JTextComponent;
 
 import atm.core.ATM;
 import atm.gui.monitor.MonitorJFrame;
+import atm.gui.monitor.mainscreen.TransferJPanel;
 import atm.gui.monitor.mainscreen.WithDrawalJPanel;
 
 public class KeypadJFrame extends JFrame {
@@ -116,6 +117,7 @@ public class KeypadJFrame extends JFrame {
 	} // end CalculatorFrame constructor
 
 	/** instance methods **/
+
 	private void switchMode(String stringModePassword) {
 		mode = stringModePassword;
 		switch (mode) {
@@ -226,6 +228,7 @@ public class KeypadJFrame extends JFrame {
 				try {
 					textComponent.setText("");
 				} catch (NullPointerException e2) {
+					// just ignore this
 				}
 			}
 		};
@@ -244,6 +247,9 @@ public class KeypadJFrame extends JFrame {
 					break;
 				case STRING_MODE_CASH_AMOUNT:
 					WithDrawalJPanel.enterButtonClickStatic();
+					break;
+				case STRING_MODE_AMOUNT:
+					TransferJPanel.enterKeyPressedStatic();
 					break;
 				}
 			}
@@ -278,5 +284,12 @@ public class KeypadJFrame extends JFrame {
 		for (KeypadJFrame keypadJFrame : contents) {
 			keypadJFrame.switchMode(mode);
 		}
+	}
+
+	public static String getModeStatic() {
+		for (KeypadJFrame keypadJFrame : contents) {
+			return keypadJFrame.mode;
+		}
+		return null;
 	}
 } // end class CalculatorFrame 
