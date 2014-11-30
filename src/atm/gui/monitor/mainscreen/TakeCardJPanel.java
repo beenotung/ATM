@@ -11,7 +11,6 @@ import java.awt.Component;
 
 import javax.swing.Box;
 
-import atm.core.CashDispenser;
 import atm.gui.MyGUISettings;
 import atm.gui.monitor.sidebuttons.SideButtons;
 import myutils.Utils;

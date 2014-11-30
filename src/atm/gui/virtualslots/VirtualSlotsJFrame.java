@@ -7,11 +7,8 @@ import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 
-import webs.layout.WrapLayout;
-
-import com.alee.extended.layout.WrapFlowLayout;
-
 import atm.gui.MyGUISettings;
+import atm.gui.monitor.mainscreen.WelcomeJPanel;
 import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
 import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
 
@@ -64,9 +61,21 @@ public class VirtualSlotsJFrame extends JFrame {
 		calcBounds();
 	}
 
+	public void myReset() {
+		cardSlotCardJPanel.switchToCard(CardSlotCardJPanel.STRING_SELECT_CARD);
+		WelcomeJPanel.showMeStatic();
+	}
+
+	/** static connector to instance stuff **/
 	public static void myUpdateUIStatic() {
 		for (VirtualSlotsJFrame virtualSlotsJFrame : contents) {
 			virtualSlotsJFrame.myUpdateUI();
+		}
+	}
+
+	public static void myResetStatic() {
+		for (VirtualSlotsJFrame virtualSlotsJFrame : contents) {
+			virtualSlotsJFrame.myReset();
 		}
 	}
 }

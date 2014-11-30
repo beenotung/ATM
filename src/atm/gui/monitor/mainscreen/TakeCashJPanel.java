@@ -5,13 +5,9 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 
 import java.awt.Font;
-import java.util.Vector;
-
 import webs.layout.CenterLayout;
 import atm.gui.MyGUISettings;
 import atm.gui.monitor.sidebuttons.SideButtons;
-import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
-import atm.utils.CashCount;
 
 public class TakeCashJPanel extends JPanel {
 
@@ -35,10 +31,9 @@ public class TakeCashJPanel extends JPanel {
 		lblPleaseTakeYour.setFont(new Font("Arial", Font.PLAIN, 26));
 	}
 
-	public static void showMe(Vector<CashCount> popCashCounts) {
+	public static void showMe() {
 		SideButtons.commands = TakeCashJPanel.commands;
 		MainScreenCardJPanel
-				.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CASH);
-		CashDispenserJPanel.myUpdateStatic(popCashCounts);
+				.switchToCardStatic(MainScreenCardJPanel.STRING_TAKE_CASH);		
 	}
 }

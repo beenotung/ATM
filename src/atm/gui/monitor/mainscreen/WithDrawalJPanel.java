@@ -22,6 +22,7 @@ import atm.gui.MyGUISettings;
 import atm.gui.keypad.KeypadJFrame;
 import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
+import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
 import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
 import atm.utils.MyStrings;
@@ -146,7 +147,8 @@ public class WithDrawalJPanel extends JPanel {
 		} catch (CashNotEnoughException e) {
 			CashDispenser.rollback();
 		} catch (CashOutException e) {
-			TakeCashJPanel.showMe(e.getCashCounts());
+			CashDispenserJPanel.setPopCashCountsStatic(e.getCashCounts());
+			TakeCardJPanel.showMe();
 		}
 	}
 

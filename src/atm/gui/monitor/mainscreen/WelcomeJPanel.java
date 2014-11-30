@@ -33,6 +33,7 @@ public class WelcomeJPanel extends JPanel {
 	public void showMe() {
 		availableCashNotesJPanel.myUpdate();
 		ATM.initStatic();
+		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_WELCOME);
 	}
 
 	public static void showMeStatic() {

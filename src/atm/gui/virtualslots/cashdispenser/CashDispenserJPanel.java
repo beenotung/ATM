@@ -14,6 +14,7 @@ import atm.core.CashDispenser;
 import atm.gui.notes.CashNote100;
 import atm.gui.notes.CashNote1000;
 import atm.gui.notes.CashNote500;
+import atm.gui.virtualslots.VirtualSlotsJFrame;
 import atm.utils.CashCount;
 import atm.utils.MyStrings;
 
@@ -27,6 +28,8 @@ public class CashDispenserJPanel extends JPanel {
 	private JLabel noCashLabel;
 	private JButton takeCashJButton;
 	private JPanel cashPanel;
+	public static boolean hasCashToBePopped = false;
+	private Vector<CashCount> popCashCounts;
 
 	public CashDispenserJPanel() {
 		contents.add(this);
@@ -50,17 +53,23 @@ public class CashDispenserJPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("cash taken by user");
+				hasCashToBePopped = false;
 				CashDispenser.commit();
 				noCashLabel.setVisible(true);
 				takeCashJButton.setVisible(false);
-				cashPanel.removeAll();
-				cashPanel.updateUI();
-				updateUI();				
+				cashPanel.setVisible(false);
+				myUpdateUI();
+				VirtualSlotsJFrame.myResetStatic();
 			}
 		};
 	}
 
-	public void myUpdate(Vector<CashCount> popCashCounts) {
+	public void setPopCashCounts(Vector<CashCount> popCashCounts) {
+		hasCashToBePopped = true;
+		this.popCashCounts = popCashCounts;
+	}
+
+	public void showMe() {
 		noCashLabel.setVisible(false);
 		takeCashJButton.setVisible(true);
 		// reset contentpanel layout (shown-part GUI)
@@ -96,15 +105,18 @@ public class CashDispenserJPanel extends JPanel {
 	}
 
 	public void myUpdateUI() {
-		cashPanel.setPreferredSize(cashPanel.getMinimumSize());
+		if (cashPanel.isVisible()) {
+			cashPanel.setPreferredSize(cashPanel.getMinimumSize());
+			cashPanel.updateUI();
+		}
 		setPreferredSize(getMinimumSize());
-		cashPanel.updateUI();
 		updateUI();
 	}
 
-	public static void myUpdateStatic(Vector<CashCount> popCashCounts) {
+	/** static connector to instance stuff **/
+	public static void setPopCashCountsStatic(Vector<CashCount> popCashCounts) {
 		for (CashDispenserJPanel content : contents) {
-			content.myUpdate(popCashCounts);
+			content.setPopCashCounts(popCashCounts);
 		}
 	}
 }

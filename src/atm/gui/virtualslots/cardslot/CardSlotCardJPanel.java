@@ -3,9 +3,10 @@ package atm.gui.virtualslots.cardslot;
 import java.util.Vector;
 
 import atm.core.ATM;
-import atm.gui.monitor.mainscreen.MainScreenCardJPanel;
 import atm.gui.monitor.mainscreen.TakeCardJPanel;
+import atm.gui.monitor.mainscreen.TakeCashJPanel;
 import atm.gui.virtualslots.VirtualSlotsJFrame;
+import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
 import myutils.gui.cardlayout.AbstractCardJPanel;
 
 public class CardSlotCardJPanel extends AbstractCardJPanel {
@@ -18,6 +19,7 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 
 	public static final String STRING_SELECT_CARD = "Select Card";
 	public static final String STRING_CARD_INSIDE = "Card Inside";
+	public static final String STRING_EMPTY = "Empty";
 
 	public static String STATE = "";
 
@@ -35,6 +37,7 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 		cardInsideJPanel = new CardInsideJPanel();
 		addToCards(selectCardJPanel, STRING_SELECT_CARD);
 		addToCards(cardInsideJPanel, STRING_CARD_INSIDE);
+		addToCards(new EmptyJPanel(), STRING_EMPTY);
 		switchToCard(STRING_SELECT_CARD);
 	}
 
@@ -114,9 +117,12 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 	public static void takeCardStatic() {
 		System.out.println("card taken by user");
 		CardInsideJPanel.removeCard();
-		switchToCardStatic(STRING_SELECT_CARD);
-		MainScreenCardJPanel
-				.switchToCardStatic(MainScreenCardJPanel.STRING_WELCOME);
+		if (CashDispenserJPanel.hasCashToBePopped) {
+			switchToCardStatic(STRING_EMPTY);
+			TakeCashJPanel.showMe();
+		} else {
+			VirtualSlotsJFrame.myResetStatic();
+		}
 	}
 
 	public static void waitPopCardStatic() {

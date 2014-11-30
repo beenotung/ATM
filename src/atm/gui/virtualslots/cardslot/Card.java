@@ -11,7 +11,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
-import atm.core.CashDispenser;
 import atm.gui.MyGUISettings;
 import atm.utils.MyURLs;
 
