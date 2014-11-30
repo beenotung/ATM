@@ -16,4 +16,9 @@ public class SelectCardJPanel extends JPanel {
 			add(card.buttonInsert);
 		setPreferredSize(getMinimumSize());
 	}
+
+	public void myUpdateUI() {
+		setPreferredSize(getMinimumSize());
+		updateUI();
+	}
 }

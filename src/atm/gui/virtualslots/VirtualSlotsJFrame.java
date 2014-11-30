@@ -48,7 +48,9 @@ public class VirtualSlotsJFrame extends JFrame {
 	}
 
 	public void myUpdateUI() {
+		if(cardSlotCardJPanel!=null)
 		cardSlotCardJPanel.myUpdateUI();
+		if(cashDispenserJPanel!=null)
 		cashDispenserJPanel.myUpdateUI();
 		setPreferredSize(getMinimumSize());
 		calcBounds();

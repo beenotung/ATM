@@ -21,6 +21,9 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 
 	public static String STATE = "";
 
+	private SelectCardJPanel selectCardJPanel;
+	private CardInsideJPanel cardInsideJPanel;
+
 	/** constructor **/
 	public CardSlotCardJPanel() {
 		contents.add(this);
@@ -28,8 +31,10 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 
 	@Override
 	protected void myInit() {
-		addToCards(new SelectCardJPanel(), STRING_SELECT_CARD);
-		addToCards(new CardInsideJPanel(), STRING_CARD_INSIDE);
+		selectCardJPanel = new SelectCardJPanel();
+		cardInsideJPanel = new CardInsideJPanel();
+		addToCards(selectCardJPanel, STRING_SELECT_CARD);
+		addToCards(cardInsideJPanel, STRING_CARD_INSIDE);
 		switchToCard(STRING_SELECT_CARD);
 	}
 
@@ -56,7 +61,7 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 		super.switchToCard(label);
 		System.out.println(STATE);
 		updateUI();
-		VirtualSlotsJFrame.myUpdateUIStatic();
+		myUpdateUI();
 	}
 
 	public void waitPopCard() {
@@ -64,6 +69,10 @@ public class CardSlotCardJPanel extends AbstractCardJPanel {
 	}
 
 	public void myUpdateUI() {
+		if (selectCardJPanel != null)
+			selectCardJPanel.myUpdateUI();
+		if (cardInsideJPanel != null)
+			cardInsideJPanel.myUpdateUI();
 		setPreferredSize(getMinimumSize());
 		updateUI();
 	}

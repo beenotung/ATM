@@ -24,6 +24,14 @@ public class CardInsideJPanel extends JPanel {
 		return (card != null);
 	}
 
+	public static void removeCard() {
+		CardInsideJPanel.card = null;
+	}
+
+	public static Card getCard() {
+		return card;
+	}
+
 	/** instance methods **/
 	public void insertCard(Card card) {
 		CardInsideJPanel.card = card;
@@ -39,6 +47,12 @@ public class CardInsideJPanel extends JPanel {
 		card.buttonTake.setVisible(true);
 	}
 
+	public void myUpdateUI() {
+		setPreferredSize(getMinimumSize());
+		updateUI();
+	}
+
+	/** static connector to instance stuff **/
 	public static void insertCardStatic(Card card) {
 		for (CardInsideJPanel cardInsideJPanel : contents)
 			cardInsideJPanel.insertCard(card);
@@ -47,14 +61,6 @@ public class CardInsideJPanel extends JPanel {
 	public static void popCardStatic() {
 		for (CardInsideJPanel cardInsideJPanel : contents)
 			cardInsideJPanel.popCard();
-	}
-
-	public static void removeCard() {
-		CardInsideJPanel.card = null;
-	}
-
-	public static Card getCard() {
-		return card;
 	}
 
 }
