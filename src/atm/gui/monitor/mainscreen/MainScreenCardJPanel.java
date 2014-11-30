@@ -28,6 +28,8 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 	public static final String STRING_TRANSFER = MainMenuJPanel.STRING_TRANSFER_FUNDS;
 	public static final String STRING_TAKE_CASH = "Take Cash";
 
+	private ViewBalanceJPanel viewBalanceJPanel;
+
 	public MainScreenCardJPanel() {
 		super();
 		contents.add(this);
@@ -40,7 +42,7 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 		addToCards(new CardNotValidJPanel(), STRING_CARD_NOT_VALID);
 		addToCards(new LoginJPanel(), STRING_LOGIN);
 		addToCards(new MainMenuJPanel(), STRING_MAIN_MENU);
-		addToCards(new ViewBalanceJPanel() , STRING_VIEW_BALANCE);
+		viewBalanceJPanel = new ViewBalanceJPanel();
 		addToCards(new MaxWrongTryJPanel(), STRING_MAX_WRONG_TRY);
 		addToCards(new TakeCardJPanel(), STRING_TAKE_CARD);
 		addToCards(new ByeJPanel(), STRING_BYE);
@@ -52,11 +54,22 @@ public class MainScreenCardJPanel extends AbstractCardJPanel {
 		WelcomeJPanel.showMeStatic();
 	}
 
+	public void renewViewBalanceJPanel() {
+		cardLayout.removeLayoutComponent(viewBalanceJPanel);
+		viewBalanceJPanel = new ViewBalanceJPanel();
+		addToCards(viewBalanceJPanel, STRING_VIEW_BALANCE);
+		viewBalanceJPanel.loadinfo();
+	}
+
 	@Override
 	public void switchToCard(String label) {
+		if(label.equals(STRING_VIEW_BALANCE))
+			renewViewBalanceJPanel();
 		MonitorJFrame.STATE = label;
 		super.switchToCard(label);
 	}
+
+	/** static connector to instance stuff **/
 
 	public static void switchToCardStatic(String label) {
 		for (MainScreenCardJPanel content : contents)

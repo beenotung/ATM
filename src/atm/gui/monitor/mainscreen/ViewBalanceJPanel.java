@@ -25,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
 import java.awt.BorderLayout;
+import java.util.ConcurrentModificationException;
 import java.util.Vector;
 
 public class ViewBalanceJPanel extends JPanel {
@@ -36,7 +37,8 @@ public class ViewBalanceJPanel extends JPanel {
 	public static final String STRING_MAIN_MENU = "Main Menu";
 	public static final String STRING_TAKE_CARD = "Take Card";
 
-	public static final String[] commands = { "", "", "", "", STRING_MAIN_MENU, STRING_TAKE_CARD, "", "" };
+	public static final String[] commands = { "", "", "", "", STRING_MAIN_MENU,
+			STRING_TAKE_CARD, "", "" };
 
 	GUIPrinter guiPrinter;
 	private JTextArea text;
@@ -104,14 +106,15 @@ public class ViewBalanceJPanel extends JPanel {
 
 	public void loadinfo() {
 		text.setText("");
-		guiPrinter.start();
 		try {
 			Vector<Transaction> currentTransactions;
-			currentTransactions = ATM.getATM().createTransactions(ATM.BALANCE_INQUIRY);
+			currentTransactions = ATM.getATM().createTransactions(
+					ATM.BALANCE_INQUIRY);
 			if (currentTransactions == null) {
 				MainMenuJPanel.showMe();
 			}
 			// execute transaction
+			guiPrinter.start();
 			for (Transaction currentTransaction : currentTransactions)
 				currentTransaction.execute();
 		} catch (AccountNotFoundException e) {
@@ -124,16 +127,23 @@ public class ViewBalanceJPanel extends JPanel {
 		guiPrinter.stop();
 	}
 
-	public void showMe() {
+	private void showMe() {
 		loadinfo();
 		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_VIEW_BALANCE;
 		SideButtons.commands = ViewBalanceJPanel.commands;
-		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_VIEW_BALANCE);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_VIEW_BALANCE);
 	}
 
 	public static void showMeStatic() {
-		for (ViewBalanceJPanel content : contents) {
-			content.showMe();
+		try {
+			// contents.removeAllElements();
+			// new ViewBalanceJPanel();
+			for (ViewBalanceJPanel content : contents) {
+				content.showMe();
+			}
+		} catch (ConcurrentModificationException e) {
+			// this is expected to happen normally
 		}
 	}
 }

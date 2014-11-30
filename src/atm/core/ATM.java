@@ -277,6 +277,7 @@ public class ATM {
 	public Vector<Transaction> createTransactions(int type)
 			throws CardOutException, WrongInputException,
 			AccountNotFoundException {
+		System.out.println("ATM:createTransactions (type:" + type + ")");
 		// temporary Transaction variable
 		Vector<Transaction> result = new Vector<Transaction>();
 
