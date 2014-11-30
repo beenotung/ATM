@@ -3,6 +3,7 @@ package atm.gui.virtualslots.cardslot;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
@@ -13,8 +14,9 @@ import javax.swing.JLabel;
 
 import atm.gui.MyGUISettings;
 import atm.utils.MyURLs;
+import atm.utils.FetchImageNeeder;
 
-public class Card {
+public class Card implements FetchImageNeeder {
 	private static Vector<Card> cards = new Vector<Card>();
 	public ImageIcon imageIconBright;
 	public ImageIcon imageIconDark;
@@ -49,7 +51,7 @@ public class Card {
 		ActionListener insertCard = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				CardSlotCardJPanel.takeCardStatic();				
+				CardSlotCardJPanel.takeCardStatic();
 			}
 		};
 		return insertCard;
@@ -58,15 +60,27 @@ public class Card {
 	/** constructor **/
 	public Card(String imageURLBright, String imageURLDark, String accountNumber)
 			throws MalformedURLException {
-		imageIconBright = new ImageIcon(new ImageIcon(new URL(imageURLBright)).getImage().getScaledInstance(
-				MyGUISettings.CARD_IMAGE_WIDTH, MyGUISettings.CARD_IMAGE_HEIGHT, Image.SCALE_SMOOTH));
-		imageIconDark = new ImageIcon(new ImageIcon(new URL(imageURLDark)).getImage().getScaledInstance(
-				MyGUISettings.CARD_IMAGE_WIDTH, MyGUISettings.CARD_IMAGE_HEIGHT, Image.SCALE_SMOOTH));
+		imageIconBright = new ImageIcon(new ImageIcon(new URL(imageURLBright))
+				.getImage().getScaledInstance(MyGUISettings.CARD_IMAGE_WIDTH,
+						MyGUISettings.CARD_IMAGE_HEIGHT, Image.SCALE_SMOOTH));
+		imageIconDark = new ImageIcon(new ImageIcon(new URL(imageURLDark))
+				.getImage().getScaledInstance(MyGUISettings.CARD_IMAGE_WIDTH,
+						MyGUISettings.CARD_IMAGE_HEIGHT, Image.SCALE_SMOOTH));
 		buttonInsert = new JButton(imageIconBright);
 		buttonInsert.addActionListener(getInsertActionListener(this));
 		buttonTake = new JButton(new ImageIcon(imageIconBright.getImage()));
 		buttonTake.addActionListener(getTakeActionListener(this));
 		labelDark = new JLabel(imageIconDark);
 		this.accountNumber = accountNumber;
+	}
+
+	@Deprecated
+	public Card() {		
+	}
+
+	@Override
+	public void fetchImage() throws IOException {
+		System.out.println("fetching images of cards");
+		init();
 	}
 }

@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 import myutils.gui.MyImageUtils;
 import atm.gui.MyGUISettings;
 
-public class MyImages {
+public class MyImages implements FetchImageNeeder {
 	public static ImageIcon banner;
 	public static ImageIcon viewBalance;
 	public static ImageIcon transfer;
@@ -36,6 +36,11 @@ public class MyImages {
 				MyGUISettings.MONITOR_TOP_MARGIN);
 
 		inited = true;
+	}
+
+	@Override
+	public void fetchImage() throws IOException {
+		init();
 	}
 
 }

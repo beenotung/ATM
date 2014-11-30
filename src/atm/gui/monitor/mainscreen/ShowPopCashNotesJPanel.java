@@ -6,9 +6,9 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 
 import atm.gui.MyGUISettings;
-import atm.gui.notes.CashNote100;
-import atm.gui.notes.CashNote1000;
-import atm.gui.notes.CashNote500;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote100;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote1000;
+import atm.gui.virtualslots.cashdispenser.notes.CashNote500;
 import atm.utils.CashCount;
 import webs.layout.CircleLayout;
 
