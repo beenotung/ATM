@@ -16,6 +16,7 @@ import javax.swing.Box;
 import atm.core.ATM;
 import atm.core.CashDispenser;
 import atm.exception.CashNotEnoughException;
+import atm.exception.CashNotesNotSupportedException;
 import atm.exception.CashOutException;
 import atm.exception.OverdrawnException;
 import atm.gui.MyGUISettings;
@@ -186,10 +187,10 @@ public class WithDrawalJPanel extends JPanel {
 			CashDispenser.rollback();
 			CashNotEnoughJPanel.showMeStatic();
 		} catch (CashOutException e) {
-			if (e.getCashCounts() == null)
-				CashRequiredNotSupportedJPanel.showMe();
 			CashDispenserJPanel.setPopCashCountsStatic(e.getCashCounts());
 			CardSlotCardJPanel.popCardStatic();
+		} catch (CashNotesNotSupportedException e) {
+			CashRequiredNotSupportedJPanel.showMe();
 		}
 	}
 

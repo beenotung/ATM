@@ -3,6 +3,7 @@ package atm.core;
 import java.util.Vector;
 
 import atm.exception.CashNotEnoughException;
+import atm.exception.CashNotesNotSupportedException;
 import atm.utils.CashCount;
 
 // CashDispenser.java
@@ -17,32 +18,33 @@ public class CashDispenser {
 	public static void init() {
 		// set count attribute to default
 		cashCounts = new Vector<CashCount>();
-		cashCounts.add(new CashCount(100, 1));
+		cashCounts.add(new CashCount(100, 15));
 		cashCounts.add(new CashCount(500, 8));
 		cashCounts.add(new CashCount(1000, 2));
 	} // end CashDispenser constructor
 
-	/** static methods **/
+	/**
+	 * static methods
+	 * 
+	 * @throws CashNotesNotSupportedException
+	 **/
 	// simulates dispensing of specified amount of cash
-	public static Vector<CashCount> dispenseCash(int amountRequired)
-			throws CashNotEnoughException {
+	public static Vector<CashCount> dispenseCash(int amountRemain)
+			throws CashNotEnoughException, CashNotesNotSupportedException {
 		Vector<CashCount> result = new Vector<CashCount>();
-		if (!isSufficientCashAvailable(amountRequired))
+		if (!isSufficientCashAvailable(amountRemain))
 			throw new CashNotEnoughException();
 		for (int i = cashCounts.size() - 1; i >= 0; i--) {
 			result.add(new CashCount(cashCounts.get(i).getValue(), 0));
-			while ((amountRequired >= cashCounts.get(i).getValue())
+			while ((amountRemain >= cashCounts.get(i).getValue())
 					&& (cashCounts.get(i).getCount() > 0)) {
-				amountRequired -= cashCounts.get(i).getValue();
+				amountRemain -= cashCounts.get(i).getValue();
 				cashCounts.get(i).remove(1);
 				result.get(result.size() - 1).add(1);
 			}
 		}
-		int amountPop = 0;
-		for (CashCount cashCount : result)
-			amountPop += cashCount.getValue() * cashCount.getCount();
-		if (amountPop != amountRequired)
-			return null;
+		if (amountRemain != 0)
+			throw new CashNotesNotSupportedException(amountRemain, result);
 		lastTransaction = result;
 		return result;
 	} // end method dispenseCash

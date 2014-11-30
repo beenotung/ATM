@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 
 import atm.core.ATM;
 import atm.exception.CardOutException;
+import atm.exception.CashNotesNotSupportedException;
 import atm.exception.WrongInputException;
 import atm.gui.MyGUISettings;
 import atm.gui.monitor.MonitorJFrame;
@@ -125,6 +126,8 @@ public class ViewBalanceJPanel extends JPanel {
 			CardSlotCardJPanel.popCardStatic();
 		} catch (WrongInputException e) {
 			MaxWrongTryJPanel.showMe();
+		} catch (CashNotesNotSupportedException e) {
+			// impossible
 		}
 		guiPrinter.stop();
 	}

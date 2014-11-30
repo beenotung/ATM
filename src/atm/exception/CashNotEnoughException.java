@@ -12,6 +12,6 @@ public class CashNotEnoughException extends Exception {
 
 	@Override
 	public String toString() {
-		return "CashNotEnough Exception";
+		return "CashNotEnoughException Exception";
 	}
 }

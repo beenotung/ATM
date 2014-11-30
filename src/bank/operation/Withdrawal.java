@@ -14,6 +14,7 @@ import atm.core.Screen;
 import atm.core.UI;
 import atm.exception.CardOutException;
 import atm.exception.CashNotEnoughException;
+import atm.exception.CashNotesNotSupportedException;
 import atm.exception.CashOutException;
 import atm.exception.OverdrawnException;
 import atm.exception.WrongInputException;
@@ -50,7 +51,7 @@ public class Withdrawal extends Transaction {
 	@Override
 	// perform transaction
 	public void execute() throws WrongInputException, AccountNotFoundException,
-			CardOutException {
+			CardOutException, CashNotesNotSupportedException {
 		boolean cashDispensed = false; // cash was not dispensed yet
 		int tryCount = 0;
 		// loop until cash is dispensed or the user cancels
@@ -100,7 +101,7 @@ public class Withdrawal extends Transaction {
 	} // end method execute
 
 	public void executeGUI() throws AccountNotFoundException,
-			OverdrawnException, CashNotEnoughException, CashOutException {
+			OverdrawnException, CashNotEnoughException, CashOutException, CashNotesNotSupportedException {
 		// throw overdrawexception, cashnotenoughexception
 		if (commandMode)
 			throw new InitializationException(

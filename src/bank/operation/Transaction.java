@@ -8,6 +8,7 @@ import atm.core.Keypad;
 import atm.core.Screen;
 import atm.core.UI;
 import atm.exception.CardOutException;
+import atm.exception.CashNotesNotSupportedException;
 import atm.exception.WrongInputException;
 
 // Transaction.java
@@ -47,7 +48,7 @@ public abstract class Transaction {
 
 	// perform the transaction (overridden by each subclass)
 	public abstract void execute() throws WrongInputException, AccountNotFoundException,
-			CardOutException;
+			CardOutException, CashNotesNotSupportedException;
 } // end class Transaction
 
 /**************************************************************************

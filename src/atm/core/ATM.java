@@ -11,6 +11,7 @@ import bank.operation.Transaction;
 import bank.operation.Transfer;
 import bank.operation.Withdrawal;
 import atm.exception.CardOutException;
+import atm.exception.CashNotesNotSupportedException;
 import atm.exception.WrongInputException;
 import atm.gui.monitor.mainscreen.CardNotValidJPanel;
 import atm.gui.monitor.mainscreen.LoginJPanel;
@@ -242,7 +243,13 @@ public class ATM {
 				}
 				// execute transaction
 				for (Transaction currentTransaction : currentTransactions)
-					currentTransaction.execute();
+					try {
+						currentTransaction.execute();
+					} catch (CashNotesNotSupportedException e) {
+						// unimplemented
+						System.out
+								.println("Cash Notes Not Supported by this ATM");
+					}
 				if (mainMenuSelection == TRANSFER)
 					throw new CardOutException();
 				// auto finish the transaction if with WITHDRAWAL success (card
