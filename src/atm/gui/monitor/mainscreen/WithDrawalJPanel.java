@@ -24,9 +24,11 @@ import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
 import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
 import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
+import atm.utils.MyImages;
 import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
 import atm.utils.MyStrings;
+import bank.account.Account;
 import bank.operation.Withdrawal;
 
 import java.awt.Font;
@@ -60,24 +62,36 @@ public class WithDrawalJPanel extends JPanel {
 	private Withdrawal withdrawalOperation;
 	private int wrongTry;
 
+	private JPanel topPanel;
+	private Component verticalStrut;
+	private JLabel extraChargeLabel;
+
 	/** constructor **/
 	public WithDrawalJPanel() {
 		contents.add(this);
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		setLayout(new BorderLayout(0, 0));
 
-		JPanel panel_1 = new JPanel();
-		add(panel_1);
-		panel_1.setBackground(MyGUISettings.getATMScreenBackGroundColor());
-		panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.Y_AXIS));
+		JPanel strucPanel = new JPanel();
+		add(strucPanel);
+		strucPanel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		strucPanel.setLayout(new BoxLayout(strucPanel, BoxLayout.Y_AXIS));
 
-		Component verticalStrut_1 = Box.createVerticalStrut(75);
-		panel_1.add(verticalStrut_1);
+		topPanel = new JPanel();
+		strucPanel.add(topPanel);
+		topPanel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
 
-		JPanel panel = new JPanel();
-		panel_1.add(panel);
-		panel.setLayout(new GridLayout(4, 2, 0, 0));
-		panel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
+		verticalStrut = Box.createVerticalStrut(75);
+		topPanel.add(verticalStrut);
+
+		extraChargeLabel = new JLabel(MyImages.extraCharge);
+		topPanel.add(extraChargeLabel);
+
+		JPanel contentPanel = new JPanel();
+		strucPanel.add(contentPanel);
+		contentPanel.setLayout(new GridLayout(4, 2, 0, 0));
+		contentPanel.setBackground(MyGUISettings.getATMScreenBackGroundColor());
 
 		Box horizontalBox = Box.createHorizontalBox();
 		add(horizontalBox, BorderLayout.SOUTH);
@@ -95,12 +109,12 @@ public class WithDrawalJPanel extends JPanel {
 			Button button = new Button(MyStrings.DOLLAR_SIGN + " "
 					+ commands[i]);
 			button.setFont(new Font("Arial", Font.PLAIN, 26));
-			panel.add(button);
+			contentPanel.add(button);
 		}
 		for (int i = 4; i < 8; i++) {
 			Button button = new Button(commands[i]);
 			button.setFont(new Font("Arial", Font.PLAIN, 26));
-			panel.add(button);
+			contentPanel.add(button);
 		}
 	}
 
@@ -115,6 +129,17 @@ public class WithDrawalJPanel extends JPanel {
 	}
 
 	public void showMe() {
+		if (Account.isMyBankAccount(ATM.getATM().getCurrentAccountNumber())) {
+			topPanel.removeAll();
+			topPanel.add(verticalStrut);
+			verticalStrut.setVisible(true);
+			extraChargeLabel.setVisible(false);
+		} else {
+			topPanel.removeAll();
+			topPanel.add(extraChargeLabel);
+			verticalStrut.setVisible(false);
+			extraChargeLabel.setVisible(true);
+		}
 		wrongTry = 0;
 		textField.setText("");
 		withdrawalOperation = new Withdrawal(ATM.getATM());

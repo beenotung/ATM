@@ -13,6 +13,8 @@ import atm.gui.MyGUISettings;
 import atm.gui.keypad.KeypadJFrame;
 import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
+import atm.utils.MyStaticStuff;
+import atm.utils.MyStrings;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -43,6 +45,13 @@ public class TransferJPanel extends JPanel {
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+		
+		JLabel lblExtraCharge = new JLabel(MyStaticStuff.getExtraChargeString());
+		lblExtraCharge.setAlignmentX(Component.CENTER_ALIGNMENT);
+		add(lblExtraCharge);
+		lblExtraCharge.setFont(MyGUISettings.getFont(18));
+		
+		
 		JLabel lblNewLabel = new JLabel("Receiver Account Number:");
 		lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(lblNewLabel);

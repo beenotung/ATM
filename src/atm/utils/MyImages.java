@@ -12,6 +12,7 @@ public class MyImages {
 	public static ImageIcon banner;
 	public static ImageIcon viewBalance;
 	public static ImageIcon transfer;
+	public static ImageIcon extraCharge;
 
 	private static boolean inited = false;
 
@@ -26,6 +27,9 @@ public class MyImages {
 				MyGUISettings.MONITOR_TOP_MARGIN);
 		transfer = MyImageUtils.scaleImageIconByHeight(new ImageIcon(new URL(
 				MyURLs.IMAGE_TRANSFER)), MyGUISettings.MONITOR_TOP_MARGIN);
+		extraCharge = MyImageUtils.scaleImageIconByHeight(new ImageIcon(
+				new URL(MyURLs.IMAGE_EXTRA_CHARGE)),
+				MyGUISettings.MONITOR_TOP_MARGIN);
 
 		inited = true;
 	}

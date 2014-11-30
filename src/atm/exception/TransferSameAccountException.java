@@ -1,7 +1,5 @@
 package atm.exception;
 
-import atm.utils.MyStrings;
-
 public class TransferSameAccountException extends Exception {
 	/**
 	 * 

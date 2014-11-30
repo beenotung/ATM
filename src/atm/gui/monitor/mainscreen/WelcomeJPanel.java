@@ -7,6 +7,7 @@ import javax.swing.BoxLayout;
 
 import atm.core.ATM;
 import atm.gui.MyGUISettings;
+import java.awt.Component;
 
 public class WelcomeJPanel extends JPanel {
 	/**
@@ -24,6 +25,7 @@ public class WelcomeJPanel extends JPanel {
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 
 		bannerJPanel = new BannerJPanel();
+		bannerJPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(bannerJPanel);
 
 		availableCashNotesJPanel = new AvailableCashNotesJPanel();
