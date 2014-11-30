@@ -95,11 +95,13 @@ public class TransferJPanel extends JPanel {
 	}
 
 	private void tryTransfer() {
+		boolean transferSuccess = false;
 		try {
 			System.out.println("check Transfer");
 			double amount = Double.parseDouble(amountTextField.getText());
 			Transfer.transferGUI(ATM.getATM(),
 					receiverAccountNumberTextField.getText(), amount);
+			transferSuccess = true;
 		} catch (NumberFormatException e) {
 			System.out.println("not double?");
 			MainMenuJPanel.showMe();
@@ -113,9 +115,11 @@ public class TransferJPanel extends JPanel {
 			System.out.println("overdrawn");
 			OverdrawnJPanel.showMeStatic(MainScreenCardJPanel.STRING_TRANSFER);
 		}
-		// transfer success
-		System.out.println("transfer success");
-		TransferSuccessJPanel.showMeStatic();
+		if (transferSuccess) {
+			// transfer success
+			System.out.println("transfer success");
+			TransferSuccessJPanel.showMeStatic();
+		}
 	}
 
 	public void showMe() {
