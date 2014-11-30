@@ -47,6 +47,8 @@ public class MyURLs {
 	public static final String IMAGE_VIEW_BALANCE = //
 	// "http://xtupload.com/image.php?id=A473_5476963C";
 	"http://xtupload.com/image.php?id=7510_5476AAEB";
+	public static final String IMAGE_TRANSFER = //
+	"http://xtupload.com/image.php?id=F85F_547B1FA3";
 }
 
 class MyURLs_OLD {

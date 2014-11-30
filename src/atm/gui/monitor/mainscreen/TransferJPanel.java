@@ -29,11 +29,12 @@ public class TransferJPanel extends JPanel {
 	public static final String STRING_WITHDRAW_CASH = "Withdraw Cash";
 	public static final String STRING_TRANSFER_FUNDS = "Transfer Funds";
 	public static final String STRING_TAKE_CARD = "Take Card";
-
 	public static final String[] commands = { "", "", STRING_VIEW_BALANCE,
 			STRING_WITHDRAW_CASH, STRING_TRANSFER_FUNDS, STRING_TAKE_CARD, "",
 			"" };
-	private JTextField ReceiverAccountNumberTextField;
+
+	private int wrongTry;
+	private JTextField receiverAccountNumberTextField;
 	private JTextField amountTextField;
 
 	public TransferJPanel() {
@@ -44,30 +45,42 @@ public class TransferJPanel extends JPanel {
 		JLabel lblNewLabel = new JLabel("Receiver Account Number:");
 		lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(lblNewLabel);
+		lblNewLabel.setFont(MyGUISettings.getFont(26));
 
-		ReceiverAccountNumberTextField = new JTextField();
-		add(ReceiverAccountNumberTextField);
-		ReceiverAccountNumberTextField.setColumns(10);
-		ReceiverAccountNumberTextField.setBackground(MyGUISettings
+		receiverAccountNumberTextField = new JTextField();
+		add(receiverAccountNumberTextField);
+		receiverAccountNumberTextField.setColumns(10);
+		receiverAccountNumberTextField.setBackground(MyGUISettings
 				.getATMScreenBackGroundColor());
 
 		JLabel lblNewLabel_1 = new JLabel("Amount to transfer:");
 		lblNewLabel_1.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(lblNewLabel_1);
+		lblNewLabel_1.setFont(MyGUISettings.getFont(26));
 
 		amountTextField = new JTextField();
 		add(amountTextField);
 		amountTextField.setColumns(10);
 		amountTextField.setBackground(MyGUISettings
 				.getATMScreenBackGroundColor());
+
+		wrongTry = 0;
 	}
 
-	public static void showMe() {
+	public void showMe() {
 		System.out.println("show transfer jpanel");
-		ATM.getATM().init();
+
+		receiverAccountNumberTextField.setText("");
+		amountTextField.setText("");
 		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_TRANSFER;
 		SideButtons.commands = TransferJPanel.commands;
 		MainScreenCardJPanel
 				.switchToCardStatic(MainScreenCardJPanel.STRING_TRANSFER);
+	}
+
+	public static void showMeStatic() {
+		for (TransferJPanel content : contents) {
+			content.showMe();
+		}
 	}
 }
