@@ -9,6 +9,7 @@ import bank.account.Account;
 import atm.core.ATM;
 import atm.core.UI;
 import atm.exception.OverdrawnException;
+import atm.exception.TransferSameAccountException;
 import atm.exception.WrongInputException;
 import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
@@ -16,12 +17,14 @@ import atm.utils.MyStrings;
 
 public class Transfer {
 
-	public static Vector<Transaction> transfer(ATM atm) throws WrongInputException, AccountNotFoundException {
+	public static Vector<Transaction> transfer(ATM atm)
+			throws WrongInputException, AccountNotFoundException {
 		Vector<Transaction> result = new Vector<Transaction>();
 		UI ui = atm.getUI();
 
 		String accountNumberTo;
-		Account accountFrom = BankDatabase.getAccount(atm.getCurrentAccountNumber());
+		Account accountFrom = BankDatabase.getAccount(atm
+				.getCurrentAccountNumber());
 		Account accountTo = null;
 		double amount = 0;
 
@@ -30,14 +33,17 @@ public class Transfer {
 		// get target account to be transfered from user
 		do {
 			ok = true;
-			accountNumberTo = String.valueOf(ui.keypad
-					.getInputInt("\nPlease input the account number of the receiver: "));
+			accountNumberTo = String
+					.valueOf(ui.keypad
+							.getInputInt("\nPlease input the account number of the receiver: "));
 			try {
 				accountTo = BankDatabase.getAccount(accountNumberTo);
-				if (accountFrom.getAccountNumber() == accountTo.getAccountNumber()) {
+				if (accountFrom.getAccountNumber() == accountTo
+						.getAccountNumber()) {
 					wrongCount++;
 					ok = false;
-					ui.screen.displayMessageLine(MyStrings.TRANSFER_SAME_ACCOUNT);
+					ui.screen
+							.displayMessageLine(MyStrings.TRANSFER_SAME_ACCOUNT);
 				}
 			} catch (AccountNotFoundException e) {
 				wrongCount++;
@@ -56,13 +62,15 @@ public class Transfer {
 		do {
 			ok = true;
 			try {
-				amount = ui.keypad.getInputDouble("\nPlease the amount to transfer (input 0 to cancel): ");
+				amount = ui.keypad
+						.getInputDouble("\nPlease the amount to transfer (input 0 to cancel): ");
 				if (amount == 0)
 					return null;
 				else if (amount < 0) {
 					wrongCount++;
 					ok = false;
-					ui.screen.displayMessageLine("The amount should be positive. Please try again.");
+					ui.screen
+							.displayMessageLine("The amount should be positive. Please try again.");
 				} else if (accountFrom.isEnough(amount)) {
 					accountFrom.debit(amount);
 					accountTo.credit(amount);
@@ -72,8 +80,10 @@ public class Transfer {
 			} catch (OverdrawnException e) {
 				wrongCount++;
 				ok = false;
-				ui.screen.displayMessageLine(MyStrings.getOverDrawnMessage(BankDatabase.getAccount(
-						atm.getCurrentAccountNumber()).getOverdrawnLimit()));
+				ui.screen.displayMessageLine(MyStrings
+						.getOverDrawnMessage(BankDatabase.getAccount(
+								atm.getCurrentAccountNumber())
+								.getOverdrawnLimit()));
 				MyStaticStuff.sleep();
 			}
 		} while ((wrongCount <= MyInputHandler.MAX_WRONG_INPUT) && (!ok));
@@ -81,7 +91,51 @@ public class Transfer {
 			throw new WrongInputException();
 		else {
 			if (!accountFrom.isMyBankAccount())
-				ui.screen.displayMessageLine(MyStaticStuff.getExtraChargeString());
+				ui.screen.displayMessageLine(MyStaticStuff
+						.getExtraChargeString());
+			ui.screen.displayMessageLine(MyStrings.TRANSFER_SUCCEED);
+		}
+		return result;
+	}
+
+	public static Vector<Transaction> transferGUI(ATM atm,
+			String accountNumberTo, double amount)
+			throws AccountNotFoundException, TransferSameAccountException,
+			OverdrawnException {
+		Vector<Transaction> result = new Vector<Transaction>();
+		UI ui = atm.getUI();
+
+		Account accountFrom = BankDatabase.getAccount(atm
+				.getCurrentAccountNumber());
+		Account accountTo = null;
+
+		boolean ok;
+
+		accountTo = BankDatabase.getAccount(accountNumberTo);
+		if (accountFrom.getAccountNumber() == accountTo.getAccountNumber())
+			throw new TransferSameAccountException();
+
+		// get amount to be transfered from user
+		// auto throw OverdrawnException if the accountFrom has not enough
+		// available balance
+
+		try {
+
+			if (accountFrom.isEnough(amount)) {
+				accountFrom.debit(amount);
+				accountTo.credit(amount);
+			} else {
+				throw new OverdrawnException();
+			}
+
+		} catch (OverdrawnException e) {
+			throw e;
+		}
+
+		{
+			if (!accountFrom.isMyBankAccount())
+				ui.screen.displayMessageLine(MyStaticStuff
+						.getExtraChargeString());
 			ui.screen.displayMessageLine(MyStrings.TRANSFER_SUCCEED);
 		}
 		return result;

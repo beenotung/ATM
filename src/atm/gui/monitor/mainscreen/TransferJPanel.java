@@ -9,7 +9,6 @@ import javax.swing.BoxLayout;
 
 import java.awt.Component;
 
-import atm.core.ATM;
 import atm.gui.MyGUISettings;
 import atm.gui.keypad.KeypadJFrame;
 import atm.gui.monitor.MonitorJFrame;

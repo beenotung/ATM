@@ -49,6 +49,8 @@ public class MyURLs {
 	"http://xtupload.com/image.php?id=7510_5476AAEB";
 	public static final String IMAGE_TRANSFER = //
 	"http://xtupload.com/image.php?id=F85F_547B1FA3";
+	public static final String IMAGE_EXTRA_CHARGE = //
+	"http://xtupload.com/image.php?id=19BB_547B2F97";
 }
 
 class MyURLs_OLD {

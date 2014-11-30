@@ -71,7 +71,7 @@ public class MonitorJFrame extends JFrame {
 				WithDrawalJPanel.showMeStatic();
 				break;
 			case MainScreenCardJPanel.STRING_TRANSFER:
-				TransferJPanel.showMe();
+				TransferJPanel.showMeStatic();
 				break;
 			}
 			break;
