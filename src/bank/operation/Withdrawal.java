@@ -4,6 +4,8 @@ import java.util.Vector;
 
 import javax.security.auth.login.AccountNotFoundException;
 
+import com.thoughtworks.xstream.InitializationException;
+
 import bank.account.Account;
 import bank.database.BankDatabase;
 import atm.core.ATM;
@@ -101,6 +103,9 @@ public class Withdrawal extends Transaction {
 			OverdrawnException, CashNotEnoughException, CashOutException {
 		// TODO Auto-generated method stub
 		// throw overdrawexception, cashnotenoughexception
+		if (commandMode)
+			throw new InitializationException(
+					"WithDrawal: amount has not be initialized");
 		@SuppressWarnings("unused")
 		boolean cashDispensed = false; // cash was not dispensed yet
 		if (!Account.isMyBankAccount(getAccountNumber()))

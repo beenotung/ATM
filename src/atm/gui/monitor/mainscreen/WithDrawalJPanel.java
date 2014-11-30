@@ -15,16 +15,13 @@ import javax.swing.Box;
 
 import atm.core.ATM;
 import atm.core.CashDispenser;
-import atm.exception.CardOutException;
 import atm.exception.CashNotEnoughException;
 import atm.exception.CashOutException;
 import atm.exception.OverdrawnException;
-import atm.exception.WrongInputException;
 import atm.gui.MyGUISettings;
 import atm.gui.keypad.KeypadJFrame;
 import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
-import atm.gui.virtualslots.CardSlotCardJPanel;
 import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
 import atm.utils.MyStrings;
