@@ -7,6 +7,11 @@ import java.util.Vector;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 
+import webs.layout.WrapLayout;
+
+import com.alee.extended.layout.WrapFlowLayout;
+
+import atm.gui.MyGUISettings;
 import atm.gui.virtualslots.cardslot.CardSlotCardJPanel;
 import atm.gui.virtualslots.cashdispenser.CashDispenserJPanel;
 
@@ -28,6 +33,7 @@ public class VirtualSlotsJFrame extends JFrame {
 		setSize(400, 300);
 		getContentPane().setLayout(
 				new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+		// getContentPane().setLayout(new WrapLayout());
 
 		cardSlotCardJPanel = new CardSlotCardJPanel();
 		getContentPane().add(cardSlotCardJPanel);
@@ -39,19 +45,21 @@ public class VirtualSlotsJFrame extends JFrame {
 	public void calcBounds() {
 		setVisible(true);
 		pack();
-		Rectangle client = getBounds();
+		Rectangle client = new Rectangle(
+				MyGUISettings.VIRTUAL_SLOTS_FRAME_WIDTH,
+				MyGUISettings.VIRTUAL_SLOTS_FRAME_HEIGHT);
 		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment()
 				.getMaximumWindowBounds().getBounds();
 		int x = screen.width - client.width;
 		int y = 0;
-		setLocation(x, y);
+		setBounds(x, y, client.width, client.height);
 	}
 
 	public void myUpdateUI() {
-		if(cardSlotCardJPanel!=null)
-		cardSlotCardJPanel.myUpdateUI();
-		if(cashDispenserJPanel!=null)
-		cashDispenserJPanel.myUpdateUI();
+		if (cardSlotCardJPanel != null)
+			cardSlotCardJPanel.myUpdateUI();
+		if (cashDispenserJPanel != null)
+			cashDispenserJPanel.myUpdateUI();
 		setPreferredSize(getMinimumSize());
 		calcBounds();
 	}

@@ -19,9 +19,9 @@ public class MyImages {
 			return;
 
 		banner = MyImageUtils.scaleImageIconByHeight(new ImageIcon(new URL(MyURLs.IMAGE_BANNER)),
-				MyGUISettings.TOP_MARGIN);
+				MyGUISettings.MONITOR_TOP_MARGIN);
 		viewBalance = MyImageUtils.scaleImageIconByHeight(new ImageIcon(new URL(MyURLs.IMAGE_VIEW_BALANCE)),
-				MyGUISettings.TOP_MARGIN);
+				MyGUISettings.MONITOR_TOP_MARGIN);
 
 		inited = true;
 	}
