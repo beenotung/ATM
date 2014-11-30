@@ -157,6 +157,8 @@ public class WithDrawalJPanel extends JPanel {
 		int oldWrongTry = wrongTry;
 		showMe();
 		wrongTry = oldWrongTry + 1;
+		if (wrongTry > MyInputHandler.MAX_WRONG_INPUT)
+			MaxWrongTryJPanel.showMe();
 	}
 
 	public void tryWithDrawal() {
@@ -169,10 +171,8 @@ public class WithDrawalJPanel extends JPanel {
 		} catch (NumberFormatException e) {
 			CashDispenser.rollback();
 			System.out.println("Error! cash amount is not int?");
-			textField.setText("");
 			wrongTry++;
-			if (wrongTry > MyInputHandler.MAX_WRONG_INPUT)
-				MaxWrongTryJPanel.showMe();
+			MainMenuJPanel.showMe();
 		} catch (AccountNotFoundException e) {
 			CashDispenser.rollback();
 			CardNotValidJPanel.showMe();

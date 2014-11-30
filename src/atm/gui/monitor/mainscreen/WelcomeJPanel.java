@@ -21,6 +21,7 @@ public class WelcomeJPanel extends JPanel {
 	private AvailableCashNotesJPanel availableCashNotesJPanel;
 
 	public WelcomeJPanel() {
+		contents.add(this);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 
@@ -33,12 +34,15 @@ public class WelcomeJPanel extends JPanel {
 	}
 
 	public void showMe() {
+		System.out.println("WelcomeJPanel.showMe()");
 		availableCashNotesJPanel.myUpdate();
 		ATM.initStatic();
-		MainScreenCardJPanel.switchToCardStatic(MainScreenCardJPanel.STRING_WELCOME);
+		MainScreenCardJPanel
+				.switchToCardStatic(MainScreenCardJPanel.STRING_WELCOME);
 	}
 
 	public static void showMeStatic() {
+		System.out.println("WelcomeJPanel.showMeStatic()");
 		for (WelcomeJPanel welcomeJPanel : contents) {
 			welcomeJPanel.showMe();
 		}
