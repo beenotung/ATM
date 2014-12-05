@@ -18,7 +18,6 @@ import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
 import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
-import bank.BankDatabase;
 import bank.account.Account;
 import bank.operation.Transfer;
 

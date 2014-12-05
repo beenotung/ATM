@@ -1,9 +1,6 @@
 package atm.gui;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Vector;
 
 import javax.swing.UIManager;
@@ -15,7 +12,6 @@ import atm.gui.virtualslots.cardslot.Card;
 import atm.gui.virtualslots.cashdispenser.notes.CashNote100;
 import atm.gui.virtualslots.cashdispenser.notes.CashNote1000;
 import atm.gui.virtualslots.cashdispenser.notes.CashNote500;
-import atm.utils.FetchImageNeeder;
 import atm.utils.FetchImageRunnable;
 import atm.utils.MyImages;
 
@@ -73,6 +69,7 @@ public class ATMGUILauncher {
 		frameManager.start();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void fetchImages() throws IOException {
 		// prepare
 		Vector<FetchImageRunnable> runnables = new Vector<FetchImageRunnable>();
