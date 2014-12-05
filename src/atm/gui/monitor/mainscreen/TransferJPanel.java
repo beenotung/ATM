@@ -18,10 +18,13 @@ import atm.gui.monitor.MonitorJFrame;
 import atm.gui.monitor.sidebuttons.SideButtons;
 import atm.utils.MyInputHandler;
 import atm.utils.MyStaticStuff;
+import bank.BankDatabase;
+import bank.account.Account;
 import bank.operation.Transfer;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.Box;
 
 public class TransferJPanel extends JPanel {
 	/**
@@ -43,12 +46,19 @@ public class TransferJPanel extends JPanel {
 	private JTextField receiverAccountNumberTextField;
 	private JTextField amountTextField;
 
+	private Component verticalStrut;
+
+	private JLabel lblExtraCharge;
+
 	public TransferJPanel() {
 		contents.add(this);
 		setBackground(MyGUISettings.getATMScreenBackGroundColor());
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-		JLabel lblExtraCharge = new JLabel(MyStaticStuff.getExtraChargeString());
+		verticalStrut = Box.createVerticalStrut(20);
+		add(verticalStrut);
+
+		lblExtraCharge = new JLabel(MyStaticStuff.getExtraChargeString());
 		lblExtraCharge.setAlignmentX(Component.CENTER_ALIGNMENT);
 		add(lblExtraCharge);
 		lblExtraCharge.setFont(MyGUISettings.getFont(18));
@@ -124,6 +134,14 @@ public class TransferJPanel extends JPanel {
 
 	public void showMe() {
 		System.out.println("show transfer jpanel");
+
+		if (Account.isMyBankAccount(ATM.getATM().getCurrentAccountNumber())) {
+			verticalStrut.setVisible(true);
+			lblExtraCharge.setVisible(false);
+		} else {
+			verticalStrut.setVisible(false);
+			lblExtraCharge.setVisible(true);
+		}
 
 		MonitorJFrame.STATE = MainScreenCardJPanel.STRING_TRANSFER;
 		SideButtons.commands = TransferJPanel.commands;
